@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-zinc-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Administracion - Infinite Force Gym</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              yellow: '#d4ff00',
+              gold: '#ffd700',
+              border: '#27272a',
+              card: '#18181b',
+              surface: '#27272a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
+
+  <!-- Header Superior -->
+  <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Identidad Corporativa y Titulo de Header -->
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+          <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold tracking-wider uppercase text-white">
+            PANEL DE ADMINISTRACIÓN GENERAL
+          </h1>
+          <span class="block text-[11px] font-semibold uppercase tracking-widest text-brand-yellow">
+            Infinite Force Gym &bull; Gestión Centralizada
+          </span>
+        </div>
+      </div>
+
+      <!-- Informacion de Sesion y Acciones -->
+      <div class="flex items-center space-x-4">
+        <div class="text-right hidden sm:block">
+          <p class="text-sm font-bold text-white uppercase">{{ADMIN_NAME}}</p>
+          <p class="text-xs text-zinc-400 font-mono">{{ADMIN_EMAIL}}</p>
+        </div>
+        <a
+          href="/logout"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-red-950/50 hover:bg-red-900/60 text-red-300 border border-red-800 rounded-xl transition duration-150 active:scale-95"
+        >
+          Cerrar Sesion
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+    <!-- Notificacion Dinamica de Acciones -->
+    <div id="notification-banner" class="hidden p-4 rounded-xl border text-sm font-semibold transition"></div>
+
+    <!-- Metricas Resumen -->
+    <section>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        
+        <!-- Total Socios Registrados -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Total Socios Registrados</p>
+          <div class="flex items-baseline justify-between mt-3">
+            <span class="text-4xl font-extrabold text-white font-mono">{{TOTAL_SOCIOS}}</span>
+            <span class="text-xs text-zinc-500 uppercase font-semibold">Padrón</span>
+          </div>
+        </div>
+
+        <!-- Membresias Activas -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Membresias Activas</p>
+          <div class="flex items-baseline justify-between mt-3">
+            <span class="text-4xl font-extrabold text-emerald-400 font-mono">{{MEMBRESIAS_ACTIVAS}}</span>
+            <span class="text-xs text-emerald-400/80 uppercase font-semibold">Vigentes</span>
+          </div>
+        </div>
+
+        <!-- Total Productos en Tienda -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Lineas de Producto</p>
+          <div class="flex items-baseline justify-between mt-3">
+            <span class="text-4xl font-extrabold text-brand-yellow font-mono">{{TOTAL_PRODUCTOS}}</span>
+            <span class="text-xs text-brand-yellow/80 uppercase font-semibold">Catálogo</span>
+          </div>
+        </div>
+
+        <!-- Unidades Totales en Inventario -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Unidades en Inventario</p>
+          <div class="flex items-baseline justify-between mt-3">
+            <span class="text-4xl font-extrabold text-white font-mono">{{TOTAL_UNIDADES_STOCK}}</span>
+            <span class="inline-flex items-center text-xs text-emerald-400 font-semibold uppercase">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
+              En Stock
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCION 1: Gestion de Socios (Membresias, pagos, altas) -->
+    <section class="bg-zinc-950/60 border border-zinc-800 rounded-2xl shadow-xl overflow-hidden">
+      
+      <!-- Cabecera de Seccion -->
+      <div class="p-6 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold uppercase tracking-wider text-white">Gestión de Socios</h2>
+          <p class="text-xs text-zinc-400 mt-1">
+            Supervisión integral de usuarios, estado de suscripciones, vigencia de membresías y altas del gimnasio.
+          </p>
+        </div>
+        <div class="flex items-center space-x-3">
+          <button
+            type="button"
+            onclick="abrirModalAltaSocio()"
+            class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md flex items-center"
+          >
+            Alta de Cliente
+          </button>
+          <span class="px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-lg">
+            {{TOTAL_SOCIOS}} Socios Registrados
+          </span>
+        </div>
+      </div>
+
+      <!-- Tabla de Socios -->
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-zinc-900 text-zinc-400 uppercase text-[11px] font-bold tracking-wider border-b border-zinc-800">
+              <th scope="col" class="px-6 py-4">Socio</th>
+              <th scope="col" class="px-6 py-4">Correo Electronico</th>
+              <th scope="col" class="px-6 py-4">Estado Membresia</th>
+              <th scope="col" class="px-6 py-4">Fecha Vencimiento</th>
+              <th scope="col" class="px-6 py-4 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-800/60">
+            {{TABLA_SOCIOS_HTML}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- SECCION 2: Gestion de Inventario -->
+    <section class="bg-zinc-950/60 border border-zinc-800 rounded-2xl shadow-xl overflow-hidden space-y-6">
+      
+      <!-- Cabecera de Seccion -->
+      <div class="p-6 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold uppercase tracking-wider text-white">Gestión de Inventario</h2>
+          <p class="text-xs text-zinc-400 mt-1">
+            Registro de nuevos artículos y supervisión del stock disponible en la tienda oficial del gimnasio.
+          </p>
+        </div>
+        <div>
+          <span class="px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 text-brand-yellow border border-zinc-700 rounded-lg font-mono">
+            {{TOTAL_PRODUCTOS}} Productos &bull; {{TOTAL_UNIDADES_STOCK}} Unidades
+          </span>
+        </div>
+      </div>
+
+      <!-- Formulario de Registro de Nuevo Producto -->
+      <div class="px-6">
+        <div class="bg-zinc-900/70 border border-zinc-800 rounded-2xl p-6">
+          <div class="mb-5 pb-3 border-b border-zinc-800">
+            <h3 class="text-sm font-bold uppercase tracking-wider text-white">Registrar Nuevo Producto</h3>
+            <p class="text-xs text-zinc-400 mt-0.5">Ingrese los detalles comerciales y el stock inicial del producto.</p>
+          </div>
+
+          <form id="form-nuevo-producto" onsubmit="registrarProducto(event)" class="space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              
+              <!-- Campo: Nombre -->
+              <div>
+                <label for="prod-nombre" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                  Nombre del Producto
+                </label>
+                <input
+                  type="text"
+                  id="prod-nombre"
+                  name="nombre"
+                  required
+                  placeholder="Ej. Proteina Isolate 100% 2kg"
+                  class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
+                >
+              </div>
+
+              <!-- Campo: Categoria -->
+              <div>
+                <label for="prod-categoria" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                  Categoría
+                </label>
+                <select
+                  id="prod-categoria"
+                  name="categoria"
+                  required
+                  class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-yellow transition"
+                >
+                  <option value="Suplementos">Suplementos</option>
+                  <option value="Accesorios">Accesorios</option>
+                  <option value="Bebidas">Bebidas</option>
+                  <option value="Equipamiento">Equipamiento</option>
+                  <option value="Ropa Deportiva">Ropa Deportiva</option>
+                </select>
+              </div>
+
+              <!-- Campo: Precio -->
+              <div>
+                <label for="prod-precio" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                  Precio Unitario (S/.)
+                </label>
+                <input
+                  type="number"
+                  id="prod-precio"
+                  name="precio"
+                  step="0.01"
+                  min="0"
+                  required
+                  placeholder="Ej. 179.90"
+                  class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
+                >
+              </div>
+
+              <!-- Campo: Stock inicial -->
+              <div>
+                <label for="prod-stock" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                  Stock Inicial
+                </label>
+                <input
+                  type="number"
+                  id="prod-stock"
+                  name="stock"
+                  step="1"
+                  min="0"
+                  required
+                  placeholder="Ej. 20"
+                  class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
+                >
+              </div>
+
+            </div>
+
+            <!-- Boton de Envio -->
+            <div class="flex justify-end pt-2">
+              <button
+                type="submit"
+                id="btn-registrar-prod"
+                class="px-6 py-3 text-xs font-bold uppercase tracking-wider bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 rounded-xl shadow-md transition duration-150 active:scale-95"
+              >
+                Registrar Producto
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Tabla de Existencias de Inventario -->
+      <div class="overflow-x-auto pb-4">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-zinc-900 text-zinc-400 uppercase text-[11px] font-bold tracking-wider border-b border-zinc-800">
+              <th scope="col" class="px-6 py-4">Producto</th>
+              <th scope="col" class="px-6 py-4">Categoria</th>
+              <th scope="col" class="px-6 py-4">Precio Unitario</th>
+              <th scope="col" class="px-6 py-4">Stock Disponible</th>
+              <th scope="col" class="px-6 py-4">Estado</th>
+              <th scope="col" class="px-6 py-4 text-right">Acciones</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-800/60">
+            {{TABLA_INVENTARIO_HTML}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: Notificacion de Renovacion de Membresia -->
+  <div id="modal-renovacion" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 text-center">
+      <div class="w-12 h-12 mx-auto rounded-full bg-brand-yellow/10 border border-brand-yellow/30 flex items-center justify-center text-brand-yellow font-bold text-lg">
+        IF
+      </div>
+      <div>
+        <h3 class="text-base font-bold uppercase tracking-wider text-white">Modulo de Gestion de Membresia</h3>
+        <p class="text-xs text-zinc-400 mt-2">
+          Socio seleccionado: <strong id="modal-renovacion-socio" class="text-white"></strong>
+        </p>
+        <p class="text-xs text-zinc-500 mt-2">
+          Plan: <span id="modal-renovacion-tipo" class="text-brand-yellow font-bold"></span> &bull; Vencimiento: <span id="modal-renovacion-fecha" class="text-zinc-300"></span>
+        </p>
+        <p class="text-[11px] text-zinc-500 mt-3 bg-zinc-950 p-2.5 rounded-lg border border-zinc-800">
+          Nota: Panel exclusivo de administracion y control financiero. Registro de pagos y facturacion centralizada.
+        </p>
+      </div>
+      <div>
+        <button
+          type="button"
+          onclick="cerrarModalRenovacion()"
+          class="w-full px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl transition"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Detalle de Stock de Producto -->
+  <div id="modal-stock" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 text-center">
+      <div class="w-12 h-12 mx-auto rounded-full bg-brand-yellow/10 border border-brand-yellow/30 flex items-center justify-center text-brand-yellow font-bold text-lg">
+        TIENDA
+      </div>
+      <div>
+        <h3 class="text-base font-bold uppercase tracking-wider text-white">Gestion de Stock de Producto</h3>
+        <p class="text-xs text-zinc-400 mt-2">
+          Producto: <strong id="modal-stock-producto" class="text-white"></strong>
+        </p>
+        <p class="text-xs text-zinc-400 mt-1 font-mono">
+          Precio: <span id="modal-stock-precio" class="text-brand-yellow font-bold"></span> &bull; Stock: <span id="modal-stock-cantidad" class="text-white font-bold"></span> unidades
+        </p>
+        <p class="text-[11px] text-zinc-500 mt-3 bg-zinc-950 p-2.5 rounded-lg border border-zinc-800">
+          El inventario se sincroniza en tiempo real con las compras realizadas desde la tienda oficial del gimnasio.
+        </p>
+      </div>
+      <div>
+        <button
+          type="button"
+          onclick="cerrarModalStock()"
+          class="w-full px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl transition"
+        >
+          Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Alta de Cliente (Registro de Nuevo Socio) -->
+  <div id="modal-alta-socio" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-6">
+      
+      <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold uppercase tracking-wider text-white">Alta de Cliente</h3>
+          <p class="text-xs text-zinc-400 mt-0.5">Registre un nuevo socio con su membresía inicial activa.</p>
+        </div>
+        <button
+          type="button"
+          onclick="cerrarModalAltaSocio()"
+          class="text-zinc-400 hover:text-white text-xl font-bold px-2 py-1"
+        >
+          &times;
+        </button>
+      </div>
+
+      <form id="form-alta-socio" onsubmit="registrarNuevoSocio(event)" class="space-y-4">
+        <div>
+          <label for="alta-nombre" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Nombre Completo
+          </label>
+          <input
+            type="text"
+            id="alta-nombre"
+            name="nombre"
+            required
+            placeholder="Ejemplo: Juan Perez Gomez"
+            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
+          >
+        </div>
+
+        <div>
+          <label for="alta-email" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Correo Electrónico
+          </label>
+          <input
+            type="email"
+            id="alta-email"
+            name="email"
+            required
+            placeholder="socio@correo.com"
+            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
+          >
+        </div>
+
+        <div>
+          <label for="alta-password" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Contraseña Temporal
+          </label>
+          <input
+            type="password"
+            id="alta-password"
+            name="password"
+            required
+            placeholder="Minimo 6 caracteres"
+            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
+          >
+        </div>
+
+        <div>
+          <label for="alta-tipo-membresia" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Tipo de Membresía
+          </label>
+          <select
+            id="alta-tipo-membresia"
+            name="tipoMembresia"
+            required
+            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-yellow transition"
+          >
+            <option value="Mensual">Membresía Mensual (30 días de vigencia)</option>
+            <option value="Anual">Membresía Anual (365 días de vigencia)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center justify-end space-x-3 pt-4 border-t border-zinc-800">
+          <button
+            type="button"
+            onclick="cerrarModalAltaSocio()"
+            class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            id="btn-guardar-alta"
+            class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
+          >
+            Registrar Socio
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Pie de Pagina Corporativo -->
+  <footer class="bg-zinc-950 border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="tracking-wide">Infinite Force Gym &bull; Panel de Administración General.</p>
+      <p class="text-[11px] text-zinc-600 mt-1">Todos los derechos reservados. Persistencia de datos en PostgreSQL.</p>
+    </div>
+  </footer>
+
+  <!-- Logica Frontend -->
+  <script>
+    function mostrarNotificacion(mensaje, tipo = 'exito') {
+      const banner = document.getElementById('notification-banner');
+      banner.textContent = mensaje;
+      banner.classList.remove('hidden', 'bg-emerald-950', 'text-emerald-300', 'border-emerald-800', 'bg-red-950', 'text-red-300', 'border-red-800');
+
+      if (tipo === 'exito') {
+        banner.classList.add('bg-emerald-950', 'text-emerald-300', 'border-emerald-800');
+      } else {
+        banner.classList.add('bg-red-950', 'text-red-300', 'border-red-800');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 5000);
+    }
+
+    async function registrarProducto(event) {
+      event.preventDefault();
+
+      const nombre = document.getElementById('prod-nombre').value.trim();
+      const categoria = document.getElementById('prod-categoria').value;
+      const precio = parseFloat(document.getElementById('prod-precio').value);
+      const stock = parseInt(document.getElementById('prod-stock').value, 10);
+      const btn = document.getElementById('btn-registrar-prod');
+
+      btn.disabled = true;
+      btn.textContent = 'Registrando...';
+
+      try {
+        const response = await fetch('/api/productos', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nombre, categoria, precio, stock })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          mostrarNotificacion(data.message, 'exito');
+          document.getElementById('form-nuevo-producto').reset();
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 1200);
+        } else {
+          mostrarNotificacion(data.message || 'Error al registrar producto.', 'error');
+        }
+      } catch (err) {
+        console.error('Error de red al registrar producto:', err);
+        mostrarNotificacion('Error de conexion con el servidor.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Registrar Producto';
+      }
+    }
+
+    function abrirModalAltaSocio() {
+      const modal = document.getElementById('modal-alta-socio');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function cerrarModalAltaSocio() {
+      const modal = document.getElementById('modal-alta-socio');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function registrarNuevoSocio(event) {
+      event.preventDefault();
+
+      const nombre = document.getElementById('alta-nombre').value.trim();
+      const email = document.getElementById('alta-email').value.trim();
+      const password = document.getElementById('alta-password').value.trim();
+      const tipoMembresia = document.getElementById('alta-tipo-membresia').value;
+      const btn = document.getElementById('btn-guardar-alta');
+
+      btn.disabled = true;
+      btn.textContent = 'Registrando...';
+
+      try {
+        const response = await fetch('/api/admin/registrar-socio', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nombre, email, password, tipoMembresia })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          cerrarModalAltaSocio();
+          mostrarNotificacion(data.message, 'exito');
+          document.getElementById('form-alta-socio').reset();
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 1200);
+        } else {
+          mostrarNotificacion(data.message || 'Error al registrar el socio.', 'error');
+        }
+      } catch (err) {
+        console.error('Error de red al registrar socio:', err);
+        mostrarNotificacion('Error de conexion con el servidor.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Registrar Socio';
+      }
+    }
+
+    function abrirModalRenovacion(socio, tipo, fecha) {
+      document.getElementById('modal-renovacion-socio').textContent = socio;
+      document.getElementById('modal-renovacion-tipo').textContent = tipo;
+      document.getElementById('modal-renovacion-fecha').textContent = fecha;
+
+      const modal = document.getElementById('modal-renovacion');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function cerrarModalRenovacion() {
+      const modal = document.getElementById('modal-renovacion');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function mostrarDetalleStock(producto, stock, precio) {
+      document.getElementById('modal-stock-producto').textContent = producto;
+      document.getElementById('modal-stock-cantidad').textContent = stock;
+      document.getElementById('modal-stock-precio').textContent = 'S/ ' + precio;
+
+      const modal = document.getElementById('modal-stock');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function cerrarModalStock() {
+      const modal = document.getElementById('modal-stock');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+  </script>
+</body>
+</html>

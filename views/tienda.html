@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-zinc-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tienda Oficial - Infinite Force Gym</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              yellow: '#d4ff00',
+              gold: '#ffd700',
+              border: '#27272a',
+              card: '#18181b',
+              surface: '#27272a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
+
+  <!-- Header Superior -->
+  <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+          <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-wider uppercase text-white">
+            Infinite <span class="text-brand-yellow">Force</span> Gym
+          </span>
+          <span class="block text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
+            Tienda Oficial y Suplementos
+          </span>
+        </div>
+      </div>
+
+      <!-- Enlaces de Navegacion -->
+      <nav class="hidden md:flex items-center space-x-6">
+        <a href="/socio-dashboard" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Dashboard
+        </a>
+        <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Rutinas
+        </a>
+        <a href="/nutricion" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Nutricion
+        </a>
+        <a href="/tienda" class="text-xs font-bold uppercase tracking-wider text-brand-yellow border-b-2 border-brand-yellow pb-1">
+          Tienda
+        </a>
+      </nav>
+
+      <!-- Contador de Carrito y Perfil -->
+      <div class="flex items-center space-x-4">
+        <div class="inline-flex items-center space-x-2 px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-lg text-xs font-mono">
+          <span class="text-zinc-400 uppercase font-semibold">Carrito:</span>
+          <span id="contadorCarrito" class="text-brand-yellow font-bold text-sm">0</span>
+          <span class="text-zinc-500">items</span>
+        </div>
+
+        <a
+          href="/logout"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-red-950 text-zinc-300 hover:text-red-200 border border-zinc-700 hover:border-red-800 rounded-lg transition duration-150"
+        >
+          Cerrar Sesion
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    
+    <!-- Encabezado de la Tienda -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-zinc-800">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-white uppercase">
+          Catalogo de <span class="text-brand-yellow">Suplementacion y Productos</span>
+        </h1>
+        <p class="text-sm text-zinc-400 mt-1">
+          Productos autorizados disponibles para entrega inmediata en recepcion de tu sede.
+        </p>
+      </div>
+
+      <a
+        href="/socio-dashboard"
+        class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-lg transition"
+      >
+        Volver a mi Dashboard
+      </a>
+    </div>
+
+    <!-- Banner de Notificacion de Acciones -->
+    <div id="alertaTienda" class="hidden rounded-xl p-4 border transition duration-200 text-sm font-medium bg-emerald-950/80 border-emerald-700 text-emerald-200">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+          <span id="mensajeAlertaTienda" class="tracking-wide"></span>
+        </div>
+        <button type="button" onclick="cerrarAlertaTienda()" class="text-xs uppercase tracking-wider opacity-70 hover:opacity-100 ml-4 font-bold">
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <!-- Grid de Tarjetas de Productos (Product Cards) -->
+    <div id="gridProductos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      {{PRODUCT_CARDS_GRID}}
+    </div>
+
+    <!-- Seccion de Informacion de Compra -->
+    <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 text-xs text-zinc-400 space-y-2">
+      <p class="font-bold text-white uppercase tracking-wider text-xs">
+        Politica de Despacho y Stock
+      </p>
+      <p>
+        Los productos agregados al carrito se reservan temporalmente en tu navegador. Puedes solicitar el despacho y cancelacion directa en la recepcion presentando tu codigo de socio o documento de identidad.
+      </p>
+    </div>
+
+  </main>
+
+  <footer class="bg-zinc-950 border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
+    Infinite Force Gym. Plataforma de Gestion y Control de Acceso. Todos los derechos reservados.
+  </footer>
+
+  <!-- Script de Gestion de Carrito en localStorage -->
+  <script>
+    const STORAGE_KEY = 'cart';
+    const contadorCarrito = document.getElementById('contadorCarrito');
+    const alertaTienda = document.getElementById('alertaTienda');
+    const mensajeAlertaTienda = document.getElementById('mensajeAlertaTienda');
+
+    function obtenerCarrito() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        console.error('Error al parsear carrito de localStorage:', e);
+        return [];
+      }
+    }
+
+    function guardarCarrito(carrito) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(carrito));
+      actualizarContadorCarrito();
+    }
+
+    function actualizarContadorCarrito() {
+      const carrito = obtenerCarrito();
+      contadorCarrito.textContent = carrito.length;
+    }
+
+    function mostrarAlertaTienda(mensaje) {
+      mensajeAlertaTienda.textContent = mensaje;
+      alertaTienda.classList.remove('hidden');
+      alertaTienda.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+      setTimeout(() => {
+        alertaTienda.classList.add('hidden');
+      }, 3500);
+    }
+
+    function cerrarAlertaTienda() {
+      alertaTienda.classList.add('hidden');
+    }
+
+    function agregarAlCarrito(productoId, productoNombre) {
+      const carrito = obtenerCarrito();
+      carrito.push(productoId);
+      guardarCarrito(carrito);
+      mostrarAlertaTienda('Producto "' + productoNombre + '" anadido al carrito exitosamente.');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      actualizarContadorCarrito();
+
+      // Delegacion de eventos para botones de compra
+      document.querySelectorAll('.btn-add-cart').forEach(btn => {
+        btn.addEventListener('click', function () {
+          const id = parseInt(this.getAttribute('data-id'), 10);
+          const nombre = this.getAttribute('data-name');
+          agregarAlCarrito(id, nombre);
+
+          const textoOriginal = this.textContent;
+          this.textContent = 'Anadido al carrito';
+          this.classList.add('bg-brand-yellow', 'text-zinc-950');
+          setTimeout(() => {
+            this.textContent = textoOriginal;
+            this.classList.remove('bg-brand-yellow', 'text-zinc-950');
+          }, 1200);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

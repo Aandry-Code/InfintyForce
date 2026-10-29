@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-zinc-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora Nutricional - Infinite Force Gym</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              yellow: '#d4ff00',
+              gold: '#ffd700',
+              border: '#27272a',
+              card: '#18181b',
+              surface: '#27272a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
+
+  <!-- Header Superior -->
+  <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+          <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-wider uppercase text-white">
+            Infinite <span class="text-brand-yellow">Force</span> Gym
+          </span>
+          <span class="block text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
+            Modulo de Nutricion y Macros
+          </span>
+        </div>
+      </div>
+
+      <!-- Enlaces de Navegacion -->
+      <nav class="hidden md:flex items-center space-x-6">
+        <a href="/socio-dashboard" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Dashboard
+        </a>
+        <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Rutinas
+        </a>
+        <a href="/nutricion" class="text-xs font-bold uppercase tracking-wider text-brand-yellow border-b-2 border-brand-yellow pb-1">
+          Nutricion
+        </a>
+        <a href="/tienda" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Tienda
+        </a>
+      </nav>
+
+      <div class="flex items-center space-x-6">
+        <div class="text-right hidden sm:block">
+          <p class="text-sm font-bold text-white">{{USER_NAME}}</p>
+          <p class="text-xs text-zinc-400 font-mono">{{USER_EMAIL}}</p>
+        </div>
+        <a
+          href="/logout"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-red-950 text-zinc-300 hover:text-red-200 border border-zinc-700 hover:border-red-800 rounded-lg transition duration-150"
+        >
+          Cerrar Sesion
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    
+    <!-- Encabezado de Seccion -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-zinc-800">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-white uppercase">
+          Calculadora de <span class="text-brand-yellow">Calorias y Macronutrientes</span>
+        </h1>
+        <p class="text-sm text-zinc-400 mt-1">
+          Estimacion cientifica de gasto energetico basal y requerimientos diarios segun la ecuacion de Harris-Benedict.
+        </p>
+      </div>
+
+      <a
+        href="/socio-dashboard"
+        class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-lg transition"
+      >
+        Volver a mi Dashboard
+      </a>
+    </div>
+
+    <!-- Formulario de Calculo Nutricional -->
+    <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-lg max-w-3xl">
+      <div class="mb-6 pb-4 border-b border-zinc-800">
+        <h2 class="text-lg font-bold text-white uppercase tracking-wider">
+          Parametros Biometricos
+        </h2>
+        <p class="text-xs text-zinc-400 mt-1">
+          Ingresa tus datos antropometricos para calcular tu tasa metabolica basal y balance calorico.
+        </p>
+      </div>
+
+      <form id="formNutricion" class="space-y-6">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          
+          <!-- Campo: Peso (kg) -->
+          <div>
+            <label for="campoPeso" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+              Peso Corporal (kg)
+            </label>
+            <input
+              type="number"
+              id="campoPeso"
+              name="peso"
+              step="0.1"
+              min="30"
+              max="250"
+              required
+              value="{{USER_PESO}}"
+              placeholder="Ejemplo: 75.5"
+              class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition"
+            >
+          </div>
+
+          <!-- Campo: Altura (cm) -->
+          <div>
+            <label for="campoAltura" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+              Altura (cm)
+            </label>
+            <input
+              type="number"
+              id="campoAltura"
+              name="altura"
+              min="100"
+              max="240"
+              required
+              value="{{USER_ALTURA}}"
+              placeholder="Ejemplo: 178"
+              class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition"
+            >
+          </div>
+
+          <!-- Campo: Edad -->
+          <div>
+            <label for="campoEdad" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+              Edad (anos)
+            </label>
+            <input
+              type="number"
+              id="campoEdad"
+              name="edad"
+              min="14"
+              max="100"
+              required
+              value="{{USER_EDAD}}"
+              placeholder="Ejemplo: 26"
+              class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition"
+            >
+          </div>
+
+        </div>
+
+        <!-- Selector de Genero para Precision de Harris-Benedict -->
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Genero Biologico (Ajuste de Formula)
+          </label>
+          <div class="grid grid-cols-2 gap-4">
+            <label class="flex items-center space-x-3 p-3.5 bg-zinc-900 border border-zinc-700 rounded-xl cursor-pointer hover:border-zinc-500 transition">
+              <input type="radio" name="genero" value="masculino" checked class="text-brand-yellow focus:ring-brand-yellow">
+              <span class="text-xs font-bold uppercase tracking-wider text-zinc-200">Masculino</span>
+            </label>
+            <label class="flex items-center space-x-3 p-3.5 bg-zinc-900 border border-zinc-700 rounded-xl cursor-pointer hover:border-zinc-500 transition">
+              <input type="radio" name="genero" value="femenino" class="text-brand-yellow focus:ring-brand-yellow">
+              <span class="text-xs font-bold uppercase tracking-wider text-zinc-200">Femenino</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="pt-2">
+          <button
+            type="submit"
+            id="btnCalcular"
+            class="w-full sm:w-auto px-8 py-3.5 bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 font-extrabold uppercase tracking-wider text-sm rounded-xl shadow-lg transition duration-150"
+          >
+            Calcular Requerimiento Nutricional
+          </button>
+        </div>
+
+      </form>
+    </div>
+
+    <!-- Contenedor Dinamico de Resultados (Generado con Tailwind CSS) -->
+    <div id="contenedorResultados" class="hidden space-y-6">
+      
+      <div class="pb-3 border-b border-zinc-800 flex items-center justify-between">
+        <h2 class="text-lg font-bold text-white uppercase tracking-wider">
+          Plan Nutricional Calculado
+        </h2>
+        <span class="text-xs font-mono text-brand-yellow uppercase font-bold">
+          Ecuacion Harris-Benedict Revisada
+        </span>
+      </div>
+
+      <!-- Las Tres Tarjetas Principales -->
+      <div id="gridTarjetasMacros" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Generado dinamicamente por JavaScript -->
+      </div>
+
+      <!-- Resumen Explicativo de Distribucion -->
+      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 text-xs text-zinc-400 space-y-2">
+        <p class="font-bold text-white uppercase tracking-wider text-xs">
+          Criterios de Distribucion de Macronutrientes
+        </p>
+        <p>
+          Las calorias diarias reflejan el gasto energetico total para mantener el peso actual considerando actividad fisica moderada de entrenamiento con cargas.
+        </p>
+        <p>
+          El aporte de proteinas se fija en 2.0 g por kilogramo de peso corporal, optimo para preservacion e hipertrofia de tejido muscular magro.
+        </p>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="bg-zinc-950 border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
+    Infinite Force Gym. Plataforma de Gestion y Control de Acceso. Todos los derechos reservados.
+  </footer>
+
+  <!-- Script en Vanilla JS para Calculo y Generacion Dinamica -->
+  <script>
+    const formNutricion = document.getElementById('formNutricion');
+    const contenedorResultados = document.getElementById('contenedorResultados');
+    const gridTarjetasMacros = document.getElementById('gridTarjetasMacros');
+
+    formNutricion.addEventListener('submit', async function (evento) {
+      evento.preventDefault();
+
+      const peso = parseFloat(document.getElementById('campoPeso').value);
+      const altura = parseFloat(document.getElementById('campoAltura').value);
+      const edad = parseInt(document.getElementById('campoEdad').value, 10);
+      const generoSeleccionado = document.querySelector('input[name="genero"]:checked').value;
+
+      if (!peso || !altura || !edad) {
+        return;
+      }
+
+      // Sincronizacion automatica en PostgreSQL para que el entrenador disponga de datos actualizados
+      try {
+        await fetch('/api/nutricion/actualizar-biometria', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ peso, altura, edad })
+        });
+      } catch (err) {
+        console.error('Error al sincronizar parametros biometricos:', err);
+      }
+
+      // Formula de Harris-Benedict (Revision Roza y Shizgal)
+      let bmr = 0;
+      if (generoSeleccionado === 'masculino') {
+        bmr = 88.362 + (13.397 * peso) + (4.799 * altura) - (5.677 * edad);
+      } else {
+        bmr = 447.593 + (9.247 * peso) + (3.098 * altura) - (4.330 * edad);
+      }
+
+      // Factor de actividad fisica moderada (entrenamiento de gimnasio: 1.45)
+      const factorActividad = 1.45;
+      const caloriasMantenimiento = Math.round(bmr * factorActividad);
+
+      // Proteina recomendada: peso * 2 gramos
+      const gramosProteina = Math.round(peso * 2);
+      const caloriasProteina = gramosProteina * 4;
+
+      // Grasas saludables estimadas (0.85g por kg de peso corporal)
+      const gramosGrasas = Math.round(peso * 0.85);
+      const caloriasGrasas = gramosGrasas * 9;
+
+      // Carbohidratos: calorias restantes divididas entre 4 kcal/g
+      let caloriasCarbohidratos = caloriasMantenimiento - (caloriasProteina + caloriasGrasas);
+      if (caloriasCarbohidratos < 0) {
+        caloriasCarbohidratos = caloriasMantenimiento * 0.45;
+      }
+      const gramosCarbohidratos = Math.round(caloriasCarbohidratos / 4);
+
+      // Renderizado dinamico de las tres tarjetas con Tailwind CSS
+      gridTarjetasMacros.innerHTML = `
+        <!-- Aviso de sincronizacion biometrica -->
+        <div class="col-span-full mb-2 p-4 bg-emerald-950/60 border border-emerald-800 rounded-xl text-xs text-emerald-300 font-semibold flex items-center justify-between">
+          <span>Tus parametros biometricos (${peso} kg, ${altura} cm) han sido actualizados en la base de datos para la supervision de tu entrenador.</span>
+          <span class="text-[10px] font-mono uppercase bg-emerald-900/60 px-2 py-0.5 rounded border border-emerald-700">Sincronizado</span>
+        </div>
+
+        <!-- Tarjeta 1: Calorias Diarias -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-3">
+              Calorias Diarias
+            </span>
+            <div class="flex items-baseline space-x-2 my-2">
+              <span class="text-5xl font-extrabold text-brand-yellow font-mono tracking-tight">
+                ${caloriasMantenimiento}
+              </span>
+              <span class="text-sm font-bold text-zinc-400 uppercase tracking-wider">kcal/dia</span>
+            </div>
+            <p class="text-xs text-zinc-400 mt-2">
+              Consumo calorico de mantenimiento segun tu tasa metabolica basal y actividad.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-zinc-800/80 text-xs text-zinc-400 flex justify-between">
+            <span>Tasa Metabolica Basal:</span>
+            <span class="font-mono text-zinc-200 font-semibold">${Math.round(bmr)} kcal</span>
+          </div>
+        </div>
+
+        <!-- Tarjeta 2: Gramos de Proteina -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-3">
+              Gramos de Proteina
+            </span>
+            <div class="flex items-baseline space-x-2 my-2">
+              <span class="text-5xl font-extrabold text-emerald-400 font-mono tracking-tight">
+                ${gramosProteina}
+              </span>
+              <span class="text-sm font-bold text-zinc-400 uppercase tracking-wider">gramos</span>
+            </div>
+            <p class="text-xs text-zinc-400 mt-2">
+              Calculado a razon de 2.0 g por kg de peso corporal (${peso} kg).
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-zinc-800/80 text-xs text-zinc-400 flex justify-between">
+            <span>Aporte Energetico:</span>
+            <span class="font-mono text-zinc-200 font-semibold">${caloriasProteina} kcal</span>
+          </div>
+        </div>
+
+        <!-- Tarjeta 3: Gramos de Carbohidratos -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-3">
+              Gramos de Carbohidratos
+            </span>
+            <div class="flex items-baseline space-x-2 my-2">
+              <span class="text-5xl font-extrabold text-white font-mono tracking-tight">
+                ${gramosCarbohidratos}
+              </span>
+              <span class="text-sm font-bold text-zinc-400 uppercase tracking-wider">gramos</span>
+            </div>
+            <p class="text-xs text-zinc-400 mt-2">
+              Combustible primario para recarga de glucogeno y sesiones de alta intensidad.
+            </p>
+          </div>
+          <div class="mt-6 pt-4 border-t border-zinc-800/80 text-xs text-zinc-400 flex justify-between">
+            <span>Aporte Energetico:</span>
+            <span class="font-mono text-zinc-200 font-semibold">${gramosCarbohidratos * 4} kcal</span>
+          </div>
+        </div>
+      `;
+
+      contenedorResultados.classList.remove('hidden');
+      contenedorResultados.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  </script>
+</body>
+</html>

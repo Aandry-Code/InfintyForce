@@ -1,0 +1,17 @@
+# Dependencias de Node
+node_modules/
+package-lock.json.bak
+
+# Variables de entorno y credenciales sensibles
+.env
+
+# Archivos de depuracion y logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+*.log
+
+# Archivos del sistema operativo
+.DS_Store
+Thumbs.db

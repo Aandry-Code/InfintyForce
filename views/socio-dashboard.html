@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-zinc-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard del Socio - Infinite Force Gym</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              yellow: '#d4ff00',
+              gold: '#ffd700',
+              border: '#27272a',
+              card: '#18181b',
+              surface: '#27272a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
+
+  <!-- Header Superior -->
+  <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+          <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-wider uppercase text-white">
+            Infinite <span class="text-brand-yellow">Force</span> Gym
+          </span>
+          <span class="block text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
+            Portal Oficial del Socio
+          </span>
+        </div>
+      </div>
+
+      <!-- Enlaces de Navegacion -->
+      <nav class="hidden md:flex items-center space-x-6">
+        <a href="/socio-dashboard" class="text-xs font-bold uppercase tracking-wider text-brand-yellow border-b-2 border-brand-yellow pb-1">
+          Dashboard
+        </a>
+        <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Rutinas
+        </a>
+        <a href="/nutricion" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Nutricion
+        </a>
+        <a href="/tienda" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Tienda
+        </a>
+      </nav>
+
+      <div class="flex items-center space-x-4">
+        {{VOLVER_PANEL_ENTRENADOR_HTML}}
+        <div class="text-right hidden sm:block">
+          <p id="navUserName" class="text-sm font-bold text-white">{{USER_NAME}}</p>
+          <p id="navUserEmail" class="text-xs text-zinc-400 font-mono">{{USER_EMAIL}}</p>
+        </div>
+        <a
+          href="/logout"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-red-950 text-zinc-300 hover:text-red-200 border border-zinc-700 hover:border-red-800 rounded-lg transition duration-150"
+        >
+          Cerrar Sesion
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    
+    <!-- Encabezado de Bienvenida y Accion Prominente -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pb-6 border-b border-zinc-800">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-white uppercase">
+          Bienvenido, <span id="headerUserName" class="text-brand-yellow">{{USER_NAME}}</span>
+        </h1>
+        <p class="text-sm text-zinc-400 mt-1">
+          Monitoreo de estado de membresia, control de asistencias y plan de entrenamiento.
+        </p>
+      </div>
+
+      <!-- Boton Prominente de Marcar Asistencia de Hoy -->
+      <div class="flex-shrink-0">
+        <button
+          type="button"
+          id="btnMarcarAsistencia"
+          class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-brand-yellow hover:bg-[#c2ea00] disabled:bg-zinc-800 disabled:text-zinc-500 disabled:border-zinc-700 disabled:cursor-not-allowed text-zinc-950 font-extrabold uppercase tracking-wider text-sm rounded-xl shadow-xl shadow-brand-yellow/10 transition-all duration-200 transform active:scale-95 border border-transparent"
+        >
+          <span id="btnAsistenciaText">Marcar Asistencia de Hoy</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Contenedor de Alerta Limpia (Notificaciones de Estado) -->
+    <div id="alertaNotificacion" class="hidden rounded-xl p-4 border transition duration-200 text-sm font-medium">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <span id="alertaIndicador" class="w-2.5 h-2.5 rounded-full"></span>
+          <span id="alertaMensaje" class="tracking-wide"></span>
+        </div>
+        <button type="button" onclick="cerrarAlerta()" class="text-xs uppercase tracking-wider opacity-70 hover:opacity-100 ml-4 font-bold">
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <!-- Tres Tarjetas Principales -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Tarjeta 1: Estado de Membresia -->
+      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-3">
+            Estado de Membresia
+          </span>
+
+          <!-- Indicador verde de estado activo -->
+          <div class="flex items-center space-x-3 my-2">
+            <span class="relative flex h-3.5 w-3.5">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
+            </span>
+            <span class="text-2xl font-extrabold text-white uppercase tracking-wide">
+              {{MEMBRESIA_ESTADO}}
+            </span>
+          </div>
+
+          <p class="text-sm font-bold text-brand-yellow uppercase tracking-wider mt-2">
+            {{MEMBRESIA_TIPO}}
+          </p>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-zinc-800/80 text-xs text-zinc-400">
+          <span>Vencimiento: </span>
+          <span class="font-mono text-zinc-200 font-semibold">{{MEMBRESIA_VENCIMIENTO}}</span>
+        </div>
+      </div>
+
+      <!-- Tarjeta 2: Asistencias este mes -->
+      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-3">
+            Asistencias este mes
+          </span>
+
+          <!-- Numero en texto grande amarillo/verde -->
+          <div class="flex items-baseline space-x-2 my-2">
+            <span id="contadorAsistencias" class="text-5xl font-extrabold text-brand-yellow font-mono tracking-tight">
+              {{TOTAL_ASISTENCIAS_NUMERO}}
+            </span>
+            <span class="text-sm font-bold text-zinc-400 uppercase tracking-wider">Sesiones</span>
+          </div>
+
+          <p class="text-xs text-zinc-400 mt-2">
+            Registro acumulado del ciclo mensual actual.
+          </p>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-zinc-800/80 text-xs text-zinc-400">
+          <span>Ultimo ingreso: </span>
+          <span id="fechaUltimoIngreso" class="font-mono text-zinc-200 font-semibold">{{ULTIMA_ASISTENCIA}}</span>
+        </div>
+      </div>
+
+      <!-- Tarjeta 3: Programa de Entrenamiento -->
+      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-3">
+            Programa de Entrenamiento
+          </span>
+
+          <h3 class="text-xl font-extrabold text-white uppercase tracking-wide mt-2">
+            {{RUTINA_NOMBRE}}
+          </h3>
+
+          <p class="text-xs font-semibold text-zinc-400 uppercase tracking-wider mt-2">
+            Enfoque: <span class="text-zinc-200">{{RUTINA_TIPO}}</span>
+          </p>
+        </div>
+
+        <div class="mt-6 pt-4 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-400">
+          <div>
+            <span>Frecuencia: </span>
+            <span class="text-brand-yellow font-semibold">{{RUTINA_FRECUENCIA}}</span>
+          </div>
+          <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-brand-yellow hover:underline">
+            Ver Rutina &rarr;
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Seccion Informativa y Normativa de Acceso -->
+    <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg">
+      <h3 class="text-sm font-bold uppercase tracking-wider text-white pb-3 border-b border-zinc-800 mb-4">
+        Normas de Registro de Asistencia
+      </h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-zinc-400 leading-relaxed">
+        <p>
+          El registro de asistencia debe realizarse una unica vez por dia al ingresar a las instalaciones del gimnasio. El sistema valida la fecha del servidor y actualiza inmediatamente las estadisticas de tu plan.
+        </p>
+        <p>
+          Para mantener la vigencia de tu membresia activa y asegurar un seguimiento adecuado de tu entrenamiento, se recomienda cumplir con la frecuencia minima establecida en tu programa de entrenamiento.
+        </p>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="bg-zinc-950 border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
+    Infinite Force Gym. Plataforma de Gestion y Control de Acceso. Todos los derechos reservados.
+  </footer>
+
+  <!-- Script de Conexion y Logica de Frontend -->
+  <script>
+    const btnMarcarAsistencia = document.getElementById('btnMarcarAsistencia');
+    const btnAsistenciaText = document.getElementById('btnAsistenciaText');
+    const contadorAsistencias = document.getElementById('contadorAsistencias');
+    const fechaUltimoIngreso = document.getElementById('fechaUltimoIngreso');
+    const alertaNotificacion = document.getElementById('alertaNotificacion');
+    const alertaIndicador = document.getElementById('alertaIndicador');
+    const alertaMensaje = document.getElementById('alertaMensaje');
+
+    function mostrarAlerta(mensaje, esExito) {
+      alertaNotificacion.classList.remove('hidden', 'bg-emerald-950/80', 'border-emerald-700', 'text-emerald-200', 'bg-red-950/80', 'border-red-700', 'text-red-200');
+      alertaIndicador.classList.remove('bg-emerald-400', 'bg-red-400');
+
+      if (esExito) {
+        alertaNotificacion.classList.add('bg-emerald-950/80', 'border-emerald-700', 'text-emerald-200');
+        alertaIndicador.classList.add('bg-emerald-400');
+      } else {
+        alertaNotificacion.classList.add('bg-red-950/80', 'border-red-700', 'text-red-200');
+        alertaIndicador.classList.add('bg-red-400');
+      }
+
+      alertaMensaje.textContent = mensaje;
+      alertaNotificacion.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function cerrarAlerta() {
+      alertaNotificacion.classList.add('hidden');
+    }
+
+    async function verificarEstadoAsistenciaHoy() {
+      try {
+        const respuesta = await fetch('/api/asistencia/estado-hoy');
+        if (respuesta.ok) {
+          const datos = await respuesta.json();
+          if (datos.asistioHoy) {
+            btnMarcarAsistencia.disabled = true;
+            btnAsistenciaText.textContent = 'Asistencia de Hoy Registrada (' + datos.hora + ' hrs)';
+          }
+        }
+      } catch (error) {
+        console.error('Error al verificar el estado de asistencia de hoy:', error);
+      }
+    }
+
+    btnMarcarAsistencia.addEventListener('click', async () => {
+      btnMarcarAsistencia.disabled = true;
+      btnAsistenciaText.textContent = 'Procesando registro...';
+
+      try {
+        const respuesta = await fetch('/api/asistencia', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+
+        const resultado = await respuesta.json();
+
+        if (respuesta.status === 201 && resultado.success) {
+          mostrarAlerta(resultado.message, true);
+          contadorAsistencias.textContent = resultado.totalAsistencias;
+          fechaUltimoIngreso.textContent = resultado.ultimaAsistencia;
+          btnAsistenciaText.textContent = 'Asistencia de Hoy Registrada';
+        } else {
+          mostrarAlerta(resultado.message || 'No fue posible registrar la asistencia.', false);
+          if (respuesta.status === 400 && resultado.message.includes('Ya has registrado')) {
+            btnAsistenciaText.textContent = 'Asistencia de Hoy Registrada';
+          } else {
+            btnMarcarAsistencia.disabled = false;
+            btnAsistenciaText.textContent = 'Marcar Asistencia de Hoy';
+          }
+        }
+      } catch (error) {
+        console.error('Error en peticion de asistencia:', error);
+        mostrarAlerta('Ocurrio un fallo de conexion con el servidor. Intente nuevamente.', false);
+        btnMarcarAsistencia.disabled = false;
+        btnAsistenciaText.textContent = 'Marcar Asistencia de Hoy';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      verificarEstadoAsistenciaHoy();
+    });
+  </script>
+</body>
+</html>

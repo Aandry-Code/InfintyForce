@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-zinc-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modulo de Rutinas - Infinite Force Gym</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              yellow: '#d4ff00',
+              gold: '#ffd700',
+              border: '#27272a',
+              card: '#18181b',
+              surface: '#27272a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
+
+  <!-- Header Superior -->
+  <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+          <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-wider uppercase text-white">
+            Infinite <span class="text-brand-yellow">Force</span> Gym
+          </span>
+          <span class="block text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
+            Modulo de Rutinas y Entrenamiento
+          </span>
+        </div>
+      </div>
+
+      <!-- Enlaces de Navegacion -->
+      <nav class="hidden md:flex items-center space-x-6">
+        <a href="/socio-dashboard" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Dashboard
+        </a>
+        <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-brand-yellow border-b-2 border-brand-yellow pb-1">
+          Rutinas
+        </a>
+        <a href="/nutricion" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Nutricion
+        </a>
+        <a href="/tienda" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+          Tienda
+        </a>
+      </nav>
+
+      <div class="flex items-center space-x-6">
+        <div class="text-right hidden sm:block">
+          <p class="text-sm font-bold text-white">{{USER_NAME}}</p>
+          <p class="text-xs text-zinc-400 font-mono">{{USER_EMAIL}}</p>
+        </div>
+        <a
+          href="/logout"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-red-950 text-zinc-300 hover:text-red-200 border border-zinc-700 hover:border-red-800 rounded-lg transition duration-150"
+        >
+          Cerrar Sesion
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+
+    <!-- Encabezado de Seccion -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-zinc-800">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight text-white uppercase">
+          Modulo de <span class="text-brand-yellow">Rutinas</span>
+        </h1>
+        <p class="text-sm text-zinc-400 mt-1">
+          Gestion de programas de entrenamiento, ejecucion de ejercicios y solicitudes tecnicas.
+        </p>
+      </div>
+
+      <a
+        href="/socio-dashboard"
+        class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-lg transition"
+      >
+        Volver a mi Dashboard
+      </a>
+    </div>
+
+    <!-- Navegacion por Pestanas (Tabs) -->
+    <div class="flex space-x-3 border-b border-zinc-800">
+      <button
+        type="button"
+        id="tabBtnPlanActual"
+        onclick="cambiarPestana('planActual')"
+        class="px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-black bg-brand-yellow rounded-t-xl transition duration-150 border-t border-x border-brand-yellow"
+      >
+        Mi Plan Actual
+      </button>
+      <button
+        type="button"
+        id="tabBtnSolicitar"
+        onclick="cambiarPestana('solicitar')"
+        class="px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800 rounded-t-xl transition duration-150 border-t border-x border-transparent"
+      >
+        Solicitar Nueva Rutina
+      </button>
+    </div>
+
+    <!-- Banner de Alertas Limpias -->
+    <div id="alertaRutinas" class="hidden rounded-xl p-4 border transition duration-200 text-sm font-medium">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <span id="alertaIndicador" class="w-2.5 h-2.5 rounded-full"></span>
+          <span id="alertaTexto" class="tracking-wide"></span>
+        </div>
+        <button type="button" onclick="cerrarAlertaRutinas()" class="text-xs uppercase tracking-wider opacity-70 hover:opacity-100 ml-4 font-bold">
+          Cerrar
+        </button>
+      </div>
+    </div>
+
+    <!-- SECCION 1: MI PLAN ACTUAL -->
+    <section id="seccionPlanActual" class="space-y-6">
+      
+      <!-- Informacion de la Rutina Asignada -->
+      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-1">
+              Programa de Entrenamiento Activo
+            </span>
+            <h2 id="planTitulo" class="text-2xl font-extrabold text-white uppercase tracking-wide">
+              Cargando programa...
+            </h2>
+            <p id="planDetalle" class="text-xs text-zinc-400 mt-1 uppercase font-semibold">
+              Frecuencia y enfoque
+            </p>
+          </div>
+          <div class="flex items-center space-x-3">
+            <span class="px-3 py-1.5 text-xs font-extrabold uppercase tracking-wider bg-emerald-950 text-emerald-300 border border-emerald-800 rounded-lg">
+              Vigente
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla / Lista de Ejercicios Asignados -->
+      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg">
+        <div class="px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-white">
+            Ejercicios Asignados en este Ciclo
+          </h3>
+          <span id="contadorEjercicios" class="text-xs font-mono text-brand-yellow font-bold">
+            0 Ejercicios
+          </span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-zinc-300">
+            <thead class="bg-zinc-900/80 text-xs font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-800">
+              <tr>
+                <th scope="col" class="px-6 py-3.5">#</th>
+                <th scope="col" class="px-6 py-3.5">Ejercicio</th>
+                <th scope="col" class="px-6 py-3.5">Grupo Muscular</th>
+                <th scope="col" class="px-6 py-3.5 text-center">Series</th>
+                <th scope="col" class="px-6 py-3.5 text-center">Repeticiones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaEjerciciosBody" class="divide-y divide-zinc-800/70">
+              <tr>
+                <td colspan="5" class="px-6 py-8 text-center text-zinc-500 text-xs">
+                  Consultando ejercicios asignados en la base de datos...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECCION 2: SOLICITAR NUEVA RUTINA -->
+    <section id="seccionSolicitar" class="hidden space-y-8">
+      
+      <!-- Tarjeta del Formulario de Solicitud -->
+      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-lg max-w-3xl">
+        <div class="mb-6 pb-4 border-b border-zinc-800">
+          <h2 class="text-xl font-extrabold text-white uppercase tracking-wide">
+            Formulario de Solicitud de Nueva Rutina
+          </h2>
+          <p class="text-xs text-zinc-400 mt-1">
+            Completa los parametros de entrenamiento para que el equipo tecnico disene tu nuevo plan.
+          </p>
+        </div>
+
+        <form id="formSolicitudRutina" class="space-y-6">
+          
+          <!-- Campo: Objetivo -->
+          <div>
+            <label for="campoObjetivo" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+              Objetivo Principal
+            </label>
+            <select
+              id="campoObjetivo"
+              name="objetivo"
+              required
+              class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition"
+            >
+              <option value="" disabled selected>Seleccione un objetivo</option>
+              <option value="Volumen">Volumen (Hipertrofia Muscular)</option>
+              <option value="Definicion">Definicion (Perdida de Grasa y Tonificacion)</option>
+              <option value="Mantenimiento">Mantenimiento (Salud y Acondicionamiento General)</option>
+            </select>
+          </div>
+
+          <!-- Campo: Dias por semana -->
+          <div>
+            <label for="campoDiasSemana" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+              Dias de Entrenamiento por Semana (1 a 7)
+            </label>
+            <input
+              type="number"
+              id="campoDiasSemana"
+              name="dias_semana"
+              min="1"
+              max="7"
+              required
+              placeholder="Ejemplo: 4"
+              class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition"
+            >
+          </div>
+
+          <!-- Campo: Observaciones / Lesiones -->
+          <div>
+            <label for="campoObservaciones" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+              Observaciones, Lesiones o Limitaciones Fisicas
+            </label>
+            <textarea
+              id="campoObservaciones"
+              name="observaciones"
+              rows="4"
+              placeholder="Detalla antecedentes medicos, molestias articulares, preferencias o equipo disponible..."
+              class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition"
+            ></textarea>
+          </div>
+
+          <div class="pt-2">
+            <button
+              type="submit"
+              id="btnEnviarSolicitud"
+              class="w-full sm:w-auto px-8 py-3.5 bg-brand-yellow hover:bg-[#c2ea00] disabled:bg-zinc-800 disabled:text-zinc-500 disabled:cursor-not-allowed text-zinc-950 font-extrabold uppercase tracking-wider text-sm rounded-xl shadow-lg transition duration-150"
+            >
+              Enviar Solicitud de Rutina
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+      <!-- Historial de Solicitudes Realizadas -->
+      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg">
+        <div class="px-6 py-4 border-b border-zinc-800">
+          <h3 class="text-sm font-bold uppercase tracking-wider text-white">
+            Historial de Solicitudes de Rutina
+          </h3>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm text-zinc-300">
+            <thead class="bg-zinc-900/80 text-xs font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-800">
+              <tr>
+                <th scope="col" class="px-6 py-3.5">Fecha</th>
+                <th scope="col" class="px-6 py-3.5">Objetivo</th>
+                <th scope="col" class="px-6 py-3.5 text-center">Dias/Semana</th>
+                <th scope="col" class="px-6 py-3.5">Observaciones</th>
+                <th scope="col" class="px-6 py-3.5 text-center">Estado</th>
+              </tr>
+            </thead>
+            <tbody id="tablaSolicitudesBody" class="divide-y divide-zinc-800/70">
+              <tr>
+                <td colspan="5" class="px-6 py-6 text-center text-zinc-500 text-xs">
+                  No hay solicitudes registradas previamente.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer class="bg-zinc-950 border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
+    Infinite Force Gym. Plataforma de Gestion y Control de Acceso. Todos los derechos reservados.
+  </footer>
+
+  <!-- Logica de Frontend en Vanilla JS -->
+  <script>
+    const tabBtnPlanActual = document.getElementById('tabBtnPlanActual');
+    const tabBtnSolicitar = document.getElementById('tabBtnSolicitar');
+    const seccionPlanActual = document.getElementById('seccionPlanActual');
+    const seccionSolicitar = document.getElementById('seccionSolicitar');
+
+    const alertaRutinas = document.getElementById('alertaRutinas');
+    const alertaIndicador = document.getElementById('alertaIndicador');
+    const alertaTexto = document.getElementById('alertaTexto');
+
+    function cambiarPestana(pestana) {
+      cerrarAlertaRutinas();
+      if (pestana === 'planActual') {
+        seccionPlanActual.classList.remove('hidden');
+        seccionSolicitar.classList.add('hidden');
+
+        tabBtnPlanActual.className = 'px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-black bg-brand-yellow rounded-t-xl transition duration-150 border-t border-x border-brand-yellow';
+        tabBtnSolicitar.className = 'px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800 rounded-t-xl transition duration-150 border-t border-x border-transparent';
+      } else {
+        seccionPlanActual.classList.add('hidden');
+        seccionSolicitar.classList.remove('hidden');
+
+        tabBtnSolicitar.className = 'px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-black bg-brand-yellow rounded-t-xl transition duration-150 border-t border-x border-brand-yellow';
+        tabBtnPlanActual.className = 'px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800 rounded-t-xl transition duration-150 border-t border-x border-transparent';
+
+        cargarHistorialSolicitudes();
+      }
+    }
+
+    function mostrarAlertaRutinas(mensaje, esExito) {
+      alertaRutinas.classList.remove('hidden', 'bg-emerald-950/80', 'border-emerald-700', 'text-emerald-200', 'bg-red-950/80', 'border-red-700', 'text-red-200');
+      alertaIndicador.classList.remove('bg-emerald-400', 'bg-red-400');
+
+      if (esExito) {
+        alertaRutinas.classList.add('bg-emerald-950/80', 'border-emerald-700', 'text-emerald-200');
+        alertaIndicador.classList.add('bg-emerald-400');
+      } else {
+        alertaRutinas.classList.add('bg-red-950/80', 'border-red-700', 'text-red-200');
+        alertaIndicador.classList.add('bg-red-400');
+      }
+
+      alertaTexto.textContent = mensaje;
+      alertaRutinas.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    function cerrarAlertaRutinas() {
+      alertaRutinas.classList.add('hidden');
+    }
+
+    async function cargarPlanActual() {
+      const planTitulo = document.getElementById('planTitulo');
+      const planDetalle = document.getElementById('planDetalle');
+      const tablaBody = document.getElementById('tablaEjerciciosBody');
+      const contadorEjercicios = document.getElementById('contadorEjercicios');
+
+      try {
+        const respuesta = await fetch('/api/rutinas/mi-plan');
+        if (respuesta.ok) {
+          const datos = await respuesta.json();
+
+          if (datos.success && datos.rutina) {
+            planTitulo.textContent = datos.rutina.nombre;
+            planDetalle.textContent = 'Enfoque: ' + datos.rutina.tipo + ' | Frecuencia: ' + datos.rutina.frecuencia;
+            contadorEjercicios.textContent = datos.ejercicios.length + ' Ejercicios Asignados';
+
+            if (datos.ejercicios.length === 0) {
+              tablaBody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-zinc-500 text-xs">No hay ejercicios asignados en esta rutina.</td></tr>';
+              return;
+            }
+
+            tablaBody.innerHTML = '';
+            datos.ejercicios.forEach((ej, index) => {
+              const tr = document.createElement('tr');
+              tr.className = 'hover:bg-zinc-900/50 transition';
+              tr.innerHTML = `
+                <td class="px-6 py-4 font-mono text-zinc-500 text-xs">${index + 1}</td>
+                <td class="px-6 py-4 font-bold text-white">${ej.nombre}</td>
+                <td class="px-6 py-4">
+                  <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-zinc-800 text-brand-yellow border border-zinc-700 rounded-md">
+                    ${ej.grupoMuscular}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center font-mono font-bold text-zinc-200">${ej.series}</td>
+                <td class="px-6 py-4 text-center font-mono text-brand-yellow font-bold">${ej.repeticiones}</td>
+              `;
+              tablaBody.appendChild(tr);
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar plan de entrenamiento:', error);
+      }
+    }
+
+    async function cargarHistorialSolicitudes() {
+      const tablaBody = document.getElementById('tablaSolicitudesBody');
+
+      try {
+        const respuesta = await fetch('/api/rutinas/solicitudes');
+        if (respuesta.ok) {
+          const datos = await respuesta.json();
+          if (datos.success) {
+            if (datos.solicitudes.length === 0) {
+              tablaBody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-zinc-500 text-xs">No hay solicitudes registradas previamente.</td></tr>';
+              return;
+            }
+
+            tablaBody.innerHTML = '';
+            datos.solicitudes.forEach((sol) => {
+              const tr = document.createElement('tr');
+              tr.className = 'hover:bg-zinc-900/50 transition';
+
+              let estadoClass = 'bg-amber-950 text-amber-300 border-amber-800';
+              if (sol.estado === 'Aprobada') {
+                estadoClass = 'bg-emerald-950 text-emerald-300 border-emerald-800';
+              } else if (sol.estado === 'Rechazada') {
+                estadoClass = 'bg-red-950 text-red-300 border-red-800';
+              }
+
+              tr.innerHTML = `
+                <td class="px-6 py-4 font-mono text-xs text-zinc-400">${sol.fecha}</td>
+                <td class="px-6 py-4 font-bold text-white uppercase text-xs">${sol.objetivo}</td>
+                <td class="px-6 py-4 text-center font-mono text-brand-yellow font-bold">${sol.dias_semana} dias</td>
+                <td class="px-6 py-4 text-xs text-zinc-400 max-w-xs truncate">${sol.observaciones || 'Sin observaciones'}</td>
+                <td class="px-6 py-4 text-center">
+                  <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider border rounded-md ${estadoClass}">
+                    ${sol.estado}
+                  </span>
+                </td>
+              `;
+              tablaBody.appendChild(tr);
+            });
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar historial de solicitudes:', error);
+      }
+    }
+
+    const formSolicitud = document.getElementById('formSolicitudRutina');
+    const btnEnviar = document.getElementById('btnEnviarSolicitud');
+
+    formSolicitud.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const objetivo = document.getElementById('campoObjetivo').value;
+      const dias_semana = document.getElementById('campoDiasSemana').value;
+      const observaciones = document.getElementById('campoObservaciones').value;
+
+      btnEnviar.disabled = true;
+      btnEnviar.textContent = 'Enviando solicitud...';
+      cerrarAlertaRutinas();
+
+      try {
+        const respuesta = await fetch('/api/rutinas/solicitar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            objetivo,
+            dias_semana,
+            observaciones
+          })
+        });
+
+        const resultado = await respuesta.json();
+
+        if (respuesta.status === 201 && resultado.success) {
+          mostrarAlertaRutinas(resultado.message, true);
+          formSolicitud.reset();
+          cargarHistorialSolicitudes();
+        } else {
+          mostrarAlertaRutinas(resultado.message || 'Error al procesar la solicitud.', false);
+        }
+      } catch (error) {
+        console.error('Error en peticion:', error);
+        mostrarAlertaRutinas('Ocurrio un problema de conexion con el servidor.', false);
+      } finally {
+        btnEnviar.disabled = false;
+        btnEnviar.textContent = 'Enviar Solicitud de Rutina';
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarPlanActual();
+    });
+  </script>
+</body>
+</html>

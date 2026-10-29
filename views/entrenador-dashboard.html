@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-zinc-900">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Panel de Entrenadores - Infinite Force Gym</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              yellow: '#d4ff00',
+              gold: '#ffd700',
+              border: '#27272a',
+              card: '#18181b',
+              surface: '#27272a'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
+
+  <!-- Header Superior -->
+  <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Identidad Corporativa y Titulo de Header -->
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+          <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold tracking-wider uppercase text-white">
+            PANEL DE ENTRENADORES Y PREPARACIÓN FÍSICA
+          </h1>
+          <span class="block text-[11px] font-semibold uppercase tracking-widest text-brand-yellow">
+            Infinite Force Gym &bull; Prescripción y Control Deportivo
+          </span>
+        </div>
+      </div>
+
+      <!-- Informacion de Sesion y Acciones -->
+      <div class="flex items-center space-x-3">
+        <div class="text-right hidden sm:block mr-1">
+          <p class="text-sm font-bold text-white uppercase">{{ENTRENADOR_NAME}}</p>
+          <p class="text-xs text-zinc-400 font-mono">{{ENTRENADOR_EMAIL}}</p>
+        </div>
+        <a
+          href="/socio-dashboard"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md flex items-center"
+        >
+          Ir a mi perfil personal
+        </a>
+        <a
+          href="/logout"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-red-950/50 hover:bg-red-900/60 text-red-300 border border-red-800 rounded-xl transition duration-150 active:scale-95"
+        >
+          Cerrar Sesion
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Contenedor Principal -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+
+    <!-- Notificacion Dinamica de Acciones -->
+    <div id="notification-banner" class="hidden p-4 rounded-xl border text-sm font-semibold transition"></div>
+
+    <!-- Metricas de Supervisión del Entrenador -->
+    <section>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        
+        <!-- Solicitudes Pendientes -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Peticiones por Asignar</p>
+          <div class="flex items-baseline justify-between mt-3">
+            <span class="text-4xl font-extrabold text-brand-yellow font-mono">{{TOTAL_PENDIENTES}}</span>
+            <span class="text-xs text-amber-400 uppercase font-semibold">Pendientes</span>
+          </div>
+        </div>
+
+        <!-- Criterio Biometrico -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Análisis Biométrico</p>
+          <div class="flex items-baseline justify-between mt-3">
+            <span class="text-2xl font-extrabold text-white">Activo</span>
+            <span class="text-xs text-emerald-400 font-semibold uppercase">Peso &bull; Edad &bull; Lesión</span>
+          </div>
+        </div>
+
+        <!-- Protocolo Metodologico -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Metodología Aplicada</p>
+          <div class="flex items-baseline justify-between mt-3">
+            <span class="text-2xl font-bold text-white">Hipertrofia / Fuerza</span>
+            <span class="text-xs text-zinc-400 uppercase font-semibold">Adaptado</span>
+          </div>
+        </div>
+
+        <!-- Motor PostgreSQL -->
+        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Sincronización</p>
+          <div class="flex items-baseline justify-between mt-3">
+            <span class="text-2xl font-bold text-white">PostgreSQL</span>
+            <span class="inline-flex items-center text-xs text-emerald-400 font-semibold uppercase">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
+              En Línea
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECCION: Solicitudes de Rutinas Pendientes (Tarjetas) -->
+    <section class="space-y-6">
+      
+      <!-- Cabecera de Seccion -->
+      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-xl">
+        <div>
+          <h2 class="text-xl font-bold uppercase tracking-wider text-white">Solicitudes de Rutina Pendientes de Evaluación</h2>
+          <p class="text-xs text-zinc-400 mt-1">
+            Revisión técnica de solicitudes asociadas a datos biométricos de los socios para armar planes de entrenamiento individualizados.
+          </p>
+        </div>
+        <div>
+          <span class="px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider bg-amber-950 text-amber-300 border border-amber-800 rounded-lg font-mono">
+            {{TOTAL_PENDIENTES}} Solicitudes Pendientes
+          </span>
+        </div>
+      </div>
+
+      <!-- Grid de Tarjetas (Cards) de Solicitudes -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {{TARJETAS_SOLICITUDES_HTML}}
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- MODAL: Armar Plan de Entrenamiento -->
+  <div id="modal-armar-plan" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6">
+      
+      <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold uppercase tracking-wider text-white">Armar Plan de Entrenamiento</h3>
+          <p class="text-xs text-zinc-400 mt-0.5">Asignación técnica basada en la condición física del socio.</p>
+        </div>
+        <button
+          type="button"
+          onclick="cerrarModalArmarPlan()"
+          class="text-zinc-400 hover:text-white text-xl font-bold px-2 py-1"
+        >
+          &times;
+        </button>
+      </div>
+
+      <!-- Resumen Biometrico del Socio en el Modal -->
+      <div class="bg-zinc-950 p-4 rounded-xl border border-zinc-800 space-y-3 text-xs">
+        <div class="flex justify-between items-center pb-2 border-b border-zinc-800/80">
+          <span class="text-zinc-400 font-semibold uppercase">Socio:</span>
+          <span id="modal-plan-socio-nombre" class="text-white font-extrabold uppercase text-sm"></span>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 py-1 text-center font-mono">
+          <div class="bg-zinc-900 p-2 rounded-lg border border-zinc-800">
+            <span class="text-[10px] text-zinc-400 uppercase block">Peso</span>
+            <span id="modal-plan-peso" class="text-white font-bold"></span>
+          </div>
+          <div class="bg-zinc-900 p-2 rounded-lg border border-zinc-800">
+            <span class="text-[10px] text-zinc-400 uppercase block">Edad</span>
+            <span id="modal-plan-edad" class="text-white font-bold"></span>
+          </div>
+          <div class="bg-zinc-900 p-2 rounded-lg border border-zinc-800">
+            <span class="text-[10px] text-zinc-400 uppercase block">Frecuencia</span>
+            <span id="modal-plan-dias" class="text-brand-yellow font-bold"></span>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center pt-1">
+          <span class="text-zinc-400 font-semibold uppercase">Objetivo Deportivo:</span>
+          <span id="modal-plan-objetivo" class="text-brand-yellow font-bold uppercase"></span>
+        </div>
+
+        <div class="pt-2 border-t border-zinc-800/80">
+          <span class="text-red-400 font-semibold uppercase text-[10px] block mb-1">Restricciones / Lesiones Registradas:</span>
+          <p id="modal-plan-lesiones" class="text-zinc-300 italic bg-zinc-900/60 p-2.5 rounded-lg border border-zinc-800/80"></p>
+        </div>
+      </div>
+
+      <!-- Formulario de Asignacion de Rutina -->
+      <form id="form-armar-plan" onsubmit="enviarAsignacionPlan(event)" class="space-y-4">
+        <input type="hidden" id="modal-plan-solicitud-id" name="solicitudId" value="">
+
+        <div>
+          <label for="select-rutina-plan" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Seleccionar Rutina a Prescribir
+          </label>
+          <select
+            id="select-rutina-plan"
+            name="rutinaId"
+            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-yellow transition"
+          >
+            {{RUTINAS_OPTIONS_HTML}}
+          </select>
+        </div>
+
+        <div>
+          <label for="textarea-obs-entrenador" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Pautas Técnicas y Observaciones del Entrenador (Opcional)
+          </label>
+          <textarea
+            id="textarea-obs-entrenador"
+            name="observacionesEntrenador"
+            rows="3"
+            placeholder="Ejemplo: Priorizar calentamiento articular en rodilla, carga progresiva en ejercicios compuestos..."
+            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition resize-none"
+          ></textarea>
+        </div>
+
+        <!-- Botones de Accion -->
+        <div class="flex items-center justify-end space-x-3 pt-4 border-t border-zinc-800">
+          <button
+            type="button"
+            onclick="cerrarModalArmarPlan()"
+            class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            id="btn-guardar-plan"
+            class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
+          >
+            Confirmar y Prescribir Plan
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- Pie de Pagina Corporativo -->
+  <footer class="bg-zinc-950 border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
+    <div class="max-w-7xl mx-auto px-4">
+      <p class="tracking-wide">Infinite Force Gym &bull; Módulo de Entrenadores y Preparación Física.</p>
+      <p class="text-[11px] text-zinc-600 mt-1">Todos los derechos reservados. Persistencia de datos biométricos en PostgreSQL.</p>
+    </div>
+  </footer>
+
+  <!-- Logica Frontend -->
+  <script>
+    function mostrarNotificacion(mensaje, tipo = 'exito') {
+      const banner = document.getElementById('notification-banner');
+      banner.textContent = mensaje;
+      banner.classList.remove('hidden', 'bg-emerald-950', 'text-emerald-300', 'border-emerald-800', 'bg-red-950', 'text-red-300', 'border-red-800');
+
+      if (tipo === 'exito') {
+        banner.classList.add('bg-emerald-950', 'text-emerald-300', 'border-emerald-800');
+      } else {
+        banner.classList.add('bg-red-950', 'text-red-300', 'border-red-800');
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        banner.classList.add('hidden');
+      }, 5000);
+    }
+
+    function abrirModalArmarPlan(id, nombre, objetivo, dias, peso, edad, lesiones) {
+      document.getElementById('modal-plan-solicitud-id').value = id;
+      document.getElementById('modal-plan-socio-nombre').textContent = nombre;
+      document.getElementById('modal-plan-objetivo').textContent = objetivo;
+      document.getElementById('modal-plan-dias').textContent = dias + ' dias / semana';
+      document.getElementById('modal-plan-peso').textContent = peso + ' kg';
+      document.getElementById('modal-plan-edad').textContent = edad + ' años';
+      document.getElementById('modal-plan-lesiones').textContent = lesiones || 'Sin restricciones o lesiones registradas.';
+
+      const modal = document.getElementById('modal-armar-plan');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function cerrarModalArmarPlan() {
+      const modal = document.getElementById('modal-armar-plan');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    async function enviarAsignacionPlan(event) {
+      event.preventDefault();
+
+      const solicitudId = document.getElementById('modal-plan-solicitud-id').value;
+      const rutinaId = document.getElementById('select-rutina-plan').value;
+      const observacionesEntrenador = document.getElementById('textarea-obs-entrenador').value;
+      const btn = document.getElementById('btn-guardar-plan');
+
+      btn.disabled = true;
+      btn.textContent = 'Prescribiendo plan...';
+
+      try {
+        const response = await fetch('/api/entrenador/solicitudes/asignar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ solicitudId, rutinaId, observacionesEntrenador })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          cerrarModalArmarPlan();
+          mostrarNotificacion(data.message, 'exito');
+
+          const card = document.getElementById('solicitud-card-' + solicitudId);
+          if (card) {
+            card.remove();
+          }
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 1500);
+        } else {
+          mostrarNotificacion(data.message || 'Error al asignar el plan.', 'error');
+        }
+      } catch (error) {
+        console.error('Error de red al asignar plan:', error);
+        mostrarNotificacion('Error de conexion al procesar la asignacion.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Confirmar y Prescribir Plan';
+      }
+    }
+  </script>
+</body>
+</html>
