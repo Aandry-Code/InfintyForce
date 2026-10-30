@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { pool } = require('../database/config');
+const { pool } = require('../database/db');
 
 const entrenadorController = {
   renderEntrenadorDashboard: async (req, res) => {
@@ -8,8 +8,8 @@ const entrenadorController = {
     const entrenadorEmail = req.session.user.email;
 
     try {
-      // Consulta a PostgreSQL de Solicitudes_Rutina con estado 'Pendiente'
-      // realizando JOIN con Usuarios y Datos_Biometricos para obtener peso, edad, objetivo y lesiones
+      // Consulta a MySQL de solicitudes_rutina con estado 'Pendiente'
+      // realizando JOIN con usuarios para obtener datos biometricos (peso, altura, edad, genero)
       const solicitudesQuery = `
         SELECT sr.id AS solicitud_id,
                sr.usuario_id,
@@ -19,29 +19,21 @@ const entrenadorController = {
                sr.dias_semana,
                sr.observaciones,
                sr.estado,
-               TO_CHAR(sr.fecha_solicitud, 'DD/MM/YYYY, HH24:MI') AS fecha_solicitud,
-               COALESCE(db.peso, 75.0) AS peso,
-               COALESCE(db.altura, 175.0) AS altura,
-               COALESCE(db.edad, 26) AS edad,
-               COALESCE(db.lesiones, sr.observaciones, 'Sin lesiones registradas') AS lesiones
-        FROM Solicitudes_Rutina sr
-        JOIN Usuarios u ON sr.usuario_id = u.id
-        LEFT JOIN LATERAL (
-          SELECT peso, altura, edad, lesiones
-          FROM Datos_Biometricos
-          WHERE usuario_id = sr.usuario_id
-          ORDER BY id DESC
-          LIMIT 1
-        ) db ON true
+               DATE_FORMAT(sr.fecha_solicitud, '%d/%m/%Y, %H:%i') AS fecha_solicitud,
+               COALESCE(u.peso, 75.0) AS peso,
+               COALESCE(u.altura, 175.0) AS altura,
+               COALESCE(u.edad, 26) AS edad,
+               COALESCE(u.genero, 'No especificado') AS genero,
+               COALESCE(sr.observaciones, 'Sin lesiones registradas') AS lesiones
+        FROM solicitudes_rutina sr
+        JOIN usuarios u ON sr.usuario_id = u.id
         WHERE sr.estado = 'Pendiente'
         ORDER BY sr.id DESC
       `;
-      const result = await pool.query(solicitudesQuery);
-      const solicitudes = result.rows;
+      const [solicitudes] = await pool.query(solicitudesQuery);
 
       // Consulta de rutinas disponibles en catalogo
-      const rutinasResult = await pool.query('SELECT id, nombre, tipo, frecuencia FROM Rutinas ORDER BY id ASC');
-      const rutinas = rutinasResult.rows;
+      const [rutinas] = await pool.query('SELECT id, nombre, tipo, frecuencia FROM rutinas ORDER BY id ASC');
 
       const rutinasOptionsHtml = rutinas.map(r => `
         <option value="${r.id}">
@@ -95,7 +87,7 @@ const entrenadorController = {
 
               <!-- Grilla de Parametros y Datos Biometricos (JOIN) -->
               <div class="space-y-3 pt-2 border-t border-zinc-800/80">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-brand-yellow">Perfil Biométrico del Socio:</p>
+                <p class="text-[11px] font-bold uppercase tracking-wider text-brand-yellow">Perfil Biometrico del Socio:</p>
                 
                 <div class="grid grid-cols-3 gap-2">
                   <div class="bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 text-center">
@@ -104,7 +96,7 @@ const entrenadorController = {
                   </div>
                   <div class="bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 text-center">
                     <span class="text-[10px] font-semibold uppercase text-zinc-400 block">Edad</span>
-                    <span class="text-sm font-extrabold font-mono text-white">${sol.edad} años</span>
+                    <span class="text-sm font-extrabold font-mono text-white">${sol.edad} anos</span>
                   </div>
                   <div class="bg-zinc-900/90 border border-zinc-800 rounded-xl p-3 text-center">
                     <span class="text-[10px] font-semibold uppercase text-zinc-400 block">Estatura</span>
@@ -126,7 +118,7 @@ const entrenadorController = {
 
                 <!-- Lesiones / Observaciones Medicas -->
                 <div class="bg-zinc-900/50 border border-zinc-800/90 rounded-xl p-3 space-y-1">
-                  <span class="text-[10px] uppercase font-bold text-red-400 tracking-wider block">Lesiones / Historial Clínico:</span>
+                  <span class="text-[10px] uppercase font-bold text-red-400 tracking-wider block">Lesiones / Historial Clinico:</span>
                   <p class="text-xs text-zinc-300 italic">${sol.lesiones}</p>
                 </div>
 
@@ -167,7 +159,7 @@ const entrenadorController = {
 
       return res.status(200).send(html);
     } catch (error) {
-      console.error('Error al renderizar el dashboard del entrenador:', error.message);
+      console.error('Error al renderizar el dashboard del entrenador en MySQL:', error.message);
       return res.status(500).send('Error interno al cargar el panel de entrenadores.');
     }
   },
@@ -189,27 +181,31 @@ const entrenadorController = {
 
     try {
       const updateQuery = `
-        UPDATE Solicitudes_Rutina
+        UPDATE solicitudes_rutina
         SET estado = 'Aprobada'
-        WHERE id = $1
-        RETURNING id, usuario_id, objetivo, dias_semana, estado
+        WHERE id = ?
       `;
-      const result = await pool.query(updateQuery, [solicitudId]);
+      const [updateResult] = await pool.query(updateQuery, [solicitudId]);
 
-      if (result.rows.length === 0) {
+      if (updateResult.affectedRows === 0) {
         return res.status(404).json({
           success: false,
           message: 'Solicitud de entrenamiento no encontrada.'
         });
       }
 
+      const [solicitudRows] = await pool.query(
+        'SELECT id, usuario_id, objetivo, dias_semana, estado FROM solicitudes_rutina WHERE id = ?',
+        [solicitudId]
+      );
+
       return res.status(200).json({
         success: true,
         message: 'Plan de entrenamiento estructurado y asignado correctamente.',
-        solicitud: result.rows[0]
+        solicitud: solicitudRows[0]
       });
     } catch (error) {
-      console.error('Error al procesar asignacion de rutina por el entrenador:', error.message);
+      console.error('Error al procesar asignacion de rutina por el entrenador en MySQL:', error.message);
       return res.status(500).json({
         success: false,
         message: 'Error interno en el servidor al registrar el plan de entrenamiento.'

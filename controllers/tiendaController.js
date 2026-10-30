@@ -1,20 +1,19 @@
 const path = require('path');
 const fs = require('fs');
-const { pool } = require('../database/config');
+const { pool } = require('../database/db');
 
 const tiendaController = {
   renderTiendaView: async (req, res) => {
     try {
       // Consulta SQL que filtra estrictamente los productos disponibles con stock > 0
-      const query = 'SELECT * FROM Productos WHERE stock > 0 ORDER BY id ASC';
-      const result = await pool.query(query);
-      const productos = result.rows;
+      const query = 'SELECT * FROM productos WHERE stock > 0 ORDER BY id ASC';
+      const [productos] = await pool.query(query);
 
       let cardsHtml = '';
       if (productos.length === 0) {
         cardsHtml = `
           <div class="col-span-full py-20 text-center">
-            <p class="text-zinc-400 text-base font-medium tracking-wide">El catálogo se actualizará pronto</p>
+            <p class="text-zinc-400 text-base font-medium tracking-wide">El catalogo se actualizara pronto</p>
           </div>
         `;
       } else {
@@ -61,21 +60,21 @@ const tiendaController = {
 
       return res.status(200).send(html);
     } catch (error) {
-      console.error('Error al consultar productos de PostgreSQL para la tienda:', error.message);
+      console.error('Error al consultar productos de MySQL para la tienda:', error.message);
       return res.status(500).send('Error interno al cargar la tienda oficial.');
     }
   },
 
   getProductosAPI: async (req, res) => {
     try {
-      const query = 'SELECT * FROM Productos WHERE stock > 0 ORDER BY id ASC';
-      const result = await pool.query(query);
+      const query = 'SELECT * FROM productos WHERE stock > 0 ORDER BY id ASC';
+      const [productos] = await pool.query(query);
       return res.status(200).json({
         success: true,
-        productos: result.rows
+        productos: productos
       });
     } catch (error) {
-      console.error('Error al obtener lista de productos API:', error.message);
+      console.error('Error al obtener lista de productos API en MySQL:', error.message);
       return res.status(500).json({
         success: false,
         message: 'Error al consultar productos.'

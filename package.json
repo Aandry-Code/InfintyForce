@@ -4,16 +4,15 @@
   "description": "Plataforma de gestion y control de acceso para Infinite Force Gym",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "init-db": "node database/create-db.js && node database/init.js"
+    "start": "node server.js"
   },
   "keywords": [
     "gym",
     "fitness",
     "management",
     "express",
-    "postgres",
-    "postgresql",
+    "mysql",
+    "mysql2",
     "tailwind"
   ],
   "author": "Infinite Force Development Team",
@@ -21,8 +20,8 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "dotenv": "^18.0.9",
-    "express": "^5.2.1",
-    "express-session": "^1.18.2",
-    "pg": "^8.23.1"
+    "express": "^5.3.0",
+    "express-session": "^1.19.0",
+    "mysql2": "^3.24.6"
   }
 }

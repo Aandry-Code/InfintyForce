@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { pool } = require('../database/config');
+const { pool } = require('../database/db');
 
 const authController = {
   login: async (req, res) => {
@@ -17,10 +17,10 @@ const authController = {
 
     try {
       const cleanEmail = email.trim().toLowerCase();
-      const query = 'SELECT id, nombre, email, password_hash, rol FROM Usuarios WHERE email = $1';
-      const result = await pool.query(query, [cleanEmail]);
+      const query = 'SELECT id, nombre, email, password_hash, rol FROM usuarios WHERE email = ?';
+      const [rows] = await pool.query(query, [cleanEmail]);
 
-      if (result.rows.length === 0) {
+      if (rows.length === 0) {
         if (req.xhr || req.headers.accept?.includes('application/json')) {
           return res.status(401).json({
             success: false,
@@ -30,7 +30,7 @@ const authController = {
         return res.redirect('/login?error=credenciales_invalidas');
       }
 
-      const user = result.rows[0];
+      const user = rows[0];
       const passwordMatch = await bcrypt.compare(password, user.password_hash);
 
       if (!passwordMatch) {
@@ -67,7 +67,7 @@ const authController = {
 
       return res.redirect(redirectUrl);
     } catch (error) {
-      console.error('Error al procesar la autenticacion en PostgreSQL:', error.message);
+      console.error('Error al procesar la autenticacion en MySQL:', error.message);
       if (req.xhr || req.headers.accept?.includes('application/json')) {
         return res.status(500).json({
           success: false,

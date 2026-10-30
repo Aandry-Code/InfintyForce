@@ -1,6 +1,6 @@
 const path = require('path');
 const fs = require('fs');
-const { pool } = require('../database/config');
+const { pool } = require('../database/db');
 
 const rutinasController = {
   renderRutinasView: async (req, res) => {
@@ -17,7 +17,7 @@ const rutinasController = {
 
       return res.status(200).send(html);
     } catch (error) {
-      console.error('Error al renderizar vista de rutinas:', error.message);
+      console.error('Error al renderizar vista de rutinas en MySQL:', error.message);
       return res.status(500).send('Error interno al cargar el modulo de rutinas.');
     }
   },
@@ -28,14 +28,14 @@ const rutinasController = {
         SELECT r.id AS rutina_id, r.nombre AS rutina_nombre, r.tipo AS rutina_tipo, r.frecuencia AS rutina_frecuencia,
                rd.id AS detalle_id, rd.series, rd.repeticiones,
                e.id AS ejercicio_id, e.nombre AS ejercicio_nombre, e.grupo_muscular
-        FROM Rutinas r
-        JOIN Rutinas_Detalle rd ON r.id = rd.rutina_id
-        JOIN Ejercicios e ON rd.ejercicio_id = e.id
+        FROM rutinas r
+        JOIN rutinas_detalle rd ON r.id = rd.rutina_id
+        JOIN ejercicios e ON rd.ejercicio_id = e.id
         ORDER BY rd.id ASC
       `;
-      const result = await pool.query(routineQuery);
+      const [rows] = await pool.query(routineQuery);
 
-      if (result.rows.length === 0) {
+      if (rows.length === 0) {
         return res.status(200).json({
           success: true,
           rutina: null,
@@ -44,13 +44,13 @@ const rutinasController = {
       }
 
       const rutinaInfo = {
-        id: result.rows[0].rutina_id,
-        nombre: result.rows[0].rutina_nombre,
-        tipo: result.rows[0].rutina_tipo,
-        frecuencia: result.rows[0].rutina_frecuencia
+        id: rows[0].rutina_id,
+        nombre: rows[0].rutina_nombre,
+        tipo: rows[0].rutina_tipo,
+        frecuencia: rows[0].rutina_frecuencia
       };
 
-      const ejercicios = result.rows.map(row => ({
+      const ejercicios = rows.map(row => ({
         detalleId: row.detalle_id,
         ejercicioId: row.ejercicio_id,
         nombre: row.ejercicio_nombre,
@@ -65,7 +65,7 @@ const rutinasController = {
         ejercicios: ejercicios
       });
     } catch (error) {
-      console.error('Error al consultar plan actual de rutina:', error.message);
+      console.error('Error al consultar plan actual de rutina en MySQL:', error.message);
       return res.status(500).json({
         success: false,
         message: 'No fue posible cargar el plan actual de entrenamiento.'
@@ -79,19 +79,19 @@ const rutinasController = {
     try {
       const query = `
         SELECT id, objetivo, dias_semana, observaciones, estado,
-               TO_CHAR(fecha_solicitud, 'DD/MM/YYYY, HH24:MI') AS fecha
-        FROM Solicitudes_Rutina
-        WHERE usuario_id = $1
+               DATE_FORMAT(fecha_solicitud, '%d/%m/%Y, %H:%i') AS fecha
+        FROM solicitudes_rutina
+        WHERE usuario_id = ?
         ORDER BY id DESC
       `;
-      const result = await pool.query(query, [userId]);
+      const [rows] = await pool.query(query, [userId]);
 
       return res.status(200).json({
         success: true,
-        solicitudes: result.rows
+        solicitudes: rows
       });
     } catch (error) {
-      console.error('Error al consultar historial de solicitudes de rutina:', error.message);
+      console.error('Error al consultar historial de solicitudes de rutina en MySQL:', error.message);
       return res.status(500).json({
         success: false,
         message: 'Error al consultar las solicitudes de rutina.'
@@ -123,20 +123,25 @@ const rutinasController = {
 
     try {
       const insertQuery = `
-        INSERT INTO Solicitudes_Rutina (usuario_id, objetivo, dias_semana, observaciones, estado)
-        VALUES ($1, $2, $3, $4, 'Pendiente')
-        RETURNING id, objetivo, dias_semana, observaciones, estado,
-                  TO_CHAR(fecha_solicitud, 'DD/MM/YYYY, HH24:MI') AS fecha
+        INSERT INTO solicitudes_rutina (usuario_id, objetivo, dias_semana, observaciones, estado)
+        VALUES (?, ?, ?, ?, 'Pendiente')
       `;
-      const result = await pool.query(insertQuery, [userId, objetivo, dias, obsLimpia]);
+      const [insertResult] = await pool.query(insertQuery, [userId, objetivo, dias, obsLimpia]);
+
+      const [solicitudRows] = await pool.query(`
+        SELECT id, objetivo, dias_semana, observaciones, estado,
+               DATE_FORMAT(fecha_solicitud, '%d/%m/%Y, %H:%i') AS fecha
+        FROM solicitudes_rutina
+        WHERE id = ?
+      `, [insertResult.insertId]);
 
       return res.status(201).json({
         success: true,
         message: 'Solicitud de rutina registrada correctamente. Su solicitud esta en estado Pendiente para evaluacion.',
-        solicitud: result.rows[0]
+        solicitud: solicitudRows[0]
       });
     } catch (error) {
-      console.error('Error al registrar solicitud de rutina en PostgreSQL:', error.message);
+      console.error('Error al registrar solicitud de rutina en MySQL:', error.message);
       return res.status(500).json({
         success: false,
         message: 'Error interno en el servidor al registrar la solicitud de rutina.'

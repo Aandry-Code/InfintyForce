@@ -3,8 +3,7 @@ const express = require('express');
 const session = require('express-session');
 const path = require('path');
 const fs = require('fs');
-const { pool } = require('./database/config');
-const initDatabase = require('./database/init');
+const { pool, initDatabase } = require('./database/db');
 const authRoutes = require('./routes/authRoutes');
 const asistenciaRoutes = require('./routes/asistenciaRoutes');
 const rutinasRoutes = require('./routes/rutinasRoutes');
@@ -75,7 +74,7 @@ app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'views', 'login.html'));
 });
 
-// Ruta GET /socio-dashboard (Consulta en PostgreSQL y renderizado de vista HTML)
+// Ruta GET /socio-dashboard (Consulta en MySQL y renderizado de vista HTML)
 app.get('/socio-dashboard', requireRole('socio'), async (req, res) => {
   const userId = req.session.user.id;
   const userName = req.session.user.nombre;
@@ -83,56 +82,56 @@ app.get('/socio-dashboard', requireRole('socio'), async (req, res) => {
   const userRole = req.session.user.rol;
 
   try {
-    // 1. Consultar estado real de membresia en PostgreSQL
+    // 1. Consultar estado real de membresia en MySQL
     const membershipQuery = `
-      SELECT tipo, estado, TO_CHAR(fecha_vencimiento, 'DD/MM/YYYY') AS fecha_vencimiento
-      FROM Membresias
-      WHERE usuario_id = $1
+      SELECT tipo, estado, DATE_FORMAT(fecha_vencimiento, '%d/%m/%Y') AS fecha_vencimiento
+      FROM membresias
+      WHERE usuario_id = ?
       ORDER BY id DESC
       LIMIT 1
     `;
-    const membershipResult = await pool.query(membershipQuery, [userId]);
+    const [membershipRows] = await pool.query(membershipQuery, [userId]);
     const defaultTipo = userRole === 'entrenador' ? 'Staff / Entrenador Oficial' : 'Sin Membresia Activa';
     const defaultEstado = userRole === 'entrenador' ? 'Activa' : 'Inactiva';
     const defaultVenc = userRole === 'entrenador' ? 'Pase Permanente' : 'No registrada';
 
-    const membership = membershipResult.rows[0] || {
+    const membership = membershipRows[0] || {
       tipo: defaultTipo,
       estado: defaultEstado,
       fecha_vencimiento: defaultVenc
     };
 
-    // 2. Consultar asistencias del mes actual en PostgreSQL
+    // 2. Consultar asistencias del mes actual en MySQL
     const attendanceQuery = `
-      SELECT COUNT(*)::int AS total
-      FROM Asistencias
-      WHERE usuario_id = $1
-        AND EXTRACT(MONTH FROM fecha) = EXTRACT(MONTH FROM CURRENT_DATE)
-        AND EXTRACT(YEAR FROM fecha) = EXTRACT(YEAR FROM CURRENT_DATE)
+      SELECT COUNT(*) AS total
+      FROM asistencias
+      WHERE usuario_id = ?
+        AND MONTH(fecha) = MONTH(CURDATE())
+        AND YEAR(fecha) = YEAR(CURDATE())
     `;
-    const attendanceResult = await pool.query(attendanceQuery, [userId]);
-    const totalAsistencias = attendanceResult.rows[0]?.total || 0;
+    const [attendanceRows] = await pool.query(attendanceQuery, [userId]);
+    const totalAsistencias = attendanceRows[0]?.total || 0;
 
     // 3. Consultar fecha de la ultima asistencia
     const lastAttendanceQuery = `
-      SELECT TO_CHAR(fecha, 'DD/MM/YYYY, HH24:MI') AS ultima_fecha
-      FROM Asistencias
-      WHERE usuario_id = $1
+      SELECT DATE_FORMAT(fecha, '%d/%m/%Y, %H:%i') AS ultima_fecha
+      FROM asistencias
+      WHERE usuario_id = ?
       ORDER BY fecha DESC
       LIMIT 1
     `;
-    const lastAttendanceResult = await pool.query(lastAttendanceQuery, [userId]);
-    const ultimaAsistencia = lastAttendanceResult.rows[0]?.ultima_fecha || 'Sin registros en el mes';
+    const [lastAttendanceRows] = await pool.query(lastAttendanceQuery, [userId]);
+    const ultimaAsistencia = lastAttendanceRows[0]?.ultima_fecha || 'Sin registros en el mes';
 
     // 4. Consultar rutina asignada
     const routineQuery = `
       SELECT nombre, tipo, frecuencia
-      FROM Rutinas
+      FROM rutinas
       ORDER BY id ASC
       LIMIT 1
     `;
-    const routineResult = await pool.query(routineQuery);
-    const routine = routineResult.rows[0] || {
+    const [routineRows] = await pool.query(routineQuery);
+    const routine = routineRows[0] || {
       nombre: 'Fuerza e Hipertrofia (PPL)',
       tipo: 'Hipertrofia',
       frecuencia: '4 dias por semana'
@@ -161,7 +160,7 @@ app.get('/socio-dashboard', requireRole('socio'), async (req, res) => {
 
     return res.status(200).send(html);
   } catch (error) {
-    console.error('Error al consultar datos en PostgreSQL para el socio:', error.message);
+    console.error('Error al consultar datos en MySQL para el socio:', error.message);
 
     const templatePath = path.join(__dirname, 'views', 'socio-dashboard.html');
     let html = await fs.promises.readFile(templatePath, 'utf8');
@@ -187,33 +186,33 @@ app.get('/socio-dashboard', requireRole('socio'), async (req, res) => {
 app.get('/api/socio/dashboard-data', requireRole('socio'), async (req, res) => {
   const userId = req.session.user.id;
   try {
-    const membershipResult = await pool.query(
-      `SELECT tipo, estado, TO_CHAR(fecha_vencimiento, 'DD/MM/YYYY') AS fecha_vencimiento
-       FROM Membresias WHERE usuario_id = $1 ORDER BY id DESC LIMIT 1`,
+    const [membershipRows] = await pool.query(
+      `SELECT tipo, estado, DATE_FORMAT(fecha_vencimiento, '%d/%m/%Y') AS fecha_vencimiento
+       FROM membresias WHERE usuario_id = ? ORDER BY id DESC LIMIT 1`,
       [userId]
     );
 
-    const attendanceResult = await pool.query(
-      `SELECT COUNT(*)::int AS total
-       FROM Asistencias
-       WHERE usuario_id = $1
-         AND EXTRACT(MONTH FROM fecha) = EXTRACT(MONTH FROM CURRENT_DATE)
-         AND EXTRACT(YEAR FROM fecha) = EXTRACT(YEAR FROM CURRENT_DATE)`,
+    const [attendanceRows] = await pool.query(
+      `SELECT COUNT(*) AS total
+       FROM asistencias
+       WHERE usuario_id = ?
+         AND MONTH(fecha) = MONTH(CURDATE())
+         AND YEAR(fecha) = YEAR(CURDATE())`,
       [userId]
     );
 
-    const lastAttendanceResult = await pool.query(
-      `SELECT TO_CHAR(fecha, 'DD/MM/YYYY, HH24:MI') AS ultima_fecha
-       FROM Asistencias WHERE usuario_id = $1 ORDER BY fecha DESC LIMIT 1`,
+    const [lastAttendanceRows] = await pool.query(
+      `SELECT DATE_FORMAT(fecha, '%d/%m/%Y, %H:%i') AS ultima_fecha
+       FROM asistencias WHERE usuario_id = ? ORDER BY fecha DESC LIMIT 1`,
       [userId]
     );
 
     return res.status(200).json({
       success: true,
       usuario: req.session.user,
-      membresia: membershipResult.rows[0] || null,
-      asistenciasMes: attendanceResult.rows[0]?.total || 0,
-      ultimaAsistencia: lastAttendanceResult.rows[0]?.ultima_fecha || null
+      membresia: membershipRows[0] || null,
+      asistenciasMes: attendanceRows[0]?.total || 0,
+      ultimaAsistencia: lastAttendanceRows[0]?.ultima_fecha || null
     });
   } catch (err) {
     return res.status(500).json({ success: false, error: err.message });
@@ -224,10 +223,10 @@ app.get('/api/socio/dashboard-data', requireRole('socio'), async (req, res) => {
 async function startServer() {
   try {
     await initDatabase();
-    console.log('Base de datos PostgreSQL sincronizada.');
+    console.log('Base de datos MySQL sincronizada correctamente.');
   } catch (dbError) {
-    console.warn('Aviso: La base de datos PostgreSQL no se encuentra disponible aun o fallo la conexion inicial:', dbError.message);
-    console.warn('Verifique los valores en el archivo .env e inicie su servicio PostgreSQL.');
+    console.warn('Aviso: Fallo la inicializacion automatica de la base de datos MySQL:', dbError.message);
+    console.warn('Verifique los valores en el archivo .env e inicie su servicio MySQL.');
   }
 
   app.listen(PORT, () => {

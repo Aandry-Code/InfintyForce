@@ -256,7 +256,7 @@
         return;
       }
 
-      // Sincronizacion automatica en PostgreSQL para que el entrenador disponga de datos actualizados
+      // Sincronizacion automatica en MySQL para que el entrenador disponga de datos actualizados
       try {
         await fetch('/api/nutricion/actualizar-biometria', {
           method: 'POST',

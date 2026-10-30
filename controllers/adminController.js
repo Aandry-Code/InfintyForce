@@ -1,7 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcrypt');
-const { pool } = require('../database/config');
+const { pool } = require('../database/db');
 
 const adminController = {
   renderAdminDashboard: async (req, res) => {
@@ -14,29 +14,29 @@ const adminController = {
         SELECT u.id, u.nombre, u.email,
                COALESCE(m.tipo, 'Sin Membresia') AS membresia_tipo,
                COALESCE(m.estado, 'Inactiva') AS membresia_estado,
-               COALESCE(TO_CHAR(m.fecha_vencimiento, 'DD/MM/YYYY'), 'No asignada') AS fecha_vencimiento
-        FROM Usuarios u
-        LEFT JOIN LATERAL (
-          SELECT tipo, estado, fecha_vencimiento
-          FROM Membresias
-          WHERE usuario_id = u.id
-          ORDER BY id DESC
-          LIMIT 1
-        ) m ON true
+               COALESCE(DATE_FORMAT(m.fecha_vencimiento, '%d/%m/%Y'), 'No asignada') AS fecha_vencimiento
+        FROM usuarios u
+        LEFT JOIN (
+          SELECT m1.*
+          FROM membresias m1
+          INNER JOIN (
+            SELECT usuario_id, MAX(id) AS max_id
+            FROM membresias
+            GROUP BY usuario_id
+          ) m2 ON m1.id = m2.max_id
+        ) m ON u.id = m.usuario_id
         WHERE u.rol = 'socio'
         ORDER BY u.id ASC
       `;
-      const sociosResult = await pool.query(sociosQuery);
-      const socios = sociosResult.rows;
+      const [socios] = await pool.query(sociosQuery);
 
       // 2. Consulta de inventario de la tienda
       const inventarioQuery = `
-        SELECT id, nombre, precio, categoria, stock
-        FROM Productos
+        SELECT id, nombre, precio, categoria, stock, imagen_url
+        FROM productos
         ORDER BY id ASC
       `;
-      const inventarioResult = await pool.query(inventarioQuery);
-      const productos = inventarioResult.rows;
+      const [productos] = await pool.query(inventarioQuery);
 
       // Generar filas HTML para la tabla de Gestion de Socios
       let tablaSociosHtml = '';
@@ -164,7 +164,7 @@ const adminController = {
 
       return res.status(200).send(html);
     } catch (error) {
-      console.error('Error al renderizar el dashboard de administrador:', error.message);
+      console.error('Error al renderizar el dashboard de administrador en MySQL:', error.message);
       return res.status(500).send('Error interno al cargar el panel de administracion.');
     }
   },
@@ -207,12 +207,18 @@ const adminController = {
 
     try {
       const insertQuery = `
-        INSERT INTO Productos (nombre, precio, categoria, stock)
-        VALUES ($1, $2, $3, $4)
-        RETURNING id, nombre, precio, categoria, stock
+        INSERT INTO productos (nombre, precio, categoria, stock)
+        VALUES (?, ?, ?, ?)
       `;
-      const result = await pool.query(insertQuery, [nombreLimpio, precioNum, categoriaLimpia, stockNum]);
-      const nuevoProducto = result.rows[0];
+      const [result] = await pool.query(insertQuery, [nombreLimpio, precioNum, categoriaLimpia, stockNum]);
+
+      const nuevoProducto = {
+        id: result.insertId,
+        nombre: nombreLimpio,
+        precio: precioNum,
+        categoria: categoriaLimpia,
+        stock: stockNum
+      };
 
       return res.status(201).json({
         success: true,
@@ -220,7 +226,7 @@ const adminController = {
         producto: nuevoProducto
       });
     } catch (error) {
-      console.error('Error al registrar nuevo producto en PostgreSQL:', error.message);
+      console.error('Error al registrar nuevo producto en MySQL:', error.message);
       return res.status(500).json({
         success: false,
         message: 'Error interno en el servidor al registrar el producto.'
@@ -252,8 +258,8 @@ const adminController = {
 
     try {
       // 1. Validar unicidad del correo electronico
-      const checkUser = await pool.query('SELECT id FROM Usuarios WHERE email = $1', [cleanEmail]);
-      if (checkUser.rows.length > 0) {
+      const [checkUser] = await pool.query('SELECT id FROM usuarios WHERE email = ?', [cleanEmail]);
+      if (checkUser.length > 0) {
         return res.status(400).json({
           success: false,
           message: 'El correo electronico ingresado ya se encuentra registrado en el sistema.'
@@ -264,14 +270,13 @@ const adminController = {
       const saltRounds = 10;
       const passwordHash = await bcrypt.hash(cleanPassword, saltRounds);
 
-      // 3. Insertar nuevo usuario con rol 'socio'
+      // 3. Insertar nuevo usuario con rol 'socio' y perfil biometrico inicial
       const insertUserQuery = `
-        INSERT INTO Usuarios (nombre, email, password_hash, rol)
-        VALUES ($1, $2, $3, 'socio')
-        RETURNING id, nombre, email, rol
+        INSERT INTO usuarios (nombre, email, password_hash, rol, peso, altura, edad, genero)
+        VALUES (?, ?, ?, 'socio', 70.0, 170.0, 25, 'No especificado')
       `;
-      const userResult = await pool.query(insertUserQuery, [cleanNombre, cleanEmail, passwordHash]);
-      const nuevoUsuario = userResult.rows[0];
+      const [userResult] = await pool.query(insertUserQuery, [cleanNombre, cleanEmail, passwordHash]);
+      const nuevoUsuarioId = userResult.insertId;
 
       // 4. Calcular fecha de vencimiento segun tipo de membresia (Mensual / Anual)
       const fechaVencimiento = new Date();
@@ -286,38 +291,35 @@ const adminController = {
 
       const fechaVencimientoStr = fechaVencimiento.toISOString().split('T')[0];
 
-      // 5. Registrar membresia activa en PostgreSQL
+      // 5. Registrar membresia activa en MySQL
       const insertMembresiaQuery = `
-        INSERT INTO Membresias (usuario_id, tipo, estado, fecha_vencimiento)
-        VALUES ($1, $2, 'Activa', $3)
-        RETURNING id, tipo, estado, TO_CHAR(fecha_vencimiento, 'DD/MM/YYYY') AS fecha_vencimiento
+        INSERT INTO membresias (usuario_id, tipo, estado, fecha_vencimiento)
+        VALUES (?, ?, 'Activa', ?)
       `;
-      const memResult = await pool.query(insertMembresiaQuery, [
-        nuevoUsuario.id,
+      const [memResult] = await pool.query(insertMembresiaQuery, [
+        nuevoUsuarioId,
         nombreTipo,
         fechaVencimientoStr
       ]);
-      const nuevaMembresia = memResult.rows[0];
 
-      // 6. Registrar perfil biometrico inicial para la supervision del entrenador
-      await pool.query(
-        `INSERT INTO Datos_Biometricos (usuario_id, peso, altura, edad, lesiones)
-         VALUES ($1, 70.0, 170.0, 25, 'Sin lesiones registradas')`,
-        [nuevoUsuario.id]
+      const [memRows] = await pool.query(
+        'SELECT id, tipo, estado, DATE_FORMAT(fecha_vencimiento, "%d/%m/%Y") AS fecha_vencimiento FROM membresias WHERE id = ?',
+        [memResult.insertId]
       );
+      const nuevaMembresia = memRows[0];
 
       return res.status(201).json({
         success: true,
         message: 'Alta de socio completada exitosamente con membresia activa.',
         socio: {
-          id: nuevoUsuario.id,
-          nombre: nuevoUsuario.nombre,
-          email: nuevoUsuario.email,
+          id: nuevoUsuarioId,
+          nombre: cleanNombre,
+          email: cleanEmail,
           membresia: nuevaMembresia
         }
       });
     } catch (error) {
-      console.error('Error al registrar nuevo socio en PostgreSQL:', error.message);
+      console.error('Error al registrar nuevo socio en MySQL:', error.message);
       return res.status(500).json({
         success: false,
         message: 'Error interno en el servidor al registrar el nuevo socio.'
