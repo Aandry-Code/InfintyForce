@@ -3,363 +3,665 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Panel de Administracion - Infinite Force Gym</title>
+  <title>Panel de Administración - Infinite Force Gym</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              yellow: '#d4ff00',
-              gold: '#ffd700',
-              border: '#27272a',
-              card: '#18181b',
-              surface: '#27272a'
-            }
-          }
-        }
-      }
-    }
-  </script>
 </head>
 <body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
 
-  <!-- Header Superior -->
+  <!-- Header Superior Unificado -->
   <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-16 sm:h-20 py-2 sm:py-0 flex items-center justify-between flex-wrap gap-2">
       
       <!-- Identidad Corporativa y Titulo de Header -->
-      <div class="flex items-center space-x-4">
-        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+      <div class="flex items-center space-x-3 group">
+        <div class="w-11 h-11 rounded-full bg-black border-2 border-yellow-400 p-0.5 flex items-center justify-center shadow-md">
           <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
         </div>
         <div>
-          <h1 class="text-xl font-extrabold tracking-wider uppercase text-white">
+          <h1 class="text-base sm:text-lg font-extrabold tracking-wider uppercase text-white block leading-none">
             PANEL DE ADMINISTRACIÓN GENERAL
           </h1>
-          <span class="block text-[11px] font-semibold uppercase tracking-widest text-brand-yellow">
-            Infinite Force Gym &bull; Gestión Centralizada
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+            Infinite Force Gym &bull; <span class="text-yellow-400">Gestión Centralizada y Financiera</span>
           </span>
         </div>
       </div>
 
       <!-- Informacion de Sesion y Acciones -->
-      <div class="flex items-center space-x-4">
-        <div class="text-right hidden sm:block">
+      <div class="flex items-center space-x-3">
+        <div class="text-right hidden sm:block mr-1">
           <p class="text-sm font-bold text-white uppercase">{{ADMIN_NAME}}</p>
           <p class="text-xs text-zinc-400 font-mono">{{ADMIN_EMAIL}}</p>
         </div>
         <a
           href="/logout"
-          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-red-950/50 hover:bg-red-900/60 text-red-300 border border-red-800 rounded-xl transition duration-150 active:scale-95"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800/80 hover:bg-red-950 text-zinc-300 hover:text-red-300 border border-zinc-700 hover:border-red-800 rounded-xl transition duration-150 active:scale-95"
         >
-          Cerrar Sesion
+          Cerrar Sesión
         </a>
       </div>
     </div>
   </header>
 
   <!-- Contenedor Principal -->
-  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-10">
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
 
     <!-- Notificacion Dinamica de Acciones -->
     <div id="notification-banner" class="hidden p-4 rounded-xl border text-sm font-semibold transition"></div>
 
-    <!-- Metricas Resumen -->
+    <!-- Metricas Resumen Fijas en la Parte Superior -->
     <section>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-6">
         
         <!-- Total Socios Registrados -->
-        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+        <div class="bg-zinc-800/50 border border-zinc-800 hover:border-zinc-700 rounded-xl p-6 shadow-md transition-all">
           <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Total Socios Registrados</p>
           <div class="flex items-baseline justify-between mt-3">
             <span class="text-4xl font-extrabold text-white font-mono">{{TOTAL_SOCIOS}}</span>
-            <span class="text-xs text-zinc-500 uppercase font-semibold">Padrón</span>
+            <span class="text-xs text-zinc-400 uppercase font-semibold">Padrón</span>
           </div>
         </div>
 
         <!-- Membresias Activas -->
-        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
-          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Membresias Activas</p>
+        <div class="bg-zinc-800/50 border border-zinc-800 hover:border-zinc-700 rounded-xl p-6 shadow-md transition-all">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Membresías Activas</p>
           <div class="flex items-baseline justify-between mt-3">
             <span class="text-4xl font-extrabold text-emerald-400 font-mono">{{MEMBRESIAS_ACTIVAS}}</span>
             <span class="text-xs text-emerald-400/80 uppercase font-semibold">Vigentes</span>
           </div>
         </div>
 
-        <!-- Total Productos en Tienda -->
-        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
-          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Lineas de Producto</p>
+        <!-- Total Productos en Catalogo -->
+        <div class="bg-zinc-800/50 border border-zinc-800 hover:border-zinc-700 rounded-xl p-6 shadow-md transition-all">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">SKUs en Catálogo</p>
           <div class="flex items-baseline justify-between mt-3">
-            <span class="text-4xl font-extrabold text-brand-yellow font-mono">{{TOTAL_PRODUCTOS}}</span>
-            <span class="text-xs text-brand-yellow/80 uppercase font-semibold">Catálogo</span>
+            <span class="text-4xl font-extrabold text-yellow-400 font-mono">{{TOTAL_PRODUCTOS}}</span>
+            <span class="text-xs text-yellow-400/80 uppercase font-semibold">Productos</span>
           </div>
         </div>
 
-        <!-- Unidades Totales en Inventario -->
-        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
-          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Unidades en Inventario</p>
+        <!-- Unidades en Inventario -->
+        <div class="bg-zinc-800/50 border border-zinc-800 hover:border-zinc-700 rounded-xl p-6 shadow-md transition-all">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Unidades en Stock</p>
           <div class="flex items-baseline justify-between mt-3">
             <span class="text-4xl font-extrabold text-white font-mono">{{TOTAL_UNIDADES_STOCK}}</span>
-            <span class="inline-flex items-center text-xs text-emerald-400 font-semibold uppercase">
-              <span class="w-2 h-2 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
-              En Stock
-            </span>
+            <span class="text-xs text-zinc-400 uppercase font-semibold">Existencias</span>
+          </div>
+        </div>
+
+        <!-- Pedidos Pendientes de Cobro -->
+        <div class="bg-zinc-800/50 border border-amber-800/40 hover:border-amber-700 rounded-xl p-6 shadow-md transition-all col-span-2 lg:col-span-1">
+          <p class="text-xs font-bold uppercase tracking-wider text-amber-400">Tickets Pendientes de Cobro</p>
+          <div class="flex items-baseline justify-between mt-3">
+            <span class="text-4xl font-extrabold text-amber-400 font-mono">{{PEDIDOS_PENDIENTES}}</span>
+            <span class="text-xs text-amber-400/80 uppercase font-semibold">En Caja</span>
           </div>
         </div>
 
       </div>
     </section>
 
-    <!-- SECCION 1: Gestion de Socios (Membresias, pagos, altas) -->
-    <section class="bg-zinc-950/60 border border-zinc-800 rounded-2xl shadow-xl overflow-hidden">
+    <!-- Barra de Navegación por Módulos (Tabs) -->
+    <div class="flex items-center space-x-2 sm:space-x-3 overflow-x-auto border-b border-zinc-800 pb-px">
+      <button
+        type="button"
+        id="tabBtnSocios"
+        onclick="cambiarModulo('socios')"
+        class="px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-950 bg-yellow-400 rounded-t-xl transition duration-150 border-t border-x border-yellow-400 shrink-0"
+      >
+        Socios y Membresías
+      </button>
+      <button
+        type="button"
+        id="tabBtnInventario"
+        onclick="cambiarModulo('inventario')"
+        class="px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800 rounded-t-xl transition duration-150 border-t border-x border-transparent shrink-0"
+      >
+        Inventario
+      </button>
+      <button
+        type="button"
+        id="tabBtnCaja"
+        onclick="cambiarModulo('caja')"
+        class="px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800 rounded-t-xl transition duration-150 border-t border-x border-transparent shrink-0"
+      >
+        Caja y Despacho
+      </button>
+      <button
+        type="button"
+        id="tabBtnRegistro"
+        onclick="cambiarModulo('registro')"
+        class="px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800 rounded-t-xl transition duration-150 border-t border-x border-transparent shrink-0"
+      >
+        Nuevo Registro
+      </button>
+    </div>
+
+    <!-- MODULO 1: SOCIOS Y MEMBRESIAS -->
+    <section id="modulo-socios" class="bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 shadow-xl space-y-6">
       
       <!-- Cabecera de Seccion -->
-      <div class="p-6 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 class="text-xl font-bold uppercase tracking-wider text-white">Gestión de Socios</h2>
-          <p class="text-xs text-zinc-400 mt-1">
-            Supervisión integral de usuarios, estado de suscripciones, vigencia de membresías y altas del gimnasio.
-          </p>
+          <h2 class="text-xl font-bold uppercase tracking-wider text-white">Gestión de Socios y Membresías</h2>
+          <p class="text-xs text-zinc-400 mt-1">Control del padrón de afiliados, vencimientos de planes y procesos de renovación directa.</p>
         </div>
-        <div class="flex items-center space-x-3">
+        <div>
           <button
             type="button"
-            onclick="abrirModalAltaSocio()"
-            class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md flex items-center"
+            onclick="cambiarModulo('registro', 'usuario')"
+            class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
           >
-            Alta de Cliente
+            Nuevo Registro
           </button>
-          <span class="px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 border border-zinc-700 rounded-lg">
-            {{TOTAL_SOCIOS}} Socios Registrados
-          </span>
         </div>
       </div>
 
       <!-- Tabla de Socios -->
-      <div class="overflow-x-auto">
-        <table class="w-full text-left border-collapse">
+      <div class="w-full overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 pb-4">
+        <table class="w-full text-left border-collapse min-w-[850px]">
           <thead>
-            <tr class="bg-zinc-900 text-zinc-400 uppercase text-[11px] font-bold tracking-wider border-b border-zinc-800">
-              <th scope="col" class="px-6 py-4">Socio</th>
-              <th scope="col" class="px-6 py-4">Correo Electronico</th>
-              <th scope="col" class="px-6 py-4">Estado Membresia</th>
-              <th scope="col" class="px-6 py-4">Fecha Vencimiento</th>
-              <th scope="col" class="px-6 py-4 text-right">Acciones</th>
+            <tr class="bg-zinc-900/90 text-zinc-400 uppercase text-[11px] font-bold tracking-wider border-b border-zinc-800">
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Socio / Identificador</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Correo Electrónico</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Estado de Membresía</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Fecha de Vencimiento</th>
+              <th scope="col" class="px-6 py-4 text-right whitespace-nowrap">Acciones</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-zinc-800/60">
+          <tbody class="divide-y divide-zinc-800">
             {{TABLA_SOCIOS_HTML}}
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- SECCION 2: Gestion de Inventario -->
-    <section class="bg-zinc-950/60 border border-zinc-800 rounded-2xl shadow-xl overflow-hidden space-y-6">
+    <!-- MODULO 2: GESTION DE INVENTARIO -->
+    <section id="modulo-inventario" class="hidden bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 shadow-xl space-y-6">
       
       <!-- Cabecera de Seccion -->
-      <div class="p-6 border-b border-zinc-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-zinc-800">
         <div>
-          <h2 class="text-xl font-bold uppercase tracking-wider text-white">Gestión de Inventario</h2>
-          <p class="text-xs text-zinc-400 mt-1">
-            Registro de nuevos artículos y supervisión del stock disponible en la tienda oficial del gimnasio.
-          </p>
+          <h2 class="text-xl font-bold uppercase tracking-wider text-white">Gestión de Inventario y Catálogo</h2>
+          <p class="text-xs text-zinc-400 mt-1">Catálogo visual con fotografía, control de existencias de stock y actualización de precios oficiales.</p>
         </div>
         <div>
-          <span class="px-3 py-1.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 text-brand-yellow border border-zinc-700 rounded-lg font-mono">
-            {{TOTAL_PRODUCTOS}} Productos &bull; {{TOTAL_UNIDADES_STOCK}} Unidades
-          </span>
-        </div>
-      </div>
-
-      <!-- Formulario de Registro de Nuevo Producto -->
-      <div class="px-6">
-        <div class="bg-zinc-900/70 border border-zinc-800 rounded-2xl p-6">
-          <div class="mb-5 pb-3 border-b border-zinc-800">
-            <h3 class="text-sm font-bold uppercase tracking-wider text-white">Registrar Nuevo Producto</h3>
-            <p class="text-xs text-zinc-400 mt-0.5">Ingrese los detalles comerciales y el stock inicial del producto.</p>
-          </div>
-
-          <form id="form-nuevo-producto" onsubmit="registrarProducto(event)" class="space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              
-              <!-- Campo: Nombre -->
-              <div>
-                <label for="prod-nombre" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
-                  Nombre del Producto
-                </label>
-                <input
-                  type="text"
-                  id="prod-nombre"
-                  name="nombre"
-                  required
-                  placeholder="Ej. Proteina Isolate 100% 2kg"
-                  class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
-                >
-              </div>
-
-              <!-- Campo: Categoria -->
-              <div>
-                <label for="prod-categoria" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
-                  Categoría
-                </label>
-                <select
-                  id="prod-categoria"
-                  name="categoria"
-                  required
-                  class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-yellow transition"
-                >
-                  <option value="Suplementos">Suplementos</option>
-                  <option value="Accesorios">Accesorios</option>
-                  <option value="Bebidas">Bebidas</option>
-                  <option value="Equipamiento">Equipamiento</option>
-                  <option value="Ropa Deportiva">Ropa Deportiva</option>
-                </select>
-              </div>
-
-              <!-- Campo: Precio -->
-              <div>
-                <label for="prod-precio" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
-                  Precio Unitario (S/.)
-                </label>
-                <input
-                  type="number"
-                  id="prod-precio"
-                  name="precio"
-                  step="0.01"
-                  min="0"
-                  required
-                  placeholder="Ej. 179.90"
-                  class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
-                >
-              </div>
-
-              <!-- Campo: Stock inicial -->
-              <div>
-                <label for="prod-stock" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
-                  Stock Inicial
-                </label>
-                <input
-                  type="number"
-                  id="prod-stock"
-                  name="stock"
-                  step="1"
-                  min="0"
-                  required
-                  placeholder="Ej. 20"
-                  class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
-                >
-              </div>
-
-            </div>
-
-            <!-- Boton de Envio -->
-            <div class="flex justify-end pt-2">
-              <button
-                type="submit"
-                id="btn-registrar-prod"
-                class="px-6 py-3 text-xs font-bold uppercase tracking-wider bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 rounded-xl shadow-md transition duration-150 active:scale-95"
-              >
-                Registrar Producto
-              </button>
-            </div>
-          </form>
+          <button
+            type="button"
+            onclick="cambiarModulo('registro', 'producto')"
+            class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
+          >
+            Nuevo Producto
+          </button>
         </div>
       </div>
 
       <!-- Tabla de Existencias de Inventario -->
-      <div class="overflow-x-auto pb-4">
-        <table class="w-full text-left border-collapse">
+      <div class="w-full overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 pb-4">
+        <table class="w-full text-left border-collapse min-w-[880px]">
           <thead>
-            <tr class="bg-zinc-900 text-zinc-400 uppercase text-[11px] font-bold tracking-wider border-b border-zinc-800">
+            <tr class="bg-zinc-900/90 text-zinc-400 uppercase text-[11px] font-bold tracking-wider border-b border-zinc-800">
               <th scope="col" class="px-6 py-4">Producto</th>
-              <th scope="col" class="px-6 py-4">Categoria</th>
-              <th scope="col" class="px-6 py-4">Precio Unitario</th>
-              <th scope="col" class="px-6 py-4">Stock Disponible</th>
-              <th scope="col" class="px-6 py-4">Estado</th>
-              <th scope="col" class="px-6 py-4 text-right">Acciones</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Categoría</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Precio Unitario</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Stock Disponible</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Estado</th>
+              <th scope="col" class="px-6 py-4 text-right whitespace-nowrap">Acciones</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-zinc-800/60">
+          <tbody class="divide-y divide-zinc-800">
             {{TABLA_INVENTARIO_HTML}}
           </tbody>
         </table>
       </div>
     </section>
 
+    <!-- MODULO 3: CAJA Y DESPACHO DE TIENDA (RECEPCION) -->
+    <section id="modulo-caja" class="hidden bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 shadow-xl space-y-6">
+      
+      <!-- Cabecera de Seccion con Buscador por Ticket -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-zinc-800">
+        <div>
+          <h2 class="text-xl font-bold uppercase tracking-wider text-white">Caja y Despacho de Tienda (Recepción)</h2>
+          <p class="text-xs text-zinc-400 mt-1">Control de tickets emitidos por los socios para cobro presencial y entrega de suplementos.</p>
+        </div>
+        
+        <!-- Buscador en tiempo real por Codigo de Ticket -->
+        <div class="w-full sm:w-72">
+          <label for="input-filtro-ticket" class="sr-only">Buscar por Código Ticket</label>
+          <div class="relative">
+            <input
+              type="text"
+              id="input-filtro-ticket"
+              onkeyup="filtrarPedidosPorTicket()"
+              placeholder="Buscar Ticket (ej. IFG-8492)..."
+              class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-2.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition font-mono uppercase"
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de Pedidos y Tickets -->
+      <div class="w-full overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0 pb-4">
+        <table class="w-full text-left border-collapse min-w-[1020px]">
+          <thead>
+            <tr class="bg-zinc-900/90 text-zinc-400 uppercase text-[11px] font-bold tracking-wider border-b border-zinc-800">
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Código Ticket</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Socio</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Fecha Emisión</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Método de Pago</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Total</th>
+              <th scope="col" class="px-6 py-4 whitespace-nowrap">Estado</th>
+              <th scope="col" class="px-6 py-4 text-right whitespace-nowrap">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tabla-pedidos-body" class="divide-y divide-zinc-800">
+            {{TABLA_PEDIDOS_HTML}}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MODULO 4: NUEVO REGISTRO (CON SUB-PESTAÑAS) -->
+    <section id="modulo-registro" class="hidden bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 shadow-xl space-y-6">
+      
+      <!-- Cabecera de Seccion y Sub-Pestañas -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-zinc-800">
+        <div>
+          <h2 class="text-xl font-bold uppercase tracking-wider text-white">Módulo de Nuevos Registros</h2>
+          <p class="text-xs text-zinc-400 mt-1">Alta inmediata de nuevos usuarios de staff/afiliados o incorporación de artículos al inventario.</p>
+        </div>
+
+        <!-- Selector de Sub-Pestañas -->
+        <div class="flex items-center space-x-2 bg-zinc-900/90 p-1.5 rounded-xl border border-zinc-800 shrink-0">
+          <button
+            type="button"
+            id="subTabBtnUsuario"
+            onclick="cambiarSubmodulo('usuario')"
+            class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-yellow-400 text-zinc-950 rounded-xl transition shadow-md"
+          >
+            Socio / Entrenador
+          </button>
+          <button
+            type="button"
+            id="subTabBtnProducto"
+            onclick="cambiarSubmodulo('producto')"
+            class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded-xl transition border border-zinc-700"
+          >
+            Nuevo Producto
+          </button>
+        </div>
+      </div>
+
+      <!-- Sub-modulo A: Registro de Socio / Entrenador -->
+      <div id="submodulo-registro-usuario" class="max-w-3xl mx-auto bg-zinc-900/80 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+        <div class="border-b border-zinc-800 pb-3">
+          <h3 class="text-base font-bold uppercase tracking-wider text-white">Registro de Nuevo Afiliado o Staff</h3>
+          <p class="text-xs text-zinc-400 mt-0.5">Asigne el rol correspondiente, genere credenciales y configure el periodo de vigencia.</p>
+        </div>
+
+        <form id="form-alta-socio" onsubmit="registrarNuevoSocio(event)" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="alta-rol" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                Rol del Usuario
+              </label>
+              <select
+                id="alta-rol"
+                name="rol"
+                required
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+              >
+                <option value="socio" selected>Socio (Socio Regular)</option>
+                <option value="entrenador">Entrenador (Entrenador de Staff)</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="alta-tipo-membresia" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                Tipo de Membresía
+              </label>
+              <select
+                id="alta-tipo-membresia"
+                name="tipoMembresia"
+                required
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+              >
+                <option value="Mensual">Membresía Mensual (30 días de vigencia)</option>
+                <option value="Anual">Membresía Anual (365 días de vigencia)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="alta-nombre" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                Nombre Completo
+              </label>
+              <input
+                type="text"
+                id="alta-nombre"
+                name="nombre"
+                required
+                placeholder="Ejemplo: Juan Pérez Gómez"
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+              >
+            </div>
+
+            <div>
+              <label for="alta-email" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                Correo Electrónico
+              </label>
+              <input
+                type="email"
+                id="alta-email"
+                name="email"
+                required
+                placeholder="socio@correo.com"
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+              >
+            </div>
+          </div>
+
+          <div>
+            <label for="alta-password" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+              Contraseña Temporal de Acceso
+            </label>
+            <input
+              type="password"
+              id="alta-password"
+              name="password"
+              required
+              placeholder="Mínimo 6 caracteres"
+              class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+            >
+          </div>
+
+          <div class="flex justify-end pt-4 border-t border-zinc-800">
+            <button
+              type="submit"
+              id="btn-guardar-alta"
+              class="px-6 py-3 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
+            >
+              Registrar Usuario
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Sub-modulo B: Registro de Nuevo Producto con Fotografia -->
+      <div id="submodulo-registro-producto" class="hidden max-w-3xl mx-auto bg-zinc-900/80 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-xl space-y-6">
+        <div class="border-b border-zinc-800 pb-3">
+          <h3 class="text-base font-bold uppercase tracking-wider text-white">Registrar Nuevo Artículo al Inventario</h3>
+          <p class="text-xs text-zinc-400 mt-0.5">Complete los datos comerciales y cargue la fotografía oficial para el catálogo de la tienda.</p>
+        </div>
+
+        <form id="form-nuevo-producto" onsubmit="registrarProducto(event)" enctype="multipart/form-data" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="prod-nombre" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                Nombre del Producto
+              </label>
+              <input
+                type="text"
+                id="prod-nombre"
+                name="nombre"
+                required
+                placeholder="Ej. Whey Protein Isolate 1kg"
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+              >
+            </div>
+
+            <div>
+              <label for="prod-categoria" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                Categoría
+              </label>
+              <select
+                id="prod-categoria"
+                name="categoria"
+                required
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+              >
+                <option value="Suplementos">Suplementos</option>
+                <option value="Accesorios">Accesorios</option>
+                <option value="Bebidas">Bebidas</option>
+                <option value="Equipamiento">Equipamiento</option>
+                <option value="Ropa Deportiva">Ropa Deportiva</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="prod-precio" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                Precio Unitario (S/.)
+              </label>
+              <input
+                type="number"
+                id="prod-precio"
+                name="precio"
+                step="0.01"
+                min="0"
+                required
+                placeholder="Ej. 179.90"
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+              >
+            </div>
+
+            <div>
+              <label for="prod-stock" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+                Stock Inicial
+              </label>
+              <input
+                type="number"
+                id="prod-stock"
+                name="stock"
+                step="1"
+                min="0"
+                required
+                placeholder="Ej. 20"
+                class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+              >
+            </div>
+          </div>
+
+          <!-- Campo de Subida de Fotografia con Previsualizacion en Vivo -->
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+              Fotografía Oficial del Producto
+            </label>
+            <div class="flex flex-col sm:flex-row items-center gap-4 p-4 bg-zinc-800/40 border border-zinc-700/80 rounded-xl">
+              <div id="preview-prod-container" class="relative w-28 h-28 rounded-xl bg-zinc-900 border border-zinc-700 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+                <img id="preview-prod-img" src="" alt="Previsualización" class="w-full h-full object-cover hidden" />
+                <div id="preview-prod-placeholder" class="flex flex-col items-center justify-center text-zinc-500 text-center p-2">
+                  <svg class="w-8 h-8 text-zinc-600 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                  <span class="text-[9px] uppercase font-bold text-zinc-500">Sin foto</span>
+                </div>
+              </div>
+
+              <div class="flex-1 w-full space-y-2">
+                <input
+                  type="file"
+                  id="prod-imagen"
+                  name="imagen"
+                  accept="image/jpeg,image/png,image/webp"
+                  onchange="previsualizarFotoProducto(event)"
+                  class="block w-full text-xs text-zinc-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:uppercase file:tracking-wider file:bg-zinc-800 file:text-yellow-400 hover:file:bg-zinc-700 file:cursor-pointer cursor-pointer border border-zinc-700 rounded-xl bg-zinc-900 p-2 focus:outline-none"
+                >
+                <div class="flex items-center justify-between text-[11px] text-zinc-400">
+                  <span>Formatos: JPG, JPEG, PNG, WEBP (Máx. 3 MB)</span>
+                  <button type="button" onclick="limpiarPrevisualizacion()" class="text-xs text-red-400 hover:text-red-300 font-bold uppercase tracking-wider">
+                    Quitar foto
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end pt-4 border-t border-zinc-800">
+            <button
+              type="submit"
+              id="btn-registrar-prod"
+              class="px-6 py-3 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl shadow-md transition duration-150 active:scale-95"
+            >
+              Registrar Producto
+            </button>
+          </div>
+        </form>
+      </div>
+
+    </section>
+
   </main>
 
-  <!-- MODAL: Notificacion de Renovacion de Membresia -->
-  <div id="modal-renovacion" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 text-center">
-      <div class="w-12 h-12 mx-auto rounded-full bg-brand-yellow/10 border border-brand-yellow/30 flex items-center justify-center text-brand-yellow font-bold text-lg">
-        IF
-      </div>
-      <div>
-        <h3 class="text-base font-bold uppercase tracking-wider text-white">Modulo de Gestion de Membresia</h3>
-        <p class="text-xs text-zinc-400 mt-2">
-          Socio seleccionado: <strong id="modal-renovacion-socio" class="text-white"></strong>
-        </p>
-        <p class="text-xs text-zinc-500 mt-2">
-          Plan: <span id="modal-renovacion-tipo" class="text-brand-yellow font-bold"></span> &bull; Vencimiento: <span id="modal-renovacion-fecha" class="text-zinc-300"></span>
-        </p>
-        <p class="text-[11px] text-zinc-500 mt-3 bg-zinc-950 p-2.5 rounded-lg border border-zinc-800">
-          Nota: Panel exclusivo de administracion y control financiero. Registro de pagos y facturacion centralizada.
-        </p>
-      </div>
-      <div>
+  <!-- MODAL: Renovar Membresia de Socio -->
+  <div id="modal-renovacion" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-2xl space-y-5">
+      <div class="border-b border-zinc-800 pb-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-full bg-yellow-400/10 border border-yellow-400/40 flex items-center justify-center text-yellow-400 font-bold text-sm">
+            IF
+          </div>
+          <div>
+            <h3 class="text-base font-bold uppercase tracking-wider text-white">Renovar Membresía</h3>
+            <span class="text-[11px] text-zinc-400">Extensión de vigencia del afiliado</span>
+          </div>
+        </div>
         <button
           type="button"
           onclick="cerrarModalRenovacion()"
-          class="w-full px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl transition"
+          class="text-zinc-400 hover:text-white text-xl font-bold px-2 py-1"
         >
-          Cerrar
+          &times;
         </button>
       </div>
+
+      <form id="form-renovar-membresia" onsubmit="guardarRenovacionMembresia(event)" class="space-y-4">
+        <input type="hidden" id="modal-renovacion-usuario-id" name="usuarioId" value="">
+
+        <div class="bg-zinc-800/60 border border-zinc-800 rounded-xl p-4 space-y-1.5">
+          <p class="text-xs text-zinc-400 uppercase font-bold tracking-wider">Afiliado Seleccionado</p>
+          <p id="modal-renovacion-socio" class="text-base font-extrabold text-white"></p>
+          <div class="flex items-center justify-between text-xs text-zinc-400 pt-1 border-t border-zinc-700/60 font-mono">
+            <span>Plan actual: <strong id="modal-renovacion-tipo" class="text-yellow-400"></strong></span>
+            <span>Vence: <strong id="modal-renovacion-fecha" class="text-zinc-200"></strong></span>
+          </div>
+        </div>
+
+        <div>
+          <label for="modal-renovacion-tipo-select" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Tipo de Membresía a Asignar
+          </label>
+          <select
+            id="modal-renovacion-tipo-select"
+            name="tipoMembresia"
+            required
+            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+          >
+            <option value="Mensual">Membresía Mensual (+30 días de vigencia)</option>
+            <option value="Anual">Membresía Anual VIP (+365 días de vigencia)</option>
+          </select>
+        </div>
+
+        <div class="flex items-center justify-end space-x-3 pt-3 border-t border-zinc-800">
+          <button
+            type="button"
+            onclick="cerrarModalRenovacion()"
+            class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            id="btn-confirmar-renovacion"
+            class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
+          >
+            Confirmar Renovación
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- MODAL: Detalle de Stock de Producto -->
-  <div id="modal-stock" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-5 text-center">
-      <div class="w-12 h-12 mx-auto rounded-full bg-brand-yellow/10 border border-brand-yellow/30 flex items-center justify-center text-brand-yellow font-bold text-lg">
-        TIENDA
-      </div>
-      <div>
-        <h3 class="text-base font-bold uppercase tracking-wider text-white">Gestion de Stock de Producto</h3>
-        <p class="text-xs text-zinc-400 mt-2">
-          Producto: <strong id="modal-stock-producto" class="text-white"></strong>
-        </p>
-        <p class="text-xs text-zinc-400 mt-1 font-mono">
-          Precio: <span id="modal-stock-precio" class="text-brand-yellow font-bold"></span> &bull; Stock: <span id="modal-stock-cantidad" class="text-white font-bold"></span> unidades
-        </p>
-        <p class="text-[11px] text-zinc-500 mt-3 bg-zinc-950 p-2.5 rounded-lg border border-zinc-800">
-          El inventario se sincroniza en tiempo real con las compras realizadas desde la tienda oficial del gimnasio.
-        </p>
-      </div>
-      <div>
+  <!-- MODAL: Gestionar Stock de Producto -->
+  <div id="modal-stock" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-2xl space-y-5">
+      <div class="border-b border-zinc-800 pb-3 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-full bg-yellow-400/10 border border-yellow-400/40 flex items-center justify-center text-yellow-400 font-bold text-xs">
+            SKU
+          </div>
+          <div>
+            <h3 class="text-base font-bold uppercase tracking-wider text-white">Gestión de Stock</h3>
+            <span class="text-[11px] text-zinc-400">Control de existencias de inventario</span>
+          </div>
+        </div>
         <button
           type="button"
           onclick="cerrarModalStock()"
-          class="w-full px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl transition"
+          class="text-zinc-400 hover:text-white text-xl font-bold px-2 py-1"
         >
-          Cerrar
+          &times;
         </button>
       </div>
+
+      <form id="form-actualizar-stock" onsubmit="guardarActualizacionStock(event)" class="space-y-4">
+        <input type="hidden" id="modal-stock-producto-id" name="productoId" value="">
+
+        <div class="bg-zinc-800/60 border border-zinc-800 rounded-xl p-4 space-y-1.5">
+          <p class="text-xs text-zinc-400 uppercase font-bold tracking-wider">Producto Seleccionado</p>
+          <p id="modal-stock-producto" class="text-base font-extrabold text-white"></p>
+          <div class="flex items-center justify-between text-xs text-zinc-400 pt-1 border-t border-zinc-700/60 font-mono">
+            <span>Precio: <strong id="modal-stock-precio" class="text-yellow-400"></strong></span>
+            <span>Stock actual: <strong id="modal-stock-cantidad" class="text-zinc-200"></strong></span>
+          </div>
+        </div>
+
+        <div>
+          <label for="modal-stock-input-cantidad" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Nuevo Stock en Unidades
+          </label>
+          <input
+            type="number"
+            id="modal-stock-input-cantidad"
+            name="nuevoStock"
+            min="0"
+            required
+            placeholder="0"
+            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition font-mono"
+          >
+        </div>
+
+        <div class="flex items-center justify-end space-x-3 pt-3 border-t border-zinc-800">
+          <button
+            type="button"
+            onclick="cerrarModalStock()"
+            class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            id="btn-guardar-stock"
+            class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
+          >
+            Actualizar Stock
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 
-  <!-- MODAL: Alta de Cliente (Registro de Nuevo Socio) -->
+  <!-- MODAL: Alta de Cliente (Registro de Nuevo Socio o Entrenador) -->
   <div id="modal-alta-socio" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-6">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-2xl space-y-6">
       
       <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
         <div>
-          <h3 class="text-lg font-bold uppercase tracking-wider text-white">Alta de Cliente</h3>
-          <p class="text-xs text-zinc-400 mt-0.5">Registre un nuevo socio con su membresía inicial activa.</p>
+          <h3 class="text-lg font-bold uppercase tracking-wider text-white">Registro de Nuevo Usuario</h3>
+          <p class="text-xs text-zinc-400 mt-0.5">Registre un nuevo socio o entrenador de staff con sus credenciales de acceso.</p>
         </div>
         <button
           type="button"
@@ -370,58 +672,73 @@
         </button>
       </div>
 
-      <form id="form-alta-socio" onsubmit="registrarNuevoSocio(event)" class="space-y-4">
+      <form id="form-alta-socio-modal" onsubmit="registrarNuevoSocioModal(event)" class="space-y-4">
         <div>
-          <label for="alta-nombre" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+          <label for="modal-alta-rol" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Rol del Usuario
+          </label>
+          <select
+            id="modal-alta-rol"
+            name="rol"
+            required
+            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+          >
+            <option value="socio" selected>Socio (Socio Regular)</option>
+            <option value="entrenador">Entrenador (Entrenador de Staff)</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="modal-alta-nombre" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
             Nombre Completo
           </label>
           <input
             type="text"
-            id="alta-nombre"
+            id="modal-alta-nombre"
             name="nombre"
             required
-            placeholder="Ejemplo: Juan Perez Gomez"
-            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
+            placeholder="Ejemplo: Juan Pérez Gómez"
+            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
           >
         </div>
 
         <div>
-          <label for="alta-email" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+          <label for="modal-alta-email" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
             Correo Electrónico
           </label>
           <input
             type="email"
-            id="alta-email"
+            id="modal-alta-email"
             name="email"
             required
             placeholder="socio@correo.com"
-            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
+            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
           >
         </div>
 
         <div>
-          <label for="alta-password" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+          <label for="modal-alta-password" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
             Contraseña Temporal
           </label>
           <input
             type="password"
-            id="alta-password"
+            id="modal-alta-password"
             name="password"
             required
-            placeholder="Minimo 6 caracteres"
-            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition"
+            placeholder="Mínimo 6 caracteres"
+            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
           >
         </div>
 
         <div>
-          <label for="alta-tipo-membresia" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+          <label for="modal-alta-tipo-membresia" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
             Tipo de Membresía
           </label>
           <select
-            id="alta-tipo-membresia"
+            id="modal-alta-tipo-membresia"
             name="tipoMembresia"
             required
-            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-yellow transition"
+            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
           >
             <option value="Mensual">Membresía Mensual (30 días de vigencia)</option>
             <option value="Anual">Membresía Anual (365 días de vigencia)</option>
@@ -438,13 +755,97 @@
           </button>
           <button
             type="submit"
-            id="btn-guardar-alta"
-            class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
+            id="btn-guardar-alta-modal"
+            class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
           >
-            Registrar Socio
+            Registrar Usuario
           </button>
         </div>
       </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Detalle de Productos a Despachar en Caja -->
+  <div id="modal-detalle-pedido" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-2xl mx-4 max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-2xl space-y-5">
+      
+      <!-- Encabezado del Modal -->
+      <div class="border-b border-zinc-800 pb-3 flex items-center justify-between">
+        <div>
+          <h3 class="text-base font-extrabold uppercase tracking-wider text-white">
+            Detalle de Artículos a Despachar
+          </h3>
+          <p class="text-xs text-zinc-400 mt-0.5">
+            Comprobación de productos incluidos en el ticket antes del cobro presencial
+          </p>
+        </div>
+        <button
+          type="button"
+          onclick="cerrarModalDetallePedido()"
+          class="text-zinc-400 hover:text-white text-xl font-bold px-2 py-1 leading-none"
+          aria-label="Cerrar modal"
+        >
+          &times;
+        </button>
+      </div>
+
+      <!-- Resumen del Ticket -->
+      <div class="bg-zinc-950 p-4 rounded-xl border border-zinc-800 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+        <div>
+          <span class="text-[10px] text-zinc-400 font-semibold uppercase block">Ticket</span>
+          <span id="modal-detalle-codigo" class="font-mono font-extrabold text-yellow-400 text-sm"></span>
+        </div>
+        <div>
+          <span class="text-[10px] text-zinc-400 font-semibold uppercase block">Socio</span>
+          <span id="modal-detalle-socio" class="font-bold text-white truncate block"></span>
+        </div>
+        <div>
+          <span class="text-[10px] text-zinc-400 font-semibold uppercase block">Estado</span>
+          <span id="modal-detalle-estado" class="font-bold text-xs"></span>
+        </div>
+        <div>
+          <span class="text-[10px] text-zinc-400 font-semibold uppercase block">Total a Cobrar</span>
+          <span id="modal-detalle-total" class="font-mono font-extrabold text-white text-sm"></span>
+        </div>
+      </div>
+
+      <!-- Tabla de Productos del Pedido -->
+      <div class="w-full overflow-x-auto border border-zinc-800 rounded-xl bg-zinc-950/40">
+        <table class="w-full text-left border-collapse min-w-[500px]">
+          <thead>
+            <tr class="bg-zinc-900 text-zinc-400 uppercase text-[10px] font-bold tracking-wider border-b border-zinc-800">
+              <th scope="col" class="px-4 py-3">Artículo</th>
+              <th scope="col" class="px-4 py-3">Categoría</th>
+              <th scope="col" class="px-4 py-3 text-center">Cant.</th>
+              <th scope="col" class="px-4 py-3 text-right">P. Unit</th>
+              <th scope="col" class="px-4 py-3 text-right">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody id="modal-detalle-items-body" class="divide-y divide-zinc-800 text-xs">
+            <!-- Se llena dinamicamente por JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Footer y Acciones -->
+      <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-3 border-t border-zinc-800">
+        <div class="text-xs text-zinc-400 font-mono">
+          Verifique que los artículos correspondan con el inventario físico en recepción.
+        </div>
+        <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
+          <button
+            type="button"
+            onclick="cerrarModalDetallePedido()"
+            class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition"
+          >
+            Cerrar
+          </button>
+          <div id="modal-detalle-accion-container">
+            <!-- Boton 'Cobrar y Despachar Pedido' renderizado por JS si esta pendiente -->
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
 
@@ -475,32 +876,129 @@
       }, 5000);
     }
 
+    // Navegación modular por pestañas (Tabs)
+    function cambiarModulo(modulo, submodulo = 'usuario') {
+      const modulos = ['socios', 'inventario', 'caja', 'registro'];
+      const tabs = {
+        socios: document.getElementById('tabBtnSocios'),
+        inventario: document.getElementById('tabBtnInventario'),
+        caja: document.getElementById('tabBtnCaja'),
+        registro: document.getElementById('tabBtnRegistro')
+      };
+      const containers = {
+        socios: document.getElementById('modulo-socios'),
+        inventario: document.getElementById('modulo-inventario'),
+        caja: document.getElementById('modulo-caja'),
+        registro: document.getElementById('modulo-registro')
+      };
+
+      modulos.forEach(m => {
+        if (containers[m]) {
+          if (m === modulo) {
+            containers[m].classList.remove('hidden');
+          } else {
+            containers[m].classList.add('hidden');
+          }
+        }
+
+        if (tabs[m]) {
+          if (m === modulo) {
+            tabs[m].className = 'px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-950 bg-yellow-400 rounded-t-xl transition duration-150 border-t border-x border-yellow-400 shrink-0';
+          } else {
+            tabs[m].className = 'px-5 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800 rounded-t-xl transition duration-150 border-t border-x border-transparent shrink-0';
+          }
+        }
+      });
+
+      if (modulo === 'registro' && submodulo) {
+        cambiarSubmodulo(submodulo);
+      }
+    }
+
+    // Sub-pestañas del módulo Nuevo Registro
+    function cambiarSubmodulo(submodulo) {
+      const subUsuario = document.getElementById('submodulo-registro-usuario');
+      const subProducto = document.getElementById('submodulo-registro-producto');
+      const btnUsuario = document.getElementById('subTabBtnUsuario');
+      const btnProducto = document.getElementById('subTabBtnProducto');
+
+      if (submodulo === 'usuario') {
+        if (subUsuario) subUsuario.classList.remove('hidden');
+        if (subProducto) subProducto.classList.add('hidden');
+        if (btnUsuario) btnUsuario.className = 'px-4 py-2 text-xs font-bold uppercase tracking-wider bg-yellow-400 text-zinc-950 rounded-xl transition shadow-md';
+        if (btnProducto) btnProducto.className = 'px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded-xl transition border border-zinc-700';
+      } else {
+        if (subUsuario) subUsuario.classList.add('hidden');
+        if (subProducto) subProducto.classList.remove('hidden');
+        if (btnUsuario) btnUsuario.className = 'px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-400 hover:text-white hover:bg-zinc-700 rounded-xl transition border border-zinc-700';
+        if (btnProducto) btnProducto.className = 'px-4 py-2 text-xs font-bold uppercase tracking-wider bg-yellow-400 text-zinc-950 rounded-xl transition shadow-md';
+      }
+    }
+
+    // Previsualización en vivo de fotografía de producto (FileReader)
+    function previsualizarFotoProducto(event) {
+      const file = event.target.files[0];
+      const previewImg = document.getElementById('preview-prod-img');
+      const previewPlaceholder = document.getElementById('preview-prod-placeholder');
+
+      if (file) {
+        if (file.size > 3 * 1024 * 1024) {
+          mostrarNotificacion('La imagen excede el límite de 3 MB.', 'error');
+          event.target.value = '';
+          previewImg.classList.add('hidden');
+          previewPlaceholder.classList.remove('hidden');
+          return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          previewImg.src = e.target.result;
+          previewImg.classList.remove('hidden');
+          previewPlaceholder.classList.add('hidden');
+        };
+        reader.readAsDataURL(file);
+      } else {
+        previewImg.classList.add('hidden');
+        previewPlaceholder.classList.remove('hidden');
+      }
+    }
+
+    function limpiarPrevisualizacion() {
+      const input = document.getElementById('prod-imagen');
+      if (input) input.value = '';
+      const previewImg = document.getElementById('preview-prod-img');
+      const previewPlaceholder = document.getElementById('preview-prod-placeholder');
+      if (previewImg) {
+        previewImg.src = '';
+        previewImg.classList.add('hidden');
+      }
+      if (previewPlaceholder) previewPlaceholder.classList.remove('hidden');
+    }
+
+    // Registro de nuevo producto con Multipart FormData (Multer)
     async function registrarProducto(event) {
       event.preventDefault();
 
-      const nombre = document.getElementById('prod-nombre').value.trim();
-      const categoria = document.getElementById('prod-categoria').value;
-      const precio = parseFloat(document.getElementById('prod-precio').value);
-      const stock = parseInt(document.getElementById('prod-stock').value, 10);
+      const form = document.getElementById('form-nuevo-producto');
       const btn = document.getElementById('btn-registrar-prod');
 
       btn.disabled = true;
       btn.textContent = 'Registrando...';
 
+      const formData = new FormData(form);
+
       try {
         const response = await fetch('/api/productos', {
           method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ nombre, categoria, precio, stock })
+          body: formData
         });
 
         const data = await response.json();
 
         if (response.ok && data.success) {
           mostrarNotificacion(data.message, 'exito');
-          document.getElementById('form-nuevo-producto').reset();
+          form.reset();
+          limpiarPrevisualizacion();
 
           setTimeout(() => {
             window.location.reload();
@@ -510,7 +1008,7 @@
         }
       } catch (err) {
         console.error('Error de red al registrar producto:', err);
-        mostrarNotificacion('Error de conexion con el servidor.', 'error');
+        mostrarNotificacion('Error de conexión con el servidor.', 'error');
       } finally {
         btn.disabled = false;
         btn.textContent = 'Registrar Producto';
@@ -529,9 +1027,11 @@
       modal.classList.remove('flex');
     }
 
+    // Registro de usuario desde pestaña
     async function registrarNuevoSocio(event) {
       event.preventDefault();
 
+      const rol = document.getElementById('alta-rol').value;
       const nombre = document.getElementById('alta-nombre').value.trim();
       const email = document.getElementById('alta-email').value.trim();
       const password = document.getElementById('alta-password').value.trim();
@@ -547,13 +1047,12 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ nombre, email, password, tipoMembresia })
+          body: JSON.stringify({ nombre, email, password, tipoMembresia, rol })
         });
 
         const data = await response.json();
 
         if (response.ok && data.success) {
-          cerrarModalAltaSocio();
           mostrarNotificacion(data.message, 'exito');
           document.getElementById('form-alta-socio').reset();
 
@@ -561,18 +1060,64 @@
             window.location.reload();
           }, 1200);
         } else {
-          mostrarNotificacion(data.message || 'Error al registrar el socio.', 'error');
+          mostrarNotificacion(data.message || 'Error al registrar el usuario.', 'error');
         }
       } catch (err) {
         console.error('Error de red al registrar socio:', err);
-        mostrarNotificacion('Error de conexion con el servidor.', 'error');
+        mostrarNotificacion('Error de conexión con el servidor.', 'error');
       } finally {
         btn.disabled = false;
-        btn.textContent = 'Registrar Socio';
+        btn.textContent = 'Registrar Usuario';
       }
     }
 
-    function abrirModalRenovacion(socio, tipo, fecha) {
+    // Registro de usuario desde modal (si se invoca)
+    async function registrarNuevoSocioModal(event) {
+      event.preventDefault();
+
+      const rol = document.getElementById('modal-alta-rol').value;
+      const nombre = document.getElementById('modal-alta-nombre').value.trim();
+      const email = document.getElementById('modal-alta-email').value.trim();
+      const password = document.getElementById('modal-alta-password').value.trim();
+      const tipoMembresia = document.getElementById('modal-alta-tipo-membresia').value;
+      const btn = document.getElementById('btn-guardar-alta-modal');
+
+      btn.disabled = true;
+      btn.textContent = 'Registrando...';
+
+      try {
+        const response = await fetch('/api/admin/registrar-socio', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ nombre, email, password, tipoMembresia, rol })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          cerrarModalAltaSocio();
+          mostrarNotificacion(data.message, 'exito');
+          document.getElementById('form-alta-socio-modal').reset();
+
+          setTimeout(() => {
+            window.location.reload();
+          }, 1200);
+        } else {
+          mostrarNotificacion(data.message || 'Error al registrar el usuario.', 'error');
+        }
+      } catch (err) {
+        console.error('Error de red al registrar socio:', err);
+        mostrarNotificacion('Error de conexión con el servidor.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Registrar Usuario';
+      }
+    }
+
+    function abrirModalRenovacion(usuarioId, socio, tipo, fecha) {
+      document.getElementById('modal-renovacion-usuario-id').value = usuarioId;
       document.getElementById('modal-renovacion-socio').textContent = socio;
       document.getElementById('modal-renovacion-tipo').textContent = tipo;
       document.getElementById('modal-renovacion-fecha').textContent = fecha;
@@ -586,12 +1131,54 @@
       const modal = document.getElementById('modal-renovacion');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
+      document.getElementById('form-renovar-membresia').reset();
     }
 
-    function mostrarDetalleStock(producto, stock, precio) {
+    async function guardarRenovacionMembresia(event) {
+      event.preventDefault();
+
+      const usuarioId = document.getElementById('modal-renovacion-usuario-id').value;
+      const tipoMembresia = document.getElementById('modal-renovacion-tipo-select').value;
+      const btn = document.getElementById('btn-confirmar-renovacion');
+
+      btn.disabled = true;
+      btn.textContent = 'Procesando...';
+
+      try {
+        const response = await fetch('/api/admin/renovar-membresia', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ usuarioId, tipoMembresia })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          cerrarModalRenovacion();
+          mostrarNotificacion(data.message, 'exito');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          mostrarNotificacion(data.message || 'Error al renovar la membresía.', 'error');
+        }
+      } catch (err) {
+        console.error('Error de red al renovar membresia:', err);
+        mostrarNotificacion('Error de conexión con el servidor.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Confirmar Renovación';
+      }
+    }
+
+    function mostrarDetalleStock(productoId, producto, stock, precio) {
+      document.getElementById('modal-stock-producto-id').value = productoId;
       document.getElementById('modal-stock-producto').textContent = producto;
-      document.getElementById('modal-stock-cantidad').textContent = stock;
+      document.getElementById('modal-stock-cantidad').textContent = stock + ' unidades';
       document.getElementById('modal-stock-precio').textContent = 'S/ ' + precio;
+      document.getElementById('modal-stock-input-cantidad').value = stock;
 
       const modal = document.getElementById('modal-stock');
       modal.classList.remove('hidden');
@@ -602,7 +1189,238 @@
       const modal = document.getElementById('modal-stock');
       modal.classList.add('hidden');
       modal.classList.remove('flex');
+      document.getElementById('form-actualizar-stock').reset();
     }
+
+    async function guardarActualizacionStock(event) {
+      event.preventDefault();
+
+      const productoId = document.getElementById('modal-stock-producto-id').value;
+      const nuevoStock = parseInt(document.getElementById('modal-stock-input-cantidad').value, 10);
+      const btn = document.getElementById('btn-guardar-stock');
+
+      btn.disabled = true;
+      btn.textContent = 'Actualizando...';
+
+      try {
+        const response = await fetch('/api/admin/actualizar-stock', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ productoId, nuevoStock })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          cerrarModalStock();
+          mostrarNotificacion(data.message, 'exito');
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
+        } else {
+          mostrarNotificacion(data.message || 'Error al actualizar el stock.', 'error');
+        }
+      } catch (err) {
+        console.error('Error de red al actualizar stock:', err);
+        mostrarNotificacion('Error de conexión con el servidor.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Actualizar Stock';
+      }
+    }
+
+    function filtrarPedidosPorTicket() {
+      const filtro = document.getElementById('input-filtro-ticket').value.trim().toLowerCase();
+      const filas = document.querySelectorAll('.fila-pedido-ticket');
+
+      filas.forEach(fila => {
+        const codigo = fila.getAttribute('data-codigo') || '';
+        if (codigo.includes(filtro)) {
+          fila.style.display = '';
+        } else {
+          fila.style.display = 'none';
+        }
+      });
+    }
+
+    async function cobrarPedido(pedidoId) {
+      const accionContainer = document.getElementById('accion-pedido-' + pedidoId);
+      const btn = accionContainer ? accionContainer.querySelector('button') : null;
+
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Cobrando...';
+      }
+
+      try {
+        const response = await fetch('/api/admin/pedidos/cobrar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ pedidoId })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          mostrarNotificacion(data.message, 'exito');
+
+          // Actualizar estado visual de la fila en tiempo real
+          const badge = document.getElementById('badge-pedido-' + pedidoId);
+          if (badge) {
+            badge.className = 'inline-flex items-center px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider border rounded-xl whitespace-nowrap bg-emerald-950 text-emerald-400 border-emerald-800';
+            badge.innerHTML = '<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 shrink-0"></span>Pagado';
+          }
+
+          if (accionContainer) {
+            accionContainer.innerHTML = '<span class="text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">Completado</span>';
+          }
+
+          // Actualizar modal si esta visualizandose
+          if (pedidoActivoModalId === pedidoId) {
+            const modalEstado = document.getElementById('modal-detalle-estado');
+            if (modalEstado) {
+              modalEstado.className = 'font-bold text-xs uppercase text-emerald-400';
+              modalEstado.textContent = 'Pagado';
+            }
+            const modalAccion = document.getElementById('modal-detalle-accion-container');
+            if (modalAccion) {
+              modalAccion.innerHTML = '<span class="px-4 py-2 text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">Pedido Despachado</span>';
+            }
+          }
+        } else {
+          mostrarNotificacion(data.message || 'Error al procesar el cobro del pedido.', 'error');
+          if (btn) {
+            btn.disabled = false;
+            btn.textContent = 'Cobrar y Entregar';
+          }
+        }
+      } catch (err) {
+        console.error('Error de red al cobrar pedido:', err);
+        mostrarNotificacion('Error de conexión con el servidor.', 'error');
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = 'Cobrar y Entregar';
+        }
+      }
+    }
+
+    let pedidoActivoModalId = null;
+
+    async function verDetalleProductos(pedidoId, codigoTicket, socioNombre, total, estado) {
+      pedidoActivoModalId = pedidoId;
+      document.getElementById('modal-detalle-codigo').textContent = codigoTicket;
+      document.getElementById('modal-detalle-socio').textContent = socioNombre;
+      document.getElementById('modal-detalle-total').textContent = 'S/ ' + total;
+
+      const estadoEl = document.getElementById('modal-detalle-estado');
+      const esPagado = estado === 'Pagado';
+      estadoEl.className = 'font-bold text-xs uppercase ' + (esPagado ? 'text-emerald-400' : 'text-amber-400');
+      estadoEl.textContent = estado;
+
+      const itemsBody = document.getElementById('modal-detalle-items-body');
+      itemsBody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-zinc-500">Consultando artículos del pedido...</td></tr>';
+
+      const accionContainer = document.getElementById('modal-detalle-accion-container');
+      if (!esPagado) {
+        accionContainer.innerHTML = `
+          <button
+            type="button"
+            id="btn-modal-cobrar"
+            onclick="cobrarPedidoDesdeModal(${pedidoId})"
+            class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md whitespace-nowrap"
+          >
+            Cobrar y Despachar Pedido
+          </button>
+        `;
+      } else {
+        accionContainer.innerHTML = `
+          <span class="px-4 py-2 text-xs font-bold uppercase tracking-wider text-emerald-400 font-mono">
+            Pedido Despachado
+          </span>
+        `;
+      }
+
+      const modal = document.getElementById('modal-detalle-pedido');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+
+      try {
+        const res = await fetch(`/api/admin/pedidos/${pedidoId}/detalle`);
+        const data = await res.json();
+
+        if (res.ok && data.success) {
+          if (!data.items || data.items.length === 0) {
+            itemsBody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-zinc-500">No se encontraron artículos registrados para este ticket.</td></tr>';
+            return;
+          }
+
+          itemsBody.innerHTML = data.items.map(item => {
+            const imgHtml = item.imagen_url
+              ? `<img src="${item.imagen_url}" alt="${item.nombre}" class="w-8 h-8 rounded-lg object-cover border border-zinc-700 shrink-0" onerror="this.style.display='none';">`
+              : `<div class="w-8 h-8 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-500 shrink-0">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                </div>`;
+
+            return `
+              <tr class="hover:bg-zinc-800/40 transition">
+                <td class="px-4 py-3">
+                  <div class="flex items-center space-x-2.5">
+                    ${imgHtml}
+                    <span class="font-bold text-white text-xs">${item.nombre}</span>
+                  </div>
+                </td>
+                <td class="px-4 py-3 text-zinc-400 uppercase text-[10px]">
+                  ${item.categoria}
+                </td>
+                <td class="px-4 py-3 text-center font-mono font-bold text-zinc-200">
+                  ${item.cantidad}
+                </td>
+                <td class="px-4 py-3 text-right font-mono text-zinc-300">
+                  S/ ${Number(item.precio_unitario).toFixed(2)}
+                </td>
+                <td class="px-4 py-3 text-right font-mono font-bold text-yellow-400">
+                  S/ ${Number(item.subtotal).toFixed(2)}
+                </td>
+              </tr>
+            `;
+          }).join('');
+        } else {
+          itemsBody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-red-400">Error al cargar artículos del pedido.</td></tr>';
+        }
+      } catch (err) {
+        console.error('Error al consultar detalle del pedido:', err);
+        itemsBody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-red-400">Fallo de conexión al cargar artículos.</td></tr>';
+      }
+    }
+
+    function cerrarModalDetallePedido() {
+      const modal = document.getElementById('modal-detalle-pedido');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+      pedidoActivoModalId = null;
+    }
+
+    async function cobrarPedidoDesdeModal(pedidoId) {
+      const btn = document.getElementById('btn-modal-cobrar');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Cobrando...';
+      }
+      await cobrarPedido(pedidoId);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        cerrarModalRenovacion();
+        cerrarModalStock();
+        cerrarModalAltaSocio();
+        cerrarModalDetallePedido();
+      }
+    });
   </script>
 </body>
 </html>

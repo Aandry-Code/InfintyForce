@@ -3,76 +3,90 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Modulo de Rutinas - Infinite Force Gym</title>
+  <title>Módulo de Rutinas - Infinite Force Gym</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              yellow: '#d4ff00',
-              gold: '#ffd700',
-              border: '#27272a',
-              card: '#18181b',
-              surface: '#27272a'
-            }
-          }
-        }
-      }
-    }
-  </script>
 </head>
 <body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
 
-  <!-- Header Superior -->
+  <!-- Header Superior Unificado -->
   <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-16 sm:h-20 py-2 sm:py-0 flex items-center justify-between flex-wrap gap-2">
       
-      <div class="flex items-center space-x-4">
-        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+      <!-- Brand Logo y Titulo -->
+      <a href="/socio-dashboard" class="flex items-center space-x-3 group">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black border-2 border-yellow-400 p-0.5 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
           <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
         </div>
         <div>
-          <span class="text-xl font-extrabold tracking-wider uppercase text-white">
-            Infinite <span class="text-brand-yellow">Force</span> Gym
+          <span class="text-base sm:text-lg font-extrabold tracking-wider uppercase text-white block leading-none">
+            Infinite <span class="text-yellow-400">Force</span> Gym
           </span>
-          <span class="block text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
-            Modulo de Rutinas y Entrenamiento
+          <span class="text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+            Portal Oficial del Socio
           </span>
         </div>
-      </div>
+      </a>
 
-      <!-- Enlaces de Navegacion -->
-      <nav class="hidden md:flex items-center space-x-6">
-        <a href="/socio-dashboard" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+      <!-- Enlaces de Navegacion Unificados con Indicador Activo -->
+      <nav class="hidden md:flex items-center space-x-8">
+        <a href="/socio-dashboard" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white pb-1 transition-all">
           Dashboard
         </a>
-        <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-brand-yellow border-b-2 border-brand-yellow pb-1">
+        <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-yellow-400 border-b-2 border-yellow-400 pb-1 transition-all">
           Rutinas
         </a>
-        <a href="/nutricion" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+        <a href="/nutricion" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white pb-1 transition-all">
           Nutricion
         </a>
-        <a href="/tienda" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+        <a href="/tienda" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white pb-1 transition-all">
           Tienda
         </a>
       </nav>
 
-      <div class="flex items-center space-x-6">
+      <!-- Perfil de Usuario y Acciones -->
+      <div class="flex items-center space-x-2 sm:space-x-4">
+        {{VOLVER_PANEL_ENTRENADOR_HTML}}
         <div class="text-right hidden sm:block">
           <p class="text-sm font-bold text-white">{{USER_NAME}}</p>
           <p class="text-xs text-zinc-400 font-mono">{{USER_EMAIL}}</p>
         </div>
         <a
           href="/logout"
-          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-red-950 text-zinc-300 hover:text-red-200 border border-zinc-700 hover:border-red-800 rounded-lg transition duration-150"
+          class="px-3 sm:px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800/80 hover:bg-red-950 text-zinc-300 hover:text-red-300 border border-zinc-700 hover:border-red-800 rounded-xl transition-all"
         >
-          Cerrar Sesion
+          Salir
         </a>
+
+        <!-- Boton Hamburguesa para Moviles -->
+        <button
+          type="button"
+          id="btnMenuMovil"
+          onclick="toggleMenuMovil()"
+          aria-label="Abrir Menú de Navegación"
+          class="md:hidden p-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 hover:text-white rounded-xl transition"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
       </div>
 
+    </div>
+
+    <!-- Menu Desplegable Movil -->
+    <div id="menuMovilDropdown" class="hidden md:hidden px-4 pt-3 pb-4 border-t border-zinc-800 bg-zinc-950/95 space-y-1">
+      <a href="/socio-dashboard" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+        Dashboard
+      </a>
+      <a href="/rutinas" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-yellow-400 bg-zinc-800/70 border-l-2 border-yellow-400 transition">
+        Rutinas
+      </a>
+      <a href="/nutricion" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+        Nutricion
+      </a>
+      <a href="/tienda" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+        Tienda
+      </a>
     </div>
   </header>
 
@@ -83,16 +97,16 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-zinc-800">
       <div>
         <h1 class="text-3xl font-extrabold tracking-tight text-white uppercase">
-          Modulo de <span class="text-brand-yellow">Rutinas</span>
+          Módulo de <span class="text-yellow-400">Rutinas</span>
         </h1>
         <p class="text-sm text-zinc-400 mt-1">
-          Gestion de programas de entrenamiento, ejecucion de ejercicios y solicitudes tecnicas.
+          Gestión de programas de entrenamiento, ejecución de ejercicios y solicitudes técnicas.
         </p>
       </div>
 
       <a
         href="/socio-dashboard"
-        class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-lg transition"
+        class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-xl transition"
       >
         Volver a mi Dashboard
       </a>
@@ -104,7 +118,7 @@
         type="button"
         id="tabBtnPlanActual"
         onclick="cambiarPestana('planActual')"
-        class="px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-black bg-brand-yellow rounded-t-xl transition duration-150 border-t border-x border-brand-yellow"
+        class="px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-950 bg-yellow-400 rounded-t-xl transition duration-150 border-t border-x border-yellow-400"
       >
         Mi Plan Actual
       </button>
@@ -135,7 +149,7 @@
     <section id="seccionPlanActual" class="space-y-6">
       
       <!-- Informacion de la Rutina Asignada -->
-      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg">
+      <div class="bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 shadow-lg">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
             <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-1">
@@ -157,19 +171,19 @@
       </div>
 
       <!-- Tabla / Lista de Ejercicios Asignados -->
-      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg">
+      <div class="bg-zinc-800/50 border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
         <div class="px-6 py-4 border-b border-zinc-800 flex items-center justify-between">
           <h3 class="text-sm font-bold uppercase tracking-wider text-white">
             Ejercicios Asignados en este Ciclo
           </h3>
-          <span id="contadorEjercicios" class="text-xs font-mono text-brand-yellow font-bold">
+          <span id="contadorEjercicios" class="text-xs font-mono text-yellow-400 font-bold">
             0 Ejercicios
           </span>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm text-zinc-300">
-            <thead class="bg-zinc-900/80 text-xs font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-800">
+        <div class="w-full overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+          <table class="w-full text-left text-sm text-zinc-300 min-w-[640px]">
+            <thead class="bg-zinc-900/90 text-xs font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-800">
               <tr>
                 <th scope="col" class="px-6 py-3.5">#</th>
                 <th scope="col" class="px-6 py-3.5">Ejercicio</th>
@@ -195,13 +209,13 @@
     <section id="seccionSolicitar" class="hidden space-y-8">
       
       <!-- Tarjeta del Formulario de Solicitud -->
-      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 sm:p-8 shadow-lg max-w-3xl">
+      <div class="bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 sm:p-8 shadow-lg max-w-3xl">
         <div class="mb-6 pb-4 border-b border-zinc-800">
           <h2 class="text-xl font-extrabold text-white uppercase tracking-wide">
             Formulario de Solicitud de Nueva Rutina
           </h2>
           <p class="text-xs text-zinc-400 mt-1">
-            Completa los parametros de entrenamiento para que el equipo tecnico disene tu nuevo plan.
+            Completa los parámetros de entrenamiento para que el equipo técnico diseñe tu nuevo plan.
           </p>
         </div>
 
@@ -216,19 +230,35 @@
               id="campoObjetivo"
               name="objetivo"
               required
-              class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition"
+              onchange="toggleObjetivoPersonalizado()"
+              class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
             >
               <option value="" disabled selected>Seleccione un objetivo</option>
               <option value="Volumen">Volumen (Hipertrofia Muscular)</option>
               <option value="Definicion">Definicion (Perdida de Grasa y Tonificacion)</option>
               <option value="Mantenimiento">Mantenimiento (Salud y Acondicionamiento General)</option>
+              <option value="Otro">Otro / Objetivo Personalizado</option>
             </select>
+          </div>
+
+          <!-- Campo Dinamico: Objetivo Personalizado -->
+          <div id="contenedorObjetivoOtro" class="hidden transition-all duration-200">
+            <label for="campoObjetivoOtro" class="block text-xs font-bold uppercase tracking-wider text-yellow-400 mb-2">
+              Especifica tu Meta o Enfoque Personalizado
+            </label>
+            <input
+              type="text"
+              id="campoObjetivoOtro"
+              name="objetivo_personalizado"
+              placeholder="Ejemplo: Preparación para carrera 10k, recuperación de movilidad articular..."
+              class="w-full px-4 py-3 bg-zinc-800 border border-yellow-400/50 rounded-xl text-white text-sm focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition placeholder-zinc-500"
+            >
           </div>
 
           <!-- Campo: Dias por semana -->
           <div>
             <label for="campoDiasSemana" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
-              Dias de Entrenamiento por Semana (1 a 7)
+              Días de Entrenamiento por Semana (1 a 7)
             </label>
             <input
               type="number"
@@ -238,21 +268,21 @@
               max="7"
               required
               placeholder="Ejemplo: 4"
-              class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition"
+              class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
             >
           </div>
 
           <!-- Campo: Observaciones / Lesiones -->
           <div>
             <label for="campoObservaciones" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
-              Observaciones, Lesiones o Limitaciones Fisicas
+              Observaciones, Lesiones o Limitaciones Físicas
             </label>
             <textarea
               id="campoObservaciones"
               name="observaciones"
               rows="4"
-              placeholder="Detalla antecedentes medicos, molestias articulares, preferencias o equipo disponible..."
-              class="w-full px-4 py-3 bg-zinc-900 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-brand-yellow focus:ring-1 focus:ring-brand-yellow transition"
+              placeholder="Detalla antecedentes médicos, molestias articulares, preferencias o equipo disponible..."
+              class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white text-sm focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
             ></textarea>
           </div>
 
@@ -260,7 +290,7 @@
             <button
               type="submit"
               id="btnEnviarSolicitud"
-              class="w-full sm:w-auto px-8 py-3.5 bg-brand-yellow hover:bg-[#c2ea00] disabled:bg-zinc-800 disabled:text-zinc-500 disabled:cursor-not-allowed text-zinc-950 font-extrabold uppercase tracking-wider text-sm rounded-xl shadow-lg transition duration-150"
+              class="w-full sm:w-auto px-8 py-3.5 bg-yellow-400 hover:bg-yellow-300 disabled:bg-zinc-800 disabled:text-zinc-500 disabled:cursor-not-allowed text-zinc-950 font-extrabold uppercase tracking-wider text-xs rounded-xl shadow-lg shadow-yellow-400/10 transition-all duration-150 active:scale-95"
             >
               Enviar Solicitud de Rutina
             </button>
@@ -270,27 +300,28 @@
       </div>
 
       <!-- Historial de Solicitudes Realizadas -->
-      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl overflow-hidden shadow-lg">
+      <div class="bg-zinc-800/50 border border-zinc-800 rounded-xl overflow-hidden shadow-lg">
         <div class="px-6 py-4 border-b border-zinc-800">
           <h3 class="text-sm font-bold uppercase tracking-wider text-white">
             Historial de Solicitudes de Rutina
           </h3>
         </div>
 
-        <div class="overflow-x-auto">
-          <table class="w-full text-left text-sm text-zinc-300">
-            <thead class="bg-zinc-900/80 text-xs font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-800">
+        <div class="w-full overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+          <table class="w-full text-left text-sm text-zinc-300 min-w-[760px]">
+            <thead class="bg-zinc-900/90 text-xs font-bold uppercase tracking-wider text-zinc-400 border-b border-zinc-800">
               <tr>
-                <th scope="col" class="px-6 py-3.5">Fecha</th>
+                <th scope="col" class="px-6 py-3.5 whitespace-nowrap">Fecha</th>
                 <th scope="col" class="px-6 py-3.5">Objetivo</th>
-                <th scope="col" class="px-6 py-3.5 text-center">Dias/Semana</th>
-                <th scope="col" class="px-6 py-3.5">Observaciones</th>
-                <th scope="col" class="px-6 py-3.5 text-center">Estado</th>
+                <th scope="col" class="px-6 py-3.5 text-center whitespace-nowrap">Días/Semana</th>
+                <th scope="col" class="px-6 py-3.5 min-w-[220px]">Mis Observaciones</th>
+                <th scope="col" class="px-6 py-3.5 min-w-[240px]">Observaciones del Entrenador</th>
+                <th scope="col" class="px-6 py-3.5 text-center whitespace-nowrap">Estado</th>
               </tr>
             </thead>
             <tbody id="tablaSolicitudesBody" class="divide-y divide-zinc-800/70">
               <tr>
-                <td colspan="5" class="px-6 py-6 text-center text-zinc-500 text-xs">
+                <td colspan="6" class="px-6 py-6 text-center text-zinc-500 text-xs">
                   No hay solicitudes registradas previamente.
                 </td>
               </tr>
@@ -304,11 +335,18 @@
   </main>
 
   <footer class="bg-zinc-950 border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
-    Infinite Force Gym. Plataforma de Gestion y Control de Acceso. Todos los derechos reservados.
+    Infinite Force Gym. Plataforma de Gestión y Control de Acceso. Todos los derechos reservados.
   </footer>
 
   <!-- Logica de Frontend en Vanilla JS -->
   <script>
+    function toggleMenuMovil() {
+      const menu = document.getElementById('menuMovilDropdown');
+      if (menu) {
+        menu.classList.toggle('hidden');
+      }
+    }
+
     const tabBtnPlanActual = document.getElementById('tabBtnPlanActual');
     const tabBtnSolicitar = document.getElementById('tabBtnSolicitar');
     const seccionPlanActual = document.getElementById('seccionPlanActual');
@@ -324,13 +362,13 @@
         seccionPlanActual.classList.remove('hidden');
         seccionSolicitar.classList.add('hidden');
 
-        tabBtnPlanActual.className = 'px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-black bg-brand-yellow rounded-t-xl transition duration-150 border-t border-x border-brand-yellow';
+        tabBtnPlanActual.className = 'px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-950 bg-yellow-400 rounded-t-xl transition duration-150 border-t border-x border-yellow-400';
         tabBtnSolicitar.className = 'px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800 rounded-t-xl transition duration-150 border-t border-x border-transparent';
       } else {
         seccionPlanActual.classList.add('hidden');
         seccionSolicitar.classList.remove('hidden');
 
-        tabBtnSolicitar.className = 'px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-black bg-brand-yellow rounded-t-xl transition duration-150 border-t border-x border-brand-yellow';
+        tabBtnSolicitar.className = 'px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-950 bg-yellow-400 rounded-t-xl transition duration-150 border-t border-x border-yellow-400';
         tabBtnPlanActual.className = 'px-6 py-3 text-xs font-extrabold uppercase tracking-wider text-zinc-400 hover:text-white bg-zinc-800/50 hover:bg-zinc-800 rounded-t-xl transition duration-150 border-t border-x border-transparent';
 
         cargarHistorialSolicitudes();
@@ -381,17 +419,17 @@
             tablaBody.innerHTML = '';
             datos.ejercicios.forEach((ej, index) => {
               const tr = document.createElement('tr');
-              tr.className = 'hover:bg-zinc-900/50 transition';
+              tr.className = 'hover:bg-zinc-800/40 transition';
               tr.innerHTML = `
                 <td class="px-6 py-4 font-mono text-zinc-500 text-xs">${index + 1}</td>
                 <td class="px-6 py-4 font-bold text-white">${ej.nombre}</td>
                 <td class="px-6 py-4">
-                  <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-zinc-800 text-brand-yellow border border-zinc-700 rounded-md">
+                  <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider bg-zinc-800 text-yellow-400 border border-zinc-700 rounded-md">
                     ${ej.grupoMuscular}
                   </span>
                 </td>
                 <td class="px-6 py-4 text-center font-mono font-bold text-zinc-200">${ej.series}</td>
-                <td class="px-6 py-4 text-center font-mono text-brand-yellow font-bold">${ej.repeticiones}</td>
+                <td class="px-6 py-4 text-center font-mono text-yellow-400 font-bold">${ej.repeticiones}</td>
               `;
               tablaBody.appendChild(tr);
             });
@@ -399,6 +437,22 @@
         }
       } catch (error) {
         console.error('Error al cargar plan de entrenamiento:', error);
+      }
+    }
+
+    function toggleObjetivoPersonalizado() {
+      const select = document.getElementById('campoObjetivo');
+      const contenedorOtro = document.getElementById('contenedorObjetivoOtro');
+      const inputOtro = document.getElementById('campoObjetivoOtro');
+
+      if (select.value === 'Otro') {
+        contenedorOtro.classList.remove('hidden');
+        inputOtro.required = true;
+        inputOtro.focus();
+      } else {
+        contenedorOtro.classList.add('hidden');
+        inputOtro.required = false;
+        inputOtro.value = '';
       }
     }
 
@@ -411,14 +465,14 @@
           const datos = await respuesta.json();
           if (datos.success) {
             if (datos.solicitudes.length === 0) {
-              tablaBody.innerHTML = '<tr><td colspan="5" class="px-6 py-6 text-center text-zinc-500 text-xs">No hay solicitudes registradas previamente.</td></tr>';
+              tablaBody.innerHTML = '<tr><td colspan="6" class="px-6 py-6 text-center text-zinc-500 text-xs">No hay solicitudes registradas previamente.</td></tr>';
               return;
             }
 
             tablaBody.innerHTML = '';
             datos.solicitudes.forEach((sol) => {
               const tr = document.createElement('tr');
-              tr.className = 'hover:bg-zinc-900/50 transition';
+              tr.className = 'hover:bg-zinc-800/40 transition';
 
               let estadoClass = 'bg-amber-950 text-amber-300 border-amber-800';
               if (sol.estado === 'Aprobada') {
@@ -427,12 +481,38 @@
                 estadoClass = 'bg-red-950 text-red-300 border-red-800';
               }
 
+              const misObs = sol.observaciones && sol.observaciones.trim() ? sol.observaciones.trim() : 'Sin observaciones médicas registradas';
+              const obsEntrenador = sol.observaciones_entrenador && sol.observaciones_entrenador.trim() ? sol.observaciones_entrenador.trim() : null;
+
+              const obsEntrenadorHtml = obsEntrenador
+                ? `
+                  <div class="bg-zinc-800/40 border border-yellow-400/20 rounded-lg p-2.5 text-xs text-yellow-300 leading-relaxed cursor-help" title="${obsEntrenador}">
+                    <p class="line-clamp-2 font-medium">${obsEntrenador}</p>
+                  </div>
+                `
+                : `
+                  <div class="bg-zinc-800/20 border border-zinc-800/60 rounded-lg p-2.5 text-xs text-zinc-500 italic">
+                    Pendiente de evaluación técnica
+                  </div>
+                `;
+
               tr.innerHTML = `
-                <td class="px-6 py-4 font-mono text-xs text-zinc-400">${sol.fecha}</td>
-                <td class="px-6 py-4 font-bold text-white uppercase text-xs">${sol.objetivo}</td>
-                <td class="px-6 py-4 text-center font-mono text-brand-yellow font-bold">${sol.dias_semana} dias</td>
-                <td class="px-6 py-4 text-xs text-zinc-400 max-w-xs truncate">${sol.observaciones || 'Sin observaciones'}</td>
-                <td class="px-6 py-4 text-center">
+                <td class="px-6 py-4 font-mono text-xs text-zinc-400 whitespace-nowrap">${sol.fecha}</td>
+                <td class="px-6 py-4 font-bold text-white uppercase text-xs">
+                  <span class="inline-block px-2.5 py-1 bg-zinc-800/80 rounded-md border border-zinc-700/60 max-w-[200px] truncate" title="${sol.objetivo}">
+                    ${sol.objetivo}
+                  </span>
+                </td>
+                <td class="px-6 py-4 text-center font-mono text-yellow-400 font-bold whitespace-nowrap">${sol.dias_semana} días</td>
+                <td class="px-6 py-4 min-w-[220px] max-w-xs">
+                  <div class="bg-zinc-800/40 border border-zinc-800/80 rounded-lg p-2.5 text-xs text-zinc-300 leading-relaxed cursor-help" title="${misObs}">
+                    <p class="line-clamp-2">${misObs}</p>
+                  </div>
+                </td>
+                <td class="px-6 py-4 min-w-[240px] max-w-sm">
+                  ${obsEntrenadorHtml}
+                </td>
+                <td class="px-6 py-4 text-center whitespace-nowrap">
                   <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider border rounded-md ${estadoClass}">
                     ${sol.estado}
                   </span>
@@ -453,9 +533,16 @@
     formSolicitud.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const objetivo = document.getElementById('campoObjetivo').value;
+      const selectObjetivo = document.getElementById('campoObjetivo').value;
+      const inputOtro = document.getElementById('campoObjetivoOtro').value.trim();
+      const objetivo = (selectObjetivo === 'Otro') ? inputOtro : selectObjetivo;
       const dias_semana = document.getElementById('campoDiasSemana').value;
       const observaciones = document.getElementById('campoObservaciones').value;
+
+      if (selectObjetivo === 'Otro' && !inputOtro) {
+        mostrarAlertaRutinas('Por favor, especifica tu objetivo personalizado en el campo correspondiente.', false);
+        return;
+      }
 
       btnEnviar.disabled = true;
       btnEnviar.textContent = 'Enviando solicitud...';
@@ -470,6 +557,7 @@
           },
           body: JSON.stringify({
             objetivo,
+            objetivo_personalizado: inputOtro,
             dias_semana,
             observaciones
           })
@@ -480,6 +568,7 @@
         if (respuesta.status === 201 && resultado.success) {
           mostrarAlertaRutinas(resultado.message, true);
           formSolicitud.reset();
+          toggleObjetivoPersonalizado();
           cargarHistorialSolicitudes();
         } else {
           mostrarAlertaRutinas(resultado.message || 'Error al procesar la solicitud.', false);

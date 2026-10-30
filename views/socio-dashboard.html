@@ -5,62 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard del Socio - Infinite Force Gym</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              yellow: '#d4ff00',
-              gold: '#ffd700',
-              border: '#27272a',
-              card: '#18181b',
-              surface: '#27272a'
-            }
-          }
-        }
-      }
-    }
-  </script>
 </head>
 <body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
 
-  <!-- Header Superior -->
+  <!-- Header Superior Unificado -->
   <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-16 sm:h-20 py-2 sm:py-0 flex items-center justify-between flex-wrap gap-2">
       
-      <div class="flex items-center space-x-4">
-        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+      <!-- Brand Logo y Titulo -->
+      <a href="/socio-dashboard" class="flex items-center space-x-3 group">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black border-2 border-yellow-400 p-0.5 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
           <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
         </div>
         <div>
-          <span class="text-xl font-extrabold tracking-wider uppercase text-white">
-            Infinite <span class="text-brand-yellow">Force</span> Gym
+          <span class="text-base sm:text-lg font-extrabold tracking-wider uppercase text-white block leading-none">
+            Infinite <span class="text-yellow-400">Force</span> Gym
           </span>
-          <span class="block text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
+          <span class="text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
             Portal Oficial del Socio
           </span>
         </div>
-      </div>
+      </a>
 
-      <!-- Enlaces de Navegacion -->
-      <nav class="hidden md:flex items-center space-x-6">
-        <a href="/socio-dashboard" class="text-xs font-bold uppercase tracking-wider text-brand-yellow border-b-2 border-brand-yellow pb-1">
+      <!-- Enlaces de Navegacion Unificados con Indicador Activo -->
+      <nav class="hidden md:flex items-center space-x-8">
+        <a href="/socio-dashboard" class="text-xs font-bold uppercase tracking-wider text-yellow-400 border-b-2 border-yellow-400 pb-1 transition-all">
           Dashboard
         </a>
-        <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+        <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white pb-1 transition-all">
           Rutinas
         </a>
-        <a href="/nutricion" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+        <a href="/nutricion" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white pb-1 transition-all">
           Nutricion
         </a>
-        <a href="/tienda" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+        <a href="/tienda" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white pb-1 transition-all">
           Tienda
         </a>
       </nav>
 
-      <div class="flex items-center space-x-4">
+      <!-- Perfil de Usuario y Acciones -->
+      <div class="flex items-center space-x-2 sm:space-x-4">
         {{VOLVER_PANEL_ENTRENADOR_HTML}}
         <div class="text-right hidden sm:block">
           <p id="navUserName" class="text-sm font-bold text-white">{{USER_NAME}}</p>
@@ -68,38 +52,60 @@
         </div>
         <a
           href="/logout"
-          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-red-950 text-zinc-300 hover:text-red-200 border border-zinc-700 hover:border-red-800 rounded-lg transition duration-150"
+          class="px-3 sm:px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800/80 hover:bg-red-950 text-zinc-300 hover:text-red-300 border border-zinc-700 hover:border-red-800 rounded-xl transition-all"
         >
-          Cerrar Sesion
+          Salir
         </a>
+
+        <!-- Boton Hamburguesa para Moviles -->
+        <button
+          type="button"
+          id="btnMenuMovil"
+          onclick="toggleMenuMovil()"
+          aria-label="Abrir Menú de Navegación"
+          class="md:hidden p-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 hover:text-white rounded-xl transition"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
       </div>
 
+    </div>
+
+    <!-- Menu Desplegable Movil -->
+    <div id="menuMovilDropdown" class="hidden md:hidden px-4 pt-3 pb-4 border-t border-zinc-800 bg-zinc-950/95 space-y-1">
+      <a href="/socio-dashboard" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-yellow-400 bg-zinc-800/70 border-l-2 border-yellow-400 transition">
+        Dashboard
+      </a>
+      <a href="/rutinas" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+        Rutinas
+      </a>
+      <a href="/nutricion" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+        Nutricion
+      </a>
+      <a href="/tienda" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+        Tienda
+      </a>
     </div>
   </header>
 
   <!-- Contenido Principal -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
     
-    <!-- Encabezado de Bienvenida y Accion Prominente -->
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6 pb-6 border-b border-zinc-800">
+    <!-- Encabezado de Bienvenida -->
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-zinc-800">
       <div>
-        <h1 class="text-3xl font-extrabold tracking-tight text-white uppercase">
-          Bienvenido, <span id="headerUserName" class="text-brand-yellow">{{USER_NAME}}</span>
+        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-white uppercase">
+          Bienvenido, <span id="headerUserName" class="text-yellow-400">{{USER_NAME}}</span>
         </h1>
-        <p class="text-sm text-zinc-400 mt-1">
-          Monitoreo de estado de membresia, control de asistencias y plan de entrenamiento.
+        <p class="text-xs sm:text-sm text-zinc-400 mt-1">
+          Monitoreo de estado de membresía, control de asistencias y plan de entrenamiento.
         </p>
       </div>
-
-      <!-- Boton Prominente de Marcar Asistencia de Hoy -->
-      <div class="flex-shrink-0">
-        <button
-          type="button"
-          id="btnMarcarAsistencia"
-          class="w-full sm:w-auto inline-flex items-center justify-center px-8 py-4 bg-brand-yellow hover:bg-[#c2ea00] disabled:bg-zinc-800 disabled:text-zinc-500 disabled:border-zinc-700 disabled:cursor-not-allowed text-zinc-950 font-extrabold uppercase tracking-wider text-sm rounded-xl shadow-xl shadow-brand-yellow/10 transition-all duration-200 transform active:scale-95 border border-transparent"
-        >
-          <span id="btnAsistenciaText">Marcar Asistencia de Hoy</span>
-        </button>
+      <div class="flex items-center space-x-2 text-xs font-mono text-zinc-400 bg-zinc-800/50 px-3 py-1.5 rounded-xl border border-zinc-800">
+        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+        <span>Socio Activo</span>
       </div>
     </div>
 
@@ -116,66 +122,166 @@
       </div>
     </div>
 
-    <!-- Tres Tarjetas Principales -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <!-- COMPONENTE A: Widget de Sesion Activa con Cronometro Digital -->
+    <section class="bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+      
+      <!-- Informacion y Estado del Cronometro -->
+      <div class="space-y-2 text-center md:text-left">
+        <div class="flex items-center justify-center md:justify-start gap-3">
+          <span class="text-xs font-bold uppercase tracking-widest text-zinc-400">
+            Sesión de Entrenamiento
+          </span>
+          <div id="contenedorBadgeCronometro">
+            <span id="badgeEstadoCronometro" class="inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-400 border border-zinc-700">
+              En espera para entrenar
+            </span>
+          </div>
+        </div>
+        <p class="text-xs text-zinc-400 max-w-md">
+          Inicia tu rutina diaria para registrar tu asistencia automáticamente en el sistema y monitorear el tiempo de tu sesión.
+        </p>
+      </div>
 
-      <!-- Tarjeta 1: Estado de Membresia -->
-      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between">
+      <!-- Display Digital del Cronometro y Boton Interactivo -->
+      <div class="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full md:w-auto justify-center">
+        <!-- Display Monoespaciado -->
+        <div class="bg-zinc-950 border border-zinc-800/90 rounded-2xl px-6 py-3.5 shadow-inner text-center min-w-[200px]">
+          <span id="displayCronometro" class="text-4xl sm:text-5xl font-mono font-extrabold text-yellow-400 tracking-wider">
+            00:00:00
+          </span>
+        </div>
+
+        <!-- Contenedor de Boton Interactivo y Acciones -->
+        <div class="flex flex-col items-center gap-2 w-full sm:w-auto">
+          <button
+            type="button"
+            id="btnControlEntrenamiento"
+            onclick="gestionarEntrenamiento()"
+            class="w-full sm:w-auto bg-yellow-400 text-zinc-950 font-extrabold px-6 py-3.5 rounded-xl uppercase hover:bg-yellow-300 transition-all duration-150 active:scale-95 shadow-lg shadow-yellow-400/10 text-xs tracking-wider flex items-center justify-center"
+          >
+            Iniciar Rutina
+          </button>
+          <button
+            type="button"
+            id="btnReiniciarEntrenamiento"
+            onclick="reiniciarEntrenamiento()"
+            class="hidden text-[11px] font-bold uppercase tracking-wider text-zinc-400 hover:text-yellow-400 transition underline underline-offset-4 cursor-pointer"
+          >
+            Reiniciar rutina de hoy
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- COMPONENTE B: Calendario Mensual de Habitos (Gym Habit Calendar) -->
+    <section class="bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 shadow-xl space-y-6">
+      
+      <!-- Cabecera del Calendario -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-zinc-800">
+        <div>
+          <h2 class="text-xl font-bold uppercase tracking-wider text-white">
+            Mi Registro Mensual de Asistencias
+          </h2>
+          <p class="text-xs text-zinc-400 mt-1">
+            Visualización de consistencia y constancia en tus sesiones de entrenamiento.
+          </p>
+        </div>
+
+        <!-- Metricas del Mes -->
+        <div class="flex items-center gap-3">
+          <div class="bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-center">
+            <span class="text-[10px] text-zinc-400 uppercase tracking-widest block font-bold">Mes Actual</span>
+            <span id="calendarioMesAnio" class="text-sm font-extrabold text-white uppercase font-mono">
+              Cargando...
+            </span>
+          </div>
+          <div class="bg-zinc-900 border border-zinc-800 px-4 py-2 rounded-xl text-center">
+            <span class="text-[10px] text-zinc-400 uppercase tracking-widest block font-bold">Sesiones</span>
+            <span id="contadorAsistencias" class="text-sm font-extrabold text-yellow-400 font-mono">
+              {{TOTAL_ASISTENCIAS_NUMERO}}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cuadricula del Calendario -->
+      <div class="space-y-2">
+        <!-- Nombres de los dias de la semana (Lun a Dom) -->
+        <div class="grid grid-cols-7 gap-1.5 sm:gap-2 text-center text-[11px] sm:text-xs font-bold uppercase tracking-wider text-zinc-400 pb-1">
+          <div>Lun</div>
+          <div>Mar</div>
+          <div>Mié</div>
+          <div>Jue</div>
+          <div>Vie</div>
+          <div>Sáb</div>
+          <div>Dom</div>
+        </div>
+
+        <!-- Dias del Mes generados dinamicamente -->
+        <div id="gridDiasCalendario" class="grid grid-cols-7 gap-1.5 sm:gap-2">
+          <!-- Renderizado dinamicamente por JS -->
+        </div>
+      </div>
+
+      <!-- Leyenda del Calendario -->
+      <div class="pt-2 border-t border-zinc-800 flex flex-wrap items-center justify-between text-xs text-zinc-400 gap-3">
+        <div class="flex items-center gap-4 flex-wrap">
+          <div class="flex items-center gap-2">
+            <span class="w-3.5 h-3.5 rounded bg-yellow-400"></span>
+            <span class="text-[11px]">Asistencia Registrada</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3.5 h-3.5 rounded bg-zinc-800/80 border-2 border-yellow-400"></span>
+            <span class="text-[11px]">Día de Hoy</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span class="w-3.5 h-3.5 rounded bg-zinc-800/40"></span>
+            <span class="text-[11px]">Sin Asistencia</span>
+          </div>
+        </div>
+        <div class="text-[11px] font-mono text-zinc-500">
+          Último ingreso: <span id="fechaUltimoIngreso" class="text-zinc-300 font-bold">{{ULTIMA_ASISTENCIA}}</span>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Tarjetas de Informacion (Membresia y Programa de Entrenamiento) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <!-- Tarjeta: Estado de Membresia -->
+      <div class="bg-zinc-800/50 hover:bg-zinc-800/70 border border-zinc-800 hover:border-zinc-700 rounded-xl p-6 shadow-lg flex flex-col justify-between transition-all">
         <div>
           <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-3">
             Estado de Membresia
           </span>
 
-          <!-- Indicador verde de estado activo -->
+          <!-- Indicador de estado dinamico segun el valor real de MySQL -->
           <div class="flex items-center space-x-3 my-2">
-            <span class="relative flex h-3.5 w-3.5">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
+            <span class="relative flex h-3.5 w-3.5" id="membresia-dot-container">
+              {{MEMBRESIA_DOT_HTML}}
             </span>
             <span class="text-2xl font-extrabold text-white uppercase tracking-wide">
               {{MEMBRESIA_ESTADO}}
             </span>
           </div>
 
-          <p class="text-sm font-bold text-brand-yellow uppercase tracking-wider mt-2">
+          <p class="text-sm font-bold text-yellow-400 uppercase tracking-wider mt-2">
             {{MEMBRESIA_TIPO}}
           </p>
+
+          {{BANNER_MEMBRESIA_HTML}}
         </div>
 
-        <div class="mt-6 pt-4 border-t border-zinc-800/80 text-xs text-zinc-400">
+        <div class="mt-6 pt-4 border-t border-zinc-800 text-xs text-zinc-400">
           <span>Vencimiento: </span>
           <span class="font-mono text-zinc-200 font-semibold">{{MEMBRESIA_VENCIMIENTO}}</span>
         </div>
       </div>
 
-      <!-- Tarjeta 2: Asistencias este mes -->
-      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between">
-        <div>
-          <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-3">
-            Asistencias este mes
-          </span>
-
-          <!-- Numero en texto grande amarillo/verde -->
-          <div class="flex items-baseline space-x-2 my-2">
-            <span id="contadorAsistencias" class="text-5xl font-extrabold text-brand-yellow font-mono tracking-tight">
-              {{TOTAL_ASISTENCIAS_NUMERO}}
-            </span>
-            <span class="text-sm font-bold text-zinc-400 uppercase tracking-wider">Sesiones</span>
-          </div>
-
-          <p class="text-xs text-zinc-400 mt-2">
-            Registro acumulado del ciclo mensual actual.
-          </p>
-        </div>
-
-        <div class="mt-6 pt-4 border-t border-zinc-800/80 text-xs text-zinc-400">
-          <span>Ultimo ingreso: </span>
-          <span id="fechaUltimoIngreso" class="font-mono text-zinc-200 font-semibold">{{ULTIMA_ASISTENCIA}}</span>
-        </div>
-      </div>
-
-      <!-- Tarjeta 3: Programa de Entrenamiento -->
-      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg flex flex-col justify-between">
+      <!-- Tarjeta: Programa de Entrenamiento -->
+      <div class="bg-zinc-800/50 hover:bg-zinc-800/70 border border-zinc-800 hover:border-zinc-700 rounded-xl p-6 shadow-lg flex flex-col justify-between transition-all">
         <div>
           <span class="text-xs font-bold uppercase tracking-widest text-zinc-400 block mb-3">
             Programa de Entrenamiento
@@ -190,32 +296,17 @@
           </p>
         </div>
 
-        <div class="mt-6 pt-4 border-t border-zinc-800/80 flex items-center justify-between text-xs text-zinc-400">
+        <div class="mt-6 pt-4 border-t border-zinc-800 flex items-center justify-between text-xs text-zinc-400">
           <div>
             <span>Frecuencia: </span>
-            <span class="text-brand-yellow font-semibold">{{RUTINA_FRECUENCIA}}</span>
+            <span class="text-yellow-400 font-semibold">{{RUTINA_FRECUENCIA}}</span>
           </div>
-          <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-brand-yellow hover:underline">
+          <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-yellow-400 hover:text-yellow-300 transition-colors">
             Ver Rutina &rarr;
           </a>
         </div>
       </div>
 
-    </div>
-
-    <!-- Seccion Informativa y Normativa de Acceso -->
-    <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-lg">
-      <h3 class="text-sm font-bold uppercase tracking-wider text-white pb-3 border-b border-zinc-800 mb-4">
-        Normas de Registro de Asistencia
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-zinc-400 leading-relaxed">
-        <p>
-          El registro de asistencia debe realizarse una unica vez por dia al ingresar a las instalaciones del gimnasio. El sistema valida la fecha del servidor y actualiza inmediatamente las estadisticas de tu plan.
-        </p>
-        <p>
-          Para mantener la vigencia de tu membresia activa y asegurar un seguimiento adecuado de tu entrenamiento, se recomienda cumplir con la frecuencia minima establecida en tu programa de entrenamiento.
-        </p>
-      </div>
     </div>
 
   </main>
@@ -226,10 +317,13 @@
 
   <!-- Script de Conexion y Logica de Frontend -->
   <script>
-    const btnMarcarAsistencia = document.getElementById('btnMarcarAsistencia');
-    const btnAsistenciaText = document.getElementById('btnAsistenciaText');
-    const contadorAsistencias = document.getElementById('contadorAsistencias');
-    const fechaUltimoIngreso = document.getElementById('fechaUltimoIngreso');
+    function toggleMenuMovil() {
+      const menu = document.getElementById('menuMovilDropdown');
+      if (menu) {
+        menu.classList.toggle('hidden');
+      }
+    }
+
     const alertaNotificacion = document.getElementById('alertaNotificacion');
     const alertaIndicador = document.getElementById('alertaIndicador');
     const alertaMensaje = document.getElementById('alertaMensaje');
@@ -254,24 +348,130 @@
       alertaNotificacion.classList.add('hidden');
     }
 
-    async function verificarEstadoAsistenciaHoy() {
-      try {
-        const respuesta = await fetch('/api/asistencia/estado-hoy');
-        if (respuesta.ok) {
-          const datos = await respuesta.json();
-          if (datos.asistioHoy) {
-            btnMarcarAsistencia.disabled = true;
-            btnAsistenciaText.textContent = 'Asistencia de Hoy Registrada (' + datos.hora + ' hrs)';
-          }
-        }
-      } catch (error) {
-        console.error('Error al verificar el estado de asistencia de hoy:', error);
-      }
+    let intervaloCronometro = null;
+    let inicioTimestamp = null;
+    let estadoEntrenamiento = 'inactivo'; // 'inactivo' | 'activo' | 'completado'
+
+    function formatearTiempo(segundosTotales) {
+      const h = String(Math.floor(segundosTotales / 3600)).padStart(2, '0');
+      const m = String(Math.floor((segundosTotales % 3600) / 60)).padStart(2, '0');
+      const s = String(segundosTotales % 60).padStart(2, '0');
+      return `${h}:${m}:${s}`;
     }
 
-    btnMarcarAsistencia.addEventListener('click', async () => {
-      btnMarcarAsistencia.disabled = true;
-      btnAsistenciaText.textContent = 'Procesando registro...';
+    function iniciarCronometro(timestamp) {
+      inicioTimestamp = timestamp;
+      estadoEntrenamiento = 'activo';
+
+      const badge = document.getElementById('badgeEstadoCronometro');
+      badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-emerald-950 text-emerald-300 border border-emerald-800';
+      badge.innerHTML = '<span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-pulse"></span>Sesión de Entrenamiento Activa';
+
+      const btn = document.getElementById('btnControlEntrenamiento');
+      btn.className = 'w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white font-bold px-6 py-3.5 rounded-xl uppercase transition-all duration-150 active:scale-95 text-xs tracking-wider flex items-center justify-center';
+      btn.disabled = false;
+      btn.textContent = 'Finalizar Rutina';
+
+      if (intervaloCronometro) clearInterval(intervaloCronometro);
+
+      function tick() {
+        const diff = Math.floor((Date.now() - inicioTimestamp) / 1000);
+        document.getElementById('displayCronometro').textContent = formatearTiempo(diff);
+      }
+
+      tick();
+      intervaloCronometro = setInterval(tick, 1000);
+    }
+
+    function finalizarRutina() {
+      if (intervaloCronometro) {
+        clearInterval(intervaloCronometro);
+        intervaloCronometro = null;
+      }
+
+      const diff = inicioTimestamp ? Math.floor((Date.now() - inicioTimestamp) / 1000) : 0;
+      const minutos = Math.max(1, Math.round(diff / 60));
+
+      localStorage.removeItem('inicio_entrenamiento');
+      const hoyKey = 'rutina_completada_hoy_' + new Date().toISOString().split('T')[0];
+      localStorage.setItem(hoyKey, 'true');
+
+      estadoEntrenamiento = 'completado';
+
+      const badge = document.getElementById('badgeEstadoCronometro');
+      badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 border border-zinc-700';
+      badge.textContent = 'Rutina Completada';
+
+      const btn = document.getElementById('btnControlEntrenamiento');
+      btn.className = 'w-full sm:w-auto bg-zinc-800 text-zinc-500 border border-zinc-700 cursor-not-allowed px-6 py-3.5 rounded-xl uppercase font-bold text-xs tracking-wider flex items-center justify-center';
+      btn.disabled = true;
+      btn.textContent = 'Rutina de Hoy Completada';
+
+      const btnReset = document.getElementById('btnReiniciarEntrenamiento');
+      if (btnReset) btnReset.classList.remove('hidden');
+
+      mostrarAlerta(`¡Excelente entrenamiento! Has completado ${minutos} minutos de sesión`, true);
+    }
+
+    async function reiniciarEntrenamiento() {
+      if (intervaloCronometro) {
+        clearInterval(intervaloCronometro);
+        intervaloCronometro = null;
+      }
+      inicioTimestamp = null;
+      estadoEntrenamiento = 'inactivo';
+
+      const hoyKey = 'rutina_completada_hoy_' + new Date().toISOString().split('T')[0];
+      localStorage.removeItem(hoyKey);
+      localStorage.removeItem('inicio_entrenamiento');
+
+      try {
+        const res = await fetch('/api/asistencia/reiniciar-hoy', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          }
+        });
+        const data = await res.json();
+        if (data.totalAsistencias !== undefined) {
+          document.getElementById('contadorAsistencias').textContent = data.totalAsistencias;
+        }
+      } catch (err) {
+        console.error('Error al reiniciar asistencia en MySQL:', err);
+      }
+
+      document.getElementById('displayCronometro').textContent = '00:00:00';
+
+      const badge = document.getElementById('badgeEstadoCronometro');
+      badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-400 border border-zinc-700';
+      badge.textContent = 'En espera para entrenar';
+
+      const btn = document.getElementById('btnControlEntrenamiento');
+      btn.className = 'w-full sm:w-auto bg-yellow-400 text-zinc-950 font-extrabold px-6 py-3.5 rounded-xl uppercase hover:bg-yellow-300 transition-all duration-150 active:scale-95 shadow-lg shadow-yellow-400/10 text-xs tracking-wider flex items-center justify-center';
+      btn.disabled = false;
+      btn.textContent = 'Iniciar Rutina';
+
+      const btnReset = document.getElementById('btnReiniciarEntrenamiento');
+      if (btnReset) btnReset.classList.add('hidden');
+
+      await cargarCalendarioMensual();
+      mostrarAlerta('Se ha habilitado la rutina para que puedas marcar tu asistencia nuevamente.', true);
+    }
+
+    async function gestionarEntrenamiento() {
+      if (estadoEntrenamiento === 'activo') {
+        finalizarRutina();
+        return;
+      }
+
+      if (estadoEntrenamiento === 'completado') {
+        return;
+      }
+
+      const btn = document.getElementById('btnControlEntrenamiento');
+      btn.disabled = true;
+      btn.textContent = 'Iniciando sesión...';
 
       try {
         const respuesta = await fetch('/api/asistencia', {
@@ -284,30 +484,181 @@
 
         const resultado = await respuesta.json();
 
-        if (respuesta.status === 201 && resultado.success) {
-          mostrarAlerta(resultado.message, true);
-          contadorAsistencias.textContent = resultado.totalAsistencias;
-          fechaUltimoIngreso.textContent = resultado.ultimaAsistencia;
-          btnAsistenciaText.textContent = 'Asistencia de Hoy Registrada';
-        } else {
-          mostrarAlerta(resultado.message || 'No fue posible registrar la asistencia.', false);
-          if (respuesta.status === 400 && resultado.message.includes('Ya has registrado')) {
-            btnAsistenciaText.textContent = 'Asistencia de Hoy Registrada';
-          } else {
-            btnMarcarAsistencia.disabled = false;
-            btnAsistenciaText.textContent = 'Marcar Asistencia de Hoy';
+        // Validar si el registro fue exitoso o si ya estaba registrado hoy
+        if (respuesta.status === 201 || (respuesta.status === 400 && resultado.message && resultado.message.includes('Ya has registrado'))) {
+          const now = Date.now();
+          localStorage.setItem('inicio_entrenamiento', String(now));
+          iniciarCronometro(now);
+
+          if (respuesta.status === 201 && resultado.totalAsistencias) {
+            document.getElementById('contadorAsistencias').textContent = resultado.totalAsistencias;
+            if (resultado.ultimaAsistencia) {
+              document.getElementById('fechaUltimoIngreso').textContent = resultado.ultimaAsistencia;
+            }
           }
+
+          // Pintar automaticamente el dia de hoy en el calendario
+          await cargarCalendarioMensual();
+
+          if (respuesta.status === 201) {
+            mostrarAlerta(resultado.message || 'Asistencia registrada correctamente.', true);
+          }
+        } else {
+          btn.disabled = false;
+          btn.textContent = 'Iniciar Rutina';
+          mostrarAlerta(resultado.message || 'No fue posible registrar la asistencia.', false);
         }
       } catch (error) {
-        console.error('Error en peticion de asistencia:', error);
-        mostrarAlerta('Ocurrio un fallo de conexion con el servidor. Intente nuevamente.', false);
-        btnMarcarAsistencia.disabled = false;
-        btnAsistenciaText.textContent = 'Marcar Asistencia de Hoy';
+        console.error('Error al registrar asistencia:', error);
+        btn.disabled = false;
+        btn.textContent = 'Iniciar Rutina';
+        mostrarAlerta('Ocurrió un fallo de conexión al iniciar la sesión.', false);
       }
-    });
+    }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      verificarEstadoAsistenciaHoy();
+    async function cargarCalendarioMensual() {
+      try {
+        const respuesta = await fetch('/api/asistencia/calendario-mes');
+        if (!respuesta.ok) return;
+
+        const datos = await respuesta.json();
+        if (!datos.success) return;
+
+        const mesNombre = datos.mes || 'Mes Actual';
+        const anio = datos.anio || new Date().getFullYear();
+        document.getElementById('calendarioMesAnio').textContent = `${mesNombre} ${anio}`;
+        document.getElementById('contadorAsistencias').textContent = datos.total;
+
+        const diasAsistidosRaw = datos.diasAsistidos || [];
+        const diasAsistidos = Array.isArray(diasAsistidosRaw[0]) ? diasAsistidosRaw[0] : diasAsistidosRaw;
+
+        const mapaHoras = {};
+        if (Array.isArray(datos.detalles)) {
+          datos.detalles.forEach(item => {
+            mapaHoras[item.dia] = item.hora;
+          });
+        }
+
+        const grid = document.getElementById('gridDiasCalendario');
+        grid.innerHTML = '';
+
+        const hoy = new Date();
+        const mesActualIndex = hoy.getMonth();
+        const diaHoy = hoy.getDate();
+
+        // Calculo de inicio de semana (Lunes = 0, ..., Domingo = 6)
+        const primerDiaSemana = new Date(anio, mesActualIndex, 1).getDay();
+        const offsetLunes = (primerDiaSemana + 6) % 7;
+        const totalDiasMes = new Date(anio, mesActualIndex + 1, 0).getDate();
+
+        // Relleno de celdas vacias previas al primer dia
+        for (let i = 0; i < offsetLunes; i++) {
+          const empty = document.createElement('div');
+          empty.className = 'h-12 sm:h-16 rounded-lg opacity-0 pointer-events-none';
+          grid.appendChild(empty);
+        }
+
+        // Renderizado de cada dia del mes
+        for (let dia = 1; dia <= totalDiasMes; dia++) {
+          const asistio = diasAsistidos.includes(dia);
+          const esHoy = (dia === diaHoy);
+          const horaAsistencia = mapaHoras[dia] || '';
+
+          const celda = document.createElement('div');
+          celda.className = 'h-12 sm:h-16 p-1.5 sm:p-2 rounded-lg flex flex-col justify-between transition-all duration-150';
+
+          if (asistio) {
+            celda.className += ' bg-yellow-400 text-zinc-950 font-extrabold rounded-lg shadow-md shadow-yellow-400/20';
+            if (esHoy) {
+              celda.className += ' ring-2 ring-yellow-400/80';
+            }
+            celda.title = horaAsistencia ? `Asistencia registrada a las ${horaAsistencia} hrs` : 'Asistencia confirmada';
+            celda.innerHTML = `
+              <div class="flex items-center justify-between">
+                <span class="text-xs sm:text-sm font-black">${dia}</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-zinc-950"></span>
+              </div>
+              <span class="text-[9px] sm:text-[10px] font-mono font-bold leading-none truncate">
+                ${horaAsistencia || 'Asistió'}
+              </span>
+            `;
+          } else if (esHoy) {
+            celda.className += ' border-2 border-yellow-400 bg-zinc-800/80 text-yellow-400 font-bold';
+            celda.innerHTML = `
+              <div class="flex items-center justify-between">
+                <span class="text-xs sm:text-sm font-black">${dia}</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping"></span>
+              </div>
+              <span class="text-[9px] text-yellow-400 uppercase font-extrabold tracking-wider leading-none">
+                Hoy
+              </span>
+            `;
+          } else {
+            celda.className += ' bg-zinc-800/40 text-zinc-500 rounded-lg';
+            celda.innerHTML = `
+              <div class="flex items-center justify-between">
+                <span class="text-xs sm:text-sm font-semibold">${dia}</span>
+              </div>
+              <span class="text-[9px] text-zinc-600 block leading-none">-</span>
+            `;
+          }
+
+          grid.appendChild(celda);
+        }
+      } catch (err) {
+        console.error('Error al renderizar calendario de asistencias:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      // 1. Cargar el calendario mensual y dias asistidos inmediatamente
+      await cargarCalendarioMensual();
+
+      // 2. Sincronizar estado de asistencia real con MySQL
+      try {
+        const respEstado = await fetch('/api/asistencia/estado-hoy');
+        const dataEstado = await respEstado.json();
+
+        const hoyKey = 'rutina_completada_hoy_' + new Date().toISOString().split('T')[0];
+        const inicioGuardado = localStorage.getItem('inicio_entrenamiento');
+
+        if (!dataEstado.asistioHoy) {
+          // Si en MySQL no hay asistencia hoy (ej. nuevo día, reseteo de pruebas o desmarcado),
+          // forzamos la limpieza de banderas en localStorage para dejar el botón 100% habilitado
+          localStorage.removeItem(hoyKey);
+          localStorage.removeItem('inicio_entrenamiento');
+
+          estadoEntrenamiento = 'inactivo';
+          const badge = document.getElementById('badgeEstadoCronometro');
+          badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-400 border border-zinc-700';
+          badge.textContent = 'En espera para entrenar';
+
+          const btn = document.getElementById('btnControlEntrenamiento');
+          btn.className = 'w-full sm:w-auto bg-yellow-400 text-zinc-950 font-extrabold px-6 py-3.5 rounded-xl uppercase hover:bg-yellow-300 transition-all duration-150 active:scale-95 shadow-lg shadow-yellow-400/10 text-xs tracking-wider flex items-center justify-center';
+          btn.disabled = false;
+          btn.textContent = 'Iniciar Rutina';
+
+          const btnReset = document.getElementById('btnReiniciarEntrenamiento');
+          if (btnReset) btnReset.classList.add('hidden');
+        } else if (inicioGuardado) {
+          iniciarCronometro(parseInt(inicioGuardado, 10));
+        } else {
+          estadoEntrenamiento = 'completado';
+          const badge = document.getElementById('badgeEstadoCronometro');
+          badge.className = 'inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-zinc-800 text-zinc-300 border border-zinc-700';
+          badge.textContent = 'Rutina Completada';
+
+          const btn = document.getElementById('btnControlEntrenamiento');
+          btn.className = 'w-full sm:w-auto bg-zinc-800 text-zinc-500 border border-zinc-700 cursor-not-allowed px-6 py-3.5 rounded-xl uppercase font-bold text-xs tracking-wider flex items-center justify-center';
+          btn.disabled = true;
+          btn.textContent = 'Rutina de Hoy Completada';
+
+          const btnReset = document.getElementById('btnReiniciarEntrenamiento');
+          if (btnReset) btnReset.classList.remove('hidden');
+        }
+      } catch (err) {
+        console.error('Error al sincronizar asistencia inicial con MySQL:', err);
+      }
     });
   </script>
 </body>

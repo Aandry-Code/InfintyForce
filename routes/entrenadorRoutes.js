@@ -12,4 +12,10 @@ router.get('/asignar-rutina', requireRole('entrenador'), entrenadorController.re
 // Endpoint POST /api/entrenador/solicitudes/asignar: Aprobacion y asignacion tecnica de plan
 router.post('/api/entrenador/solicitudes/asignar', requireRole('entrenador'), entrenadorController.asignarRutina);
 
+// Endpoint POST /api/entrenador/solicitudes/rechazar: Rechazo de solicitud con motivos tecnicos o clinicos
+router.post('/api/entrenador/solicitudes/rechazar', requireRole('entrenador'), entrenadorController.rechazarSolicitud);
+
+// Endpoint GET /api/entrenador/solicitudes/historial: Historial de solicitudes procesadas
+router.get('/api/entrenador/solicitudes/historial', requireRole('entrenador'), entrenadorController.getHistorialSolicitudes);
+
 module.exports = router;

@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 const dbConfig = {
   host: process.env.DB_HOST || 'localhost',
   user: process.env.DB_USER || 'root',
-  password: process.env.DB_PASSWORD || '2347396607',
+  password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'gimnasio_db',
   port: parseInt(process.env.DB_PORT || '3306', 10),
   waitForConnections: true,
@@ -35,79 +35,7 @@ async function initDatabase() {
 
   const conn = await pool.getConnection();
   try {
-    // 1. Tabla: usuarios
-    await conn.query(`
-      CREATE TABLE IF NOT EXISTS usuarios (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        nombre VARCHAR(150) NOT NULL,
-        email VARCHAR(150) NOT NULL UNIQUE,
-        password_hash VARCHAR(255) NOT NULL,
-        rol ENUM('admin', 'entrenador', 'socio') NOT NULL DEFAULT 'socio',
-        peso DECIMAL(5,2) DEFAULT NULL,
-        altura DECIMAL(5,2) DEFAULT NULL,
-        edad INT DEFAULT NULL,
-        genero VARCHAR(20) DEFAULT NULL,
-        fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `);
-
-    // 2. Tabla: membresias
-    await conn.query(`
-      CREATE TABLE IF NOT EXISTS membresias (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        usuario_id INT NOT NULL,
-        tipo VARCHAR(100) NOT NULL,
-        estado VARCHAR(50) NOT NULL DEFAULT 'Activa',
-        fecha_vencimiento DATE NOT NULL,
-        fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        CONSTRAINT fk_membresias_usuario
-          FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-          ON DELETE CASCADE
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `);
-
-    // 3. Tabla: asistencias
-    await conn.query(`
-      CREATE TABLE IF NOT EXISTS asistencias (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        usuario_id INT NOT NULL,
-        fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        CONSTRAINT fk_asistencias_usuario
-          FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-          ON DELETE CASCADE
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `);
-
-    // 4. Tabla: productos
-    await conn.query(`
-      CREATE TABLE IF NOT EXISTS productos (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        nombre VARCHAR(150) NOT NULL,
-        categoria VARCHAR(100) NOT NULL,
-        precio DECIMAL(10,2) NOT NULL,
-        stock INT NOT NULL DEFAULT 0,
-        imagen_url VARCHAR(255) DEFAULT NULL,
-        fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `);
-
-    // 5. Tabla: solicitudes_rutina
-    await conn.query(`
-      CREATE TABLE IF NOT EXISTS solicitudes_rutina (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        usuario_id INT NOT NULL,
-        objetivo VARCHAR(50) NOT NULL,
-        dias_semana INT NOT NULL,
-        observaciones TEXT DEFAULT NULL,
-        estado VARCHAR(50) NOT NULL DEFAULT 'Pendiente',
-        fecha_solicitud TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-        CONSTRAINT fk_solicitudes_usuario
-          FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-          ON DELETE CASCADE
-      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-    `);
-
-    // 6. Tabla: rutinas
+    // 1. Tabla: rutinas
     await conn.query(`
       CREATE TABLE IF NOT EXISTS rutinas (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -117,7 +45,7 @@ async function initDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
 
-    // 7. Tabla: ejercicios
+    // 2. Tabla: ejercicios
     await conn.query(`
       CREATE TABLE IF NOT EXISTS ejercicios (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -126,7 +54,7 @@ async function initDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
 
-    // 8. Tabla: rutinas_detalle
+    // 3. Tabla: rutinas_detalle
     await conn.query(`
       CREATE TABLE IF NOT EXISTS rutinas_detalle (
         id INT AUTO_INCREMENT PRIMARY KEY,
@@ -143,8 +71,192 @@ async function initDatabase() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
     `);
 
+    // 4. Tabla: usuarios
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS usuarios (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nombre VARCHAR(150) NOT NULL,
+        email VARCHAR(150) NOT NULL UNIQUE,
+        password_hash VARCHAR(255) NOT NULL,
+        rol ENUM('admin', 'entrenador', 'socio') NOT NULL DEFAULT 'socio',
+        peso DECIMAL(5,2) DEFAULT NULL,
+        altura DECIMAL(5,2) DEFAULT NULL,
+        edad INT DEFAULT NULL,
+        genero VARCHAR(20) DEFAULT NULL,
+        rutina_activa_id INT DEFAULT NULL,
+        fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_usuarios_rutina
+          FOREIGN KEY (rutina_activa_id) REFERENCES rutinas(id)
+          ON DELETE SET NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // 5. Tabla: membresias
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS membresias (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        usuario_id INT NOT NULL,
+        tipo VARCHAR(100) NOT NULL,
+        estado VARCHAR(50) NOT NULL DEFAULT 'Activa',
+        fecha_vencimiento DATE NOT NULL,
+        fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_membresias_usuario
+          FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+          ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // 6. Tabla: asistencias
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS asistencias (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        usuario_id INT NOT NULL,
+        fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_asistencias_usuario
+          FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+          ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // 7. Tabla: productos
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS productos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        nombre VARCHAR(150) NOT NULL,
+        categoria VARCHAR(100) NOT NULL,
+        precio DECIMAL(10,2) NOT NULL,
+        stock INT NOT NULL DEFAULT 0,
+        imagen_url VARCHAR(255) DEFAULT NULL,
+        fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // 8. Tabla: solicitudes_rutina
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS solicitudes_rutina (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        usuario_id INT NOT NULL,
+        rutina_id INT DEFAULT NULL,
+        objetivo VARCHAR(50) NOT NULL,
+        dias_semana INT NOT NULL,
+        observaciones TEXT DEFAULT NULL,
+        observaciones_entrenador TEXT DEFAULT NULL,
+        estado VARCHAR(50) NOT NULL DEFAULT 'Pendiente',
+        fecha_solicitud TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_solicitudes_usuario
+          FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+          ON DELETE CASCADE,
+        CONSTRAINT fk_solicitudes_rutina_fk
+          FOREIGN KEY (rutina_id) REFERENCES rutinas(id)
+          ON DELETE SET NULL
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // 9. Tabla: pedidos
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS pedidos (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        codigo_ticket VARCHAR(25) NOT NULL UNIQUE,
+        usuario_id INT NOT NULL,
+        total DECIMAL(10,2) NOT NULL,
+        metodo_pago VARCHAR(50) NOT NULL DEFAULT 'Efectivo en Recepción',
+        estado ENUM('Pendiente de Pago', 'Pagado', 'Cancelado') NOT NULL DEFAULT 'Pendiente de Pago',
+        fecha_pedido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        CONSTRAINT fk_pedidos_usuario
+          FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+          ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // 10. Tabla: pedidos_detalle
+    await conn.query(`
+      CREATE TABLE IF NOT EXISTS pedidos_detalle (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        pedido_id INT NOT NULL,
+        producto_id INT NOT NULL,
+        cantidad INT NOT NULL,
+        precio_unitario DECIMAL(10,2) NOT NULL,
+        subtotal DECIMAL(10,2) NOT NULL,
+        CONSTRAINT fk_detalle_pedido
+          FOREIGN KEY (pedido_id) REFERENCES pedidos(id)
+          ON DELETE CASCADE,
+        CONSTRAINT fk_detalle_producto
+          FOREIGN KEY (producto_id) REFERENCES productos(id)
+          ON DELETE CASCADE
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    `);
+
+    // Verificacion y migracion segura de columnas en tablas existentes
+    const [colRutinaActiva] = await conn.query(`
+      SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'usuarios' AND COLUMN_NAME = 'rutina_activa_id'
+    `, [dbConfig.database]);
+    if (colRutinaActiva.length === 0) {
+      await conn.query('ALTER TABLE usuarios ADD COLUMN rutina_activa_id INT DEFAULT NULL');
+    }
+
+    const [fkUsuariosRutina] = await conn.query(`
+      SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+      WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'usuarios' AND CONSTRAINT_NAME = 'fk_usuarios_rutina'
+    `, [dbConfig.database]);
+    if (fkUsuariosRutina.length === 0) {
+      try {
+        await conn.query(`
+          ALTER TABLE usuarios
+          ADD CONSTRAINT fk_usuarios_rutina
+          FOREIGN KEY (rutina_activa_id) REFERENCES rutinas(id)
+          ON DELETE SET NULL
+        `);
+      } catch (err) {
+        // En caso de que ya este indexada o restriccion existente
+      }
+    }
+
+    const [colRutinaId] = await conn.query(`
+      SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'solicitudes_rutina' AND COLUMN_NAME = 'rutina_id'
+    `, [dbConfig.database]);
+    if (colRutinaId.length === 0) {
+      await conn.query('ALTER TABLE solicitudes_rutina ADD COLUMN rutina_id INT DEFAULT NULL');
+    }
+
+    const [fkSolRutina] = await conn.query(`
+      SELECT CONSTRAINT_NAME FROM INFORMATION_SCHEMA.TABLE_CONSTRAINTS
+      WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'solicitudes_rutina' AND CONSTRAINT_NAME = 'fk_solicitudes_rutina_fk'
+    `, [dbConfig.database]);
+    if (fkSolRutina.length === 0) {
+      try {
+        await conn.query(`
+          ALTER TABLE solicitudes_rutina
+          ADD CONSTRAINT fk_solicitudes_rutina_fk
+          FOREIGN KEY (rutina_id) REFERENCES rutinas(id)
+          ON DELETE SET NULL
+        `);
+      } catch (err) {
+        // En caso de que ya este indexada o restriccion existente
+      }
+    }
+
+    const [colObsEntrenador] = await conn.query(`
+      SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+      WHERE TABLE_SCHEMA = ? AND TABLE_NAME = 'solicitudes_rutina' AND COLUMN_NAME = 'observaciones_entrenador'
+    `, [dbConfig.database]);
+    if (colObsEntrenador.length === 0) {
+      await conn.query('ALTER TABLE solicitudes_rutina ADD COLUMN observaciones_entrenador TEXT DEFAULT NULL');
+    }
+
+    // Permitir objetivos personalizados de mayor longitud en solicitudes_rutina
+    await conn.query('ALTER TABLE solicitudes_rutina MODIFY COLUMN objetivo VARCHAR(150) NOT NULL').catch(() => {});
+
     // Sembrado automatico de datos iniciales si no existen
     await seedInitialData(conn);
+
+    // Limpieza de asistencias de prueba para asegurar que el socio tenga el dia de hoy disponible
+    await conn.query(`
+      UPDATE asistencias
+      SET fecha = DATE_SUB(NOW(), INTERVAL 2 DAY)
+      WHERE DATE(fecha) = CURDATE() AND usuario_id = 3
+    `).catch(() => {});
 
   } finally {
     conn.release();
@@ -191,9 +303,9 @@ async function seedInitialData(conn) {
       [socioId, fechaVigenciaStr]
     );
 
-    // Asistencias de prueba del mes actual para el socio
+    // Asistencias de prueba del mes actual para el socio (hace 2 dias para dejar hoy disponible)
     await conn.query(
-      `INSERT INTO asistencias (usuario_id, fecha) VALUES (?, NOW())`,
+      `INSERT INTO asistencias (usuario_id, fecha) VALUES (?, DATE_SUB(NOW(), INTERVAL 2 DAY))`,
       [socioId]
     );
 
@@ -210,11 +322,12 @@ async function seedInitialData(conn) {
   if (prodCount[0].total === 0) {
     await conn.query(`
       INSERT INTO productos (nombre, categoria, precio, stock, imagen_url) VALUES
-      ('Proteina Whey Isolate 2kg - Vainilla Gourmet', 'Suplementos', 229.90, 18, '/images/products/whey.png'),
-      ('Creatina Monohidratada Creapure 300g Micronizada', 'Suplementos', 139.50, 24, '/images/products/creatina.png'),
-      ('Pre-Entreno Nitro Blast 30 Servicios - Fruit Punch', 'Suplementos', 159.00, 10, '/images/products/preworkout.png'),
-      ('Shaker Termico Acero Inoxidable 750ml Infinite Force', 'Accesorios', 49.90, 30, '/images/products/shaker.png'),
-      ('Cinturon Lumbar de Cuero Powerlifting 10mm (Agotado)', 'Accesorios', 119.00, 0, '/images/products/belt.png')
+      ('Proteina Whey Isolate 2kg - Vainilla Gourmet', 'Suplementos', 229.90, 18, '/img/productos/whey-protein.svg'),
+      ('Creatina Monohidratada Creapure 300g Micronizada', 'Suplementos', 139.50, 24, '/img/productos/creatina-creapure.svg'),
+      ('Pre-Entreno Nitro Blast 30 Servicios - Fruit Punch', 'Suplementos', 159.00, 10, '/img/productos/pre-entreno-nitro.svg'),
+      ('Shaker Termico Acero Inoxidable 750ml Infinite Force', 'Accesorios', 49.90, 30, '/img/productos/shaker-inoxidable.svg'),
+      ('Cinturon Lumbar de Cuero Powerlifting 10mm (Agotado)', 'Accesorios', 119.00, 0, '/img/productos/cinturon-powerlifting.svg'),
+      ('Glutamina Micronizada 500g', 'Suplementos', 89.90, 12, '/img/productos/glutamina-micronizada.svg')
     `);
   }
 

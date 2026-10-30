@@ -5,77 +5,102 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tienda Oficial - Infinite Force Gym</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              yellow: '#d4ff00',
-              gold: '#ffd700',
-              border: '#27272a',
-              card: '#18181b',
-              surface: '#27272a'
-            }
-          }
-        }
-      }
-    }
-  </script>
 </head>
 <body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
 
-  <!-- Header Superior -->
+  <!-- Header Superior Unificado -->
   <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-16 sm:h-20 py-2 sm:py-0 flex items-center justify-between flex-wrap gap-2">
       
-      <div class="flex items-center space-x-4">
-        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+      <!-- Brand Logo y Titulo -->
+      <a href="/socio-dashboard" class="flex items-center space-x-3 group">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-black border-2 border-yellow-400 p-0.5 flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
           <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
         </div>
         <div>
-          <span class="text-xl font-extrabold tracking-wider uppercase text-white">
-            Infinite <span class="text-brand-yellow">Force</span> Gym
+          <span class="text-base sm:text-lg font-extrabold tracking-wider uppercase text-white block leading-none">
+            Infinite <span class="text-yellow-400">Force</span> Gym
           </span>
-          <span class="block text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
-            Tienda Oficial y Suplementos
+          <span class="text-[9px] sm:text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+            Portal Oficial del Socio
           </span>
         </div>
-      </div>
+      </a>
 
-      <!-- Enlaces de Navegacion -->
-      <nav class="hidden md:flex items-center space-x-6">
-        <a href="/socio-dashboard" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+      <!-- Enlaces de Navegacion Unificados con Indicador Activo -->
+      <nav class="hidden md:flex items-center space-x-8">
+        <a href="/socio-dashboard" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white pb-1 transition-all">
           Dashboard
         </a>
-        <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+        <a href="/rutinas" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white pb-1 transition-all">
           Rutinas
         </a>
-        <a href="/nutricion" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white transition">
+        <a href="/nutricion" class="text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white pb-1 transition-all">
           Nutricion
         </a>
-        <a href="/tienda" class="text-xs font-bold uppercase tracking-wider text-brand-yellow border-b-2 border-brand-yellow pb-1">
+        <a href="/tienda" class="text-xs font-bold uppercase tracking-wider text-yellow-400 border-b-2 border-yellow-400 pb-1 transition-all">
           Tienda
         </a>
       </nav>
 
-      <!-- Contador de Carrito y Perfil -->
-      <div class="flex items-center space-x-4">
-        <div class="inline-flex items-center space-x-2 px-3 py-1.5 bg-zinc-800 border border-zinc-700 rounded-lg text-xs font-mono">
-          <span class="text-zinc-400 uppercase font-semibold">Carrito:</span>
-          <span id="contadorCarrito" class="text-brand-yellow font-bold text-sm">0</span>
-          <span class="text-zinc-500">items</span>
+      <!-- Contador de Carrito, Perfil y Acciones -->
+      <div class="flex items-center space-x-2 sm:space-x-4">
+        {{VOLVER_PANEL_ENTRENADOR_HTML}}
+        
+        <!-- Boton Interactivo para Abrir el Carrito -->
+        <button
+          type="button"
+          id="btnAbrirCarrito"
+          onclick="abrirModalCarrito()"
+          class="inline-flex items-center space-x-1.5 sm:space-x-2 px-2.5 sm:px-3.5 py-1.5 bg-zinc-800/80 hover:bg-zinc-800 border border-zinc-700 hover:border-yellow-400 rounded-xl text-xs font-mono shadow-sm cursor-pointer transition active:scale-95"
+        >
+          <span class="text-zinc-400 uppercase font-semibold text-[11px] sm:text-xs">Carrito:</span>
+          <span id="contadorCarrito" class="text-yellow-400 font-bold text-xs sm:text-sm">0</span>
+          <span class="text-zinc-500 hidden xs:inline">items</span>
+        </button>
+
+        <div class="text-right hidden sm:block">
+          <p class="text-sm font-bold text-white">{{USER_NAME}}</p>
+          <p class="text-xs text-zinc-400 font-mono">{{USER_EMAIL}}</p>
         </div>
 
         <a
           href="/logout"
-          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-red-950 text-zinc-300 hover:text-red-200 border border-zinc-700 hover:border-red-800 rounded-lg transition duration-150"
+          class="px-3 sm:px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800/80 hover:bg-red-950 text-zinc-300 hover:text-red-300 border border-zinc-700 hover:border-red-800 rounded-xl transition-all"
         >
-          Cerrar Sesion
+          Salir
         </a>
+
+        <!-- Boton Hamburguesa para Moviles -->
+        <button
+          type="button"
+          id="btnMenuMovil"
+          onclick="toggleMenuMovil()"
+          aria-label="Abrir Menú de Navegación"
+          class="md:hidden p-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-zinc-300 hover:text-white rounded-xl transition"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </button>
       </div>
 
+    </div>
+
+    <!-- Menu Desplegable Movil -->
+    <div id="menuMovilDropdown" class="hidden md:hidden px-4 pt-3 pb-4 border-t border-zinc-800 bg-zinc-950/95 space-y-1">
+      <a href="/socio-dashboard" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+        Dashboard
+      </a>
+      <a href="/rutinas" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+        Rutinas
+      </a>
+      <a href="/nutricion" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white hover:bg-zinc-800 transition">
+        Nutricion
+      </a>
+      <a href="/tienda" class="block px-3 py-2 rounded-lg text-xs font-bold uppercase tracking-wider text-yellow-400 bg-zinc-800/70 border-l-2 border-yellow-400 transition">
+        Tienda
+      </a>
     </div>
   </header>
 
@@ -86,19 +111,28 @@
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pb-6 border-b border-zinc-800">
       <div>
         <h1 class="text-3xl font-extrabold tracking-tight text-white uppercase">
-          Catalogo de <span class="text-brand-yellow">Suplementacion y Productos</span>
+          Catálogo de <span class="text-yellow-400">Suplementación y Productos</span>
         </h1>
         <p class="text-sm text-zinc-400 mt-1">
-          Productos autorizados disponibles para entrega inmediata en recepcion de tu sede.
+          Productos autorizados disponibles para entrega inmediata en recepción de tu sede.
         </p>
       </div>
 
-      <a
-        href="/socio-dashboard"
-        class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-lg transition"
-      >
-        Volver a mi Dashboard
-      </a>
+      <div class="flex items-center space-x-3">
+        <button
+          type="button"
+          onclick="abrirModalCarrito()"
+          class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl transition shadow-md active:scale-95"
+        >
+          Ver Carrito de Compras
+        </button>
+        <a
+          href="/socio-dashboard"
+          class="inline-flex items-center justify-center px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-700 rounded-xl transition"
+        >
+          Volver al Dashboard
+        </a>
+      </div>
     </div>
 
     <!-- Banner de Notificacion de Acciones -->
@@ -114,28 +148,230 @@
       </div>
     </div>
 
-    <!-- Grid de Tarjetas de Productos (Product Cards) -->
-    <div id="gridProductos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Grid de Tarjetas de Productos (Responsive Grid) -->
+    <div id="gridProductos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {{PRODUCT_CARDS_GRID}}
     </div>
 
     <!-- Seccion de Informacion de Compra -->
-    <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 text-xs text-zinc-400 space-y-2">
+    <div class="bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 text-xs text-zinc-400 space-y-2">
       <p class="font-bold text-white uppercase tracking-wider text-xs">
-        Politica de Despacho y Stock
+        Procedimiento de Compra y Retiro en Recepción
       </p>
       <p>
-        Los productos agregados al carrito se reservan temporalmente en tu navegador. Puedes solicitar el despacho y cancelacion directa en la recepcion presentando tu codigo de socio o documento de identidad.
+        1. Agrega tus suplementos o accesorios al carrito de compras.<br>
+        2. Selecciona tu método de pago preferido y genera tu ticket presencial.<br>
+        3. Presenta el código de ticket en la recepción de Infinite Force Gym para efectuar tu pago y retirar tus productos de forma inmediata.
       </p>
     </div>
 
+    <!-- Seccion: Mis Tickets de Compra -->
+    <section class="bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 shadow-xl space-y-4 mt-8">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-4">
+        <div>
+          <h2 class="text-xl font-bold uppercase tracking-wider text-white">Mis Tickets de Compra</h2>
+          <p class="text-xs text-zinc-400 mt-1">Historial de pedidos generados. Presenta el código en recepción para retirar tu pedido.</p>
+        </div>
+        <button
+          type="button"
+          onclick="cargarMisTickets()"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-300 border border-zinc-700 rounded-xl transition"
+        >
+          Actualizar
+        </button>
+      </div>
+      <div class="w-full overflow-x-auto">
+        <table class="w-full text-left border-collapse min-w-[600px]">
+          <thead>
+            <tr class="bg-zinc-900/90 text-zinc-400 uppercase text-[11px] font-bold tracking-wider border-b border-zinc-800">
+              <th class="px-5 py-3.5">Código Ticket</th>
+              <th class="px-5 py-3.5">Fecha</th>
+              <th class="px-5 py-3.5">Total</th>
+              <th class="px-5 py-3.5 text-center">Estado</th>
+            </tr>
+          </thead>
+          <tbody id="tablaHistorialCompras" class="divide-y divide-zinc-800">
+            <tr>
+              <td colspan="4" class="px-5 py-6 text-center text-zinc-500 text-xs">
+                Cargando historial de compras...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
 
+  <!-- MODAL 1: Carrito de Compras y Gestion de Pedido -->
+  <div id="modal-carrito" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl shadow-2xl max-w-md w-full max-h-[90vh] flex flex-col overflow-hidden">
+      
+      <!-- Encabezado (Header) -->
+      <div class="p-6 border-b border-zinc-800 flex items-center justify-between bg-zinc-950/50 shrink-0">
+        <div class="flex items-center space-x-3 min-w-0 pr-4">
+          <div class="w-10 h-10 rounded-full bg-yellow-400/10 border border-yellow-400/40 flex items-center justify-center text-yellow-400 font-bold text-xs shrink-0">
+            IFG
+          </div>
+          <div class="min-w-0">
+            <h3 class="text-base font-bold uppercase tracking-wider text-white truncate">Carrito de Compras</h3>
+            <p class="text-xs text-zinc-400 truncate">Gestión de artículos y selección de pago</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          onclick="cerrarModalCarrito()"
+          aria-label="Cerrar Carrito"
+          class="text-zinc-400 hover:text-white transition-colors text-2xl font-bold p-1 leading-none shrink-0"
+        >
+          &times;
+        </button>
+      </div>
+
+      <!-- Cuerpo con Scroll -->
+      <div class="p-6 space-y-4 overflow-y-auto flex-1">
+        <!-- Lista de Productos Agregados -->
+        <div id="contenedorItemsCarrito" class="space-y-3">
+          <!-- Renderizado dinamicamente por JS -->
+        </div>
+
+        <!-- Selector de Metodo de Pago Presencial -->
+        <div class="pt-3 border-t border-zinc-800">
+          <label for="selectMetodoPago" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Método de Pago Presencial (En Recepción)
+          </label>
+          <select
+            id="selectMetodoPago"
+            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
+          >
+            <option value="Efectivo en Recepción">Efectivo en Recepción</option>
+            <option value="Yape / Plin en Mostrador">Yape / Plin en Mostrador</option>
+            <option value="Tarjeta en POS Recepción">Tarjeta en POS Recepción</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Footer y Boton de Accion -->
+      <div class="p-6 border-t border-zinc-800 bg-zinc-950/50 shrink-0 space-y-3">
+        <div class="flex items-center justify-between p-3.5 bg-zinc-800/60 border border-zinc-800 rounded-xl">
+          <span class="text-xs font-bold uppercase tracking-wider text-zinc-300">Total a Pagar en Recepción:</span>
+          <span id="totalPagarCarrito" class="text-2xl font-extrabold text-yellow-400 font-mono">S/ 0.00</span>
+        </div>
+
+        <button
+          type="button"
+          id="btnGenerarTicket"
+          onclick="generarTicketPresencial()"
+          class="w-full bg-yellow-400 text-zinc-950 font-bold py-3 px-4 rounded-xl hover:bg-yellow-300 transition-all shadow-lg"
+        >
+          Generar Ticket de Pago Presencial
+        </button>
+
+        <button
+          type="button"
+          onclick="cerrarModalCarrito()"
+          class="w-full text-center text-xs font-bold uppercase tracking-wider text-zinc-400 hover:text-white py-2 transition-colors"
+        >
+          Seguir Comprando
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MODAL 2: Ticket Digital Oficial de Recepcion -->
+  <div id="modal-ticket" class="fixed inset-0 z-50 bg-black/90 backdrop-blur-md hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-zinc-900 border border-zinc-700/80 rounded-2xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-2xl space-y-6 flex flex-col">
+      
+      <!-- Encabezado del Comprobante -->
+      <div class="text-center space-y-2 pb-4 border-b border-zinc-800">
+        <div class="w-14 h-14 mx-auto rounded-full bg-black border-2 border-yellow-400 p-1 flex items-center justify-center shadow-lg">
+          <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
+        </div>
+        <h3 class="text-base font-extrabold uppercase tracking-widest text-white">
+          TICKET DE COMPRA PRESENCIAL
+        </h3>
+        <p class="text-[11px] text-zinc-400 uppercase tracking-wider font-semibold">
+          Infinite Force Gym &bull; Recepción y Despacho
+        </p>
+      </div>
+
+      <!-- Recuadro Destacado con Codigo de Ticket -->
+      <div class="bg-zinc-950 border-2 border-dashed border-yellow-400/70 rounded-xl p-4 text-center space-y-1">
+        <span class="text-[10px] font-bold uppercase tracking-widest text-zinc-400 block">
+          Código de Ticket Autorizado
+        </span>
+        <div id="ticketCodigo" class="text-3xl font-black font-mono tracking-wider text-yellow-400">
+          IFG-0000
+        </div>
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-amber-950 text-amber-300 border border-amber-800">
+          Estado: Pendiente de Pago en Recepción
+        </span>
+      </div>
+
+      <!-- Metadatos de Emision -->
+      <div class="grid grid-cols-2 gap-3 text-xs bg-zinc-800/40 p-3 rounded-xl border border-zinc-800">
+        <div>
+          <span class="text-[10px] uppercase font-bold text-zinc-400 block">Socio:</span>
+          <span id="ticketSocio" class="text-white font-semibold"></span>
+        </div>
+        <div class="text-right">
+          <span class="text-[10px] uppercase font-bold text-zinc-400 block">Fecha y Hora:</span>
+          <span id="ticketFecha" class="text-zinc-200 font-mono"></span>
+        </div>
+      </div>
+
+      <!-- Desglose de Productos Solicitados -->
+      <div class="space-y-2 flex-1 overflow-y-auto max-h-48 pr-1">
+        <p class="text-[10px] font-bold uppercase tracking-wider text-zinc-400">Detalle de Productos:</p>
+        <div id="ticketItemsLista" class="space-y-2">
+          <!-- Renderizado dinamico por JS -->
+        </div>
+      </div>
+
+      <!-- Total y Metodo de Pago -->
+      <div class="pt-3 border-t border-zinc-800 space-y-2">
+        <div class="flex items-center justify-between text-xs text-zinc-400">
+          <span>Método Seleccionado:</span>
+          <span id="ticketMetodoPago" class="text-zinc-200 font-bold"></span>
+        </div>
+        <div class="flex items-baseline justify-between pt-1">
+          <span class="text-sm font-bold uppercase text-white">Total a Liquidar:</span>
+          <span id="ticketTotal" class="text-2xl font-black text-yellow-400 font-mono">S/ 0.00</span>
+        </div>
+      </div>
+
+      <!-- Mensaje Guia -->
+      <div class="p-3 bg-zinc-800/60 border border-zinc-800 rounded-xl text-[11px] text-zinc-300 text-center leading-relaxed">
+        Presenta este código en la caja/recepción del gimnasio para realizar tu abono y retirar tus productos.
+      </div>
+
+      <!-- Botones del Ticket -->
+      <div class="flex items-center space-x-3 pt-2 border-t border-zinc-800">
+        <button
+          type="button"
+          onclick="window.print()"
+          class="flex-1 px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-white rounded-xl transition border border-zinc-700"
+        >
+          Imprimir / Guardar Ticket
+        </button>
+        <button
+          type="button"
+          onclick="cerrarModalTicket()"
+          class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
+        >
+          Cerrar
+        </button>
+      </div>
+
+    </div>
+  </div>
+
   <footer class="bg-zinc-950 border-t border-zinc-800 py-6 text-center text-xs text-zinc-500">
-    Infinite Force Gym. Plataforma de Gestion y Control de Acceso. Todos los derechos reservados.
+    Infinite Force Gym. Plataforma de Gestión y Control de Acceso. Todos los derechos reservados.
   </footer>
 
-  <!-- Script de Gestion de Carrito en localStorage -->
+  <!-- Script de Gestion de Carrito y Checkout -->
   <script>
     const STORAGE_KEY = 'cart';
     const contadorCarrito = document.getElementById('contadorCarrito');
@@ -145,9 +381,15 @@
     function obtenerCarrito() {
       try {
         const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : [];
+        if (!raw) return [];
+        const parsed = JSON.parse(raw);
+        // Validar compatibilidad si existia estructura antigua con solo IDs
+        if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === 'number') {
+          return [];
+        }
+        return Array.isArray(parsed) ? parsed : [];
       } catch (e) {
-        console.error('Error al parsear carrito de localStorage:', e);
+        console.error('Error al leer carrito:', e);
         return [];
       }
     }
@@ -159,32 +401,309 @@
 
     function actualizarContadorCarrito() {
       const carrito = obtenerCarrito();
-      contadorCarrito.textContent = carrito.length;
+      const totalItems = carrito.reduce((sum, item) => sum + (parseInt(item.cantidad, 10) || 0), 0);
+      contadorCarrito.textContent = totalItems;
     }
 
-    function mostrarAlertaTienda(mensaje) {
+    function mostrarAlertaTienda(mensaje, esError = false) {
       mensajeAlertaTienda.textContent = mensaje;
-      alertaTienda.classList.remove('hidden');
-      alertaTienda.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      alertaTienda.classList.remove('hidden', 'bg-emerald-950/80', 'border-emerald-700', 'text-emerald-200', 'bg-red-950/80', 'border-red-700', 'text-red-200');
+      
+      if (esError) {
+        alertaTienda.classList.add('bg-red-950/80', 'border-red-700', 'text-red-200');
+      } else {
+        alertaTienda.classList.add('bg-emerald-950/80', 'border-emerald-700', 'text-emerald-200');
+      }
 
+      alertaTienda.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       setTimeout(() => {
         alertaTienda.classList.add('hidden');
-      }, 3500);
+      }, 4000);
     }
 
     function cerrarAlertaTienda() {
       alertaTienda.classList.add('hidden');
     }
 
-    function agregarAlCarrito(productoId, productoNombre) {
+    function toggleMenuMovil() {
+      const menu = document.getElementById('menuMovilDropdown');
+      if (menu) {
+        menu.classList.toggle('hidden');
+      }
+    }
+
+    function agregarAlCarrito(param1, param2) {
+      let producto;
+      if (typeof param1 === 'object' && param1 !== null) {
+        producto = param1;
+      } else {
+        const id = parseInt(param1, 10);
+        const nombre = param2 || '';
+        const btn = document.querySelector(`.btn-add-cart[data-id="${id}"]`);
+        const precio = btn ? parseFloat(btn.getAttribute('data-price') || '0') : 0;
+        const imagen_url = btn ? (btn.getAttribute('data-image') || '') : '';
+        producto = { id, nombre, precio, imagen_url };
+      }
+
       const carrito = obtenerCarrito();
-      carrito.push(productoId);
+      const index = carrito.findIndex(item => item.id === producto.id);
+
+      if (index !== -1) {
+        carrito[index].cantidad = (parseInt(carrito[index].cantidad, 10) || 0) + 1;
+      } else {
+        carrito.push({
+          id: producto.id,
+          nombre: producto.nombre,
+          precio: parseFloat(producto.precio) || 0,
+          imagen_url: producto.imagen_url || '',
+          cantidad: 1
+        });
+      }
+
       guardarCarrito(carrito);
-      mostrarAlertaTienda('Producto "' + productoNombre + '" anadido al carrito exitosamente.');
+      mostrarAlertaTienda('Producto "' + producto.nombre + '" añadido al carrito exitosamente.');
+    }
+
+    function modificarCantidad(id, delta) {
+      const carrito = obtenerCarrito();
+      const index = carrito.findIndex(item => item.id === id);
+
+      if (index !== -1) {
+        carrito[index].cantidad += delta;
+        if (carrito[index].cantidad <= 0) {
+          carrito.splice(index, 1);
+        }
+        guardarCarrito(carrito);
+        renderizarModalCarrito();
+      }
+    }
+
+    function eliminarProducto(id) {
+      const carrito = obtenerCarrito().filter(item => item.id !== id);
+      guardarCarrito(carrito);
+      renderizarModalCarrito();
+    }
+
+    function abrirModalCarrito() {
+      renderizarModalCarrito();
+      const modal = document.getElementById('modal-carrito');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function cerrarModalCarrito() {
+      const modal = document.getElementById('modal-carrito');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function renderizarModalCarrito() {
+      const carrito = obtenerCarrito();
+      const contenedor = document.getElementById('contenedorItemsCarrito');
+      const totalPagarEl = document.getElementById('totalPagarCarrito');
+      const btnGenerarTicket = document.getElementById('btnGenerarTicket');
+
+      if (carrito.length === 0) {
+        contenedor.innerHTML = `
+          <div class="py-12 text-center text-zinc-500 text-sm space-y-2">
+            <p class="font-bold text-zinc-400">Tu carrito de compras está vacío.</p>
+            <p class="text-xs">Explora el catálogo y añade suplementos o accesorios.</p>
+          </div>
+        `;
+        totalPagarEl.textContent = 'S/ 0.00';
+        btnGenerarTicket.disabled = true;
+        btnGenerarTicket.classList.add('opacity-50', 'cursor-not-allowed');
+        return;
+      }
+
+      btnGenerarTicket.disabled = false;
+      btnGenerarTicket.classList.remove('opacity-50', 'cursor-not-allowed');
+
+      let total = 0;
+      contenedor.innerHTML = carrito.map(item => {
+        const subtotal = item.precio * item.cantidad;
+        total += subtotal;
+
+        return `
+          <div class="flex items-center justify-between p-3 bg-zinc-800/50 border border-zinc-800 rounded-xl gap-3">
+            <div class="w-12 h-12 rounded-lg bg-zinc-900 border border-zinc-700/60 flex items-center justify-center overflow-hidden shrink-0">
+              ${item.imagen_url ? `
+                <img src="${item.imagen_url}" alt="${item.nombre}" class="w-full h-full object-cover" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                <div style="display:none;" class="w-full h-full items-center justify-center text-zinc-500">
+                  <svg class="w-6 h-6 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                  </svg>
+                </div>
+              ` : `
+                <svg class="w-6 h-6 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              `}
+            </div>
+            
+            <div class="flex-1 min-w-0">
+              <p class="text-xs font-bold text-white truncate">${item.nombre}</p>
+              <p class="text-[11px] text-zinc-400 font-mono">S/ ${Number(item.precio).toFixed(2)} c/u</p>
+            </div>
+
+            <div class="flex items-center space-x-1.5 shrink-0">
+              <button
+                type="button"
+                onclick="modificarCantidad(${item.id}, -1)"
+                class="w-6 h-6 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-white font-bold text-xs flex items-center justify-center transition"
+              >
+                -
+              </button>
+              <span class="w-7 text-center font-mono font-bold text-xs text-white">${item.cantidad}</span>
+              <button
+                type="button"
+                onclick="modificarCantidad(${item.id}, 1)"
+                class="w-6 h-6 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-white font-bold text-xs flex items-center justify-center transition"
+              >
+                +
+              </button>
+            </div>
+
+            <div class="text-right shrink-0 w-20">
+              <span class="text-xs font-bold text-yellow-400 font-mono block">S/ ${subtotal.toFixed(2)}</span>
+              <button
+                type="button"
+                onclick="eliminarProducto(${item.id})"
+                class="text-[10px] text-red-400 hover:text-red-300 uppercase tracking-wider font-semibold transition"
+              >
+                Quitar
+              </button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      totalPagarEl.textContent = 'S/ ' + total.toFixed(2);
+    }
+
+    async function generarTicketPresencial() {
+      const carrito = obtenerCarrito();
+      if (carrito.length === 0) return;
+
+      const metodoPago = document.getElementById('selectMetodoPago').value;
+      const btn = document.getElementById('btnGenerarTicket');
+
+      btn.disabled = true;
+      btn.textContent = 'Generando Ticket...';
+
+      try {
+        const payload = {
+          items: carrito.map(i => ({ id: i.id, cantidad: i.cantidad })),
+          metodoPago
+        };
+
+        const response = await fetch('/api/tienda/checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Vaciar carrito en localStorage
+          localStorage.removeItem(STORAGE_KEY);
+          actualizarContadorCarrito();
+
+          // Cerrar modal 1 y abrir modal 2
+          cerrarModalCarrito();
+          mostrarTicketDigital(data);
+        } else {
+          mostrarAlertaTienda(data.message || 'Error al procesar el pedido.', true);
+        }
+      } catch (err) {
+        console.error('Error de red al procesar checkout:', err);
+        mostrarAlertaTienda('Error de conexión con el servidor.', true);
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Generar Ticket de Pago Presencial';
+      }
+    }
+
+    function mostrarTicketDigital(data) {
+      document.getElementById('ticketCodigo').textContent = data.codigoTicket;
+      document.getElementById('ticketSocio').textContent = data.socioNombre;
+      document.getElementById('ticketFecha').textContent = data.fecha;
+      document.getElementById('ticketMetodoPago').textContent = data.metodoPago;
+      document.getElementById('ticketTotal').textContent = 'S/ ' + Number(data.total).toFixed(2);
+
+      const listaItems = document.getElementById('ticketItemsLista');
+      listaItems.innerHTML = data.items.map(it => `
+        <div class="flex items-center justify-between text-xs p-2 bg-zinc-800/40 rounded-lg border border-zinc-800">
+          <div>
+            <span class="font-bold text-white">${it.nombre}</span>
+            <span class="text-zinc-500 font-mono text-[10px] block">${it.cantidad} x S/ ${Number(it.precioUnitario).toFixed(2)}</span>
+          </div>
+          <span class="font-mono font-bold text-yellow-400">S/ ${Number(it.subtotal).toFixed(2)}</span>
+        </div>
+      `).join('');
+
+      const modalTicket = document.getElementById('modal-ticket');
+      modalTicket.classList.remove('hidden');
+      modalTicket.classList.add('flex');
+      cargarMisTickets();
+    }
+
+    function cerrarModalTicket() {
+      const modal = document.getElementById('modal-ticket');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      window.location.reload();
+    }
+
+    async function cargarMisTickets() {
+      const tbody = document.getElementById('tablaHistorialCompras');
+      if (!tbody) return;
+      try {
+        const res = await fetch('/api/tienda/mis-pedidos');
+        const data = await res.json();
+        if (!data.success || !data.pedidos || data.pedidos.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="px-5 py-6 text-center text-zinc-500 text-xs">No tienes compras registradas aún.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.pedidos.map(p => {
+          const esPagado = p.estado === 'Pagado';
+          const badgeClass = esPagado
+            ? 'bg-emerald-950 text-emerald-400 border-emerald-800'
+            : 'bg-amber-950 text-amber-300 border-amber-800';
+          return `
+            <tr class="hover:bg-zinc-800/40 transition border-b border-zinc-800">
+              <td class="px-5 py-4 font-mono font-extrabold text-yellow-400 text-sm">${p.codigo_ticket}</td>
+              <td class="px-5 py-4 text-xs text-zinc-400 font-mono">${p.fecha}</td>
+              <td class="px-5 py-4 font-mono font-bold text-white text-sm">S/ ${Number(p.total).toFixed(2)}</td>
+              <td class="px-5 py-4 text-center">
+                <span class="inline-flex items-center px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider border rounded-xl ${badgeClass}">
+                  <span class="w-1.5 h-1.5 rounded-full ${esPagado ? 'bg-emerald-400' : 'bg-amber-400'} mr-1.5"></span>
+                  ${p.estado}
+                </span>
+              </td>
+            </tr>`;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="4" class="px-5 py-6 text-center text-red-400 text-xs">Error al cargar historial.</td></tr>';
+      }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
       actualizarContadorCarrito();
+      cargarMisTickets();
+
+      // Cierre al presionar fuera de la tarjeta del modal
+      const modalCarrito = document.getElementById('modal-carrito');
+      if (modalCarrito) {
+        modalCarrito.addEventListener('click', (e) => {
+          if (e.target === modalCarrito) {
+            cerrarModalCarrito();
+          }
+        });
+      }
 
       // Delegacion de eventos para botones de compra
       document.querySelectorAll('.btn-add-cart').forEach(btn => {
@@ -192,13 +711,18 @@
           const id = parseInt(this.getAttribute('data-id'), 10);
           const nombre = this.getAttribute('data-name');
           agregarAlCarrito(id, nombre);
-
-          const textoOriginal = this.textContent;
-          this.textContent = 'Anadido al carrito';
-          this.classList.add('bg-brand-yellow', 'text-zinc-950');
+          const btnRef = this;
+          const textoOriginal = 'Añadir al carrito';
+          
+          // Estado transitorio: Éxito (verde esmeralda con texto negro)
+          btnRef.textContent = 'Añadido ✓';
+          btnRef.classList.remove('bg-yellow-400', 'hover:bg-yellow-300');
+          btnRef.classList.add('bg-emerald-400', 'text-zinc-950');
+          // Restauración limpia después de 1.2s (amarillo oficial con texto negro)
           setTimeout(() => {
-            this.textContent = textoOriginal;
-            this.classList.remove('bg-brand-yellow', 'text-zinc-950');
+            btnRef.textContent = textoOriginal;
+            btnRef.classList.remove('bg-emerald-400');
+            btnRef.classList.add('bg-yellow-400', 'hover:bg-yellow-300', 'text-zinc-950');
           }, 1200);
         });
       });
