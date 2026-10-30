@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const { pool } = require('../database/db');
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const authController = {
   login: async (req, res) => {
     const { email, password } = req.body;
@@ -9,46 +11,65 @@ const authController = {
       if (req.xhr || req.headers.accept?.includes('application/json')) {
         return res.status(400).json({
           success: false,
-          message: 'Debe ingresar su correo electronico y contrasena.'
+          message: 'Debe ingresar su correo electrónico y contraseña.'
+        });
+      }
+      return res.redirect('/login?error=campos_requeridos');
+    }
+
+    const cleanEmail = String(email).trim().toLowerCase();
+    const cleanPassword = String(password);
+
+    // Validacion previa de formato de correo antes de consultar MySQL
+    if (!cleanEmail || !emailRegex.test(cleanEmail)) {
+      if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.status(400).json({
+          success: false,
+          message: 'El correo electrónico no tiene un formato válido.'
+        });
+      }
+      return res.redirect('/login?error=credenciales_invalidas');
+    }
+
+    if (!cleanPassword.trim()) {
+      if (req.xhr || req.headers.accept?.includes('application/json')) {
+        return res.status(400).json({
+          success: false,
+          message: 'Debe ingresar una contraseña válida.'
         });
       }
       return res.redirect('/login?error=campos_requeridos');
     }
 
     try {
-      const cleanEmail = email.trim().toLowerCase();
       const query = 'SELECT id, nombre, email, password_hash, rol FROM usuarios WHERE email = ?';
       const [rows] = await pool.query(query, [cleanEmail]);
+
+      // Respuesta generica para evitar enumeracion de usuarios
+      const mensajeGenerico = 'Credenciales inválidas. Verifique sus datos.';
 
       if (rows.length === 0) {
         if (req.xhr || req.headers.accept?.includes('application/json')) {
           return res.status(401).json({
             success: false,
-            message: 'Credenciales invalidas. Verifique los datos ingresados.'
+            message: mensajeGenerico
           });
         }
         return res.redirect('/login?error=credenciales_invalidas');
       }
 
       const user = rows[0];
-      const passwordMatch = await bcrypt.compare(password, user.password_hash);
+      const passwordMatch = await bcrypt.compare(cleanPassword, user.password_hash);
 
       if (!passwordMatch) {
         if (req.xhr || req.headers.accept?.includes('application/json')) {
           return res.status(401).json({
             success: false,
-            message: 'Credenciales invalidas. Verifique los datos ingresados.'
+            message: mensajeGenerico
           });
         }
         return res.redirect('/login?error=credenciales_invalidas');
       }
-
-      req.session.user = {
-        id: user.id,
-        nombre: user.nombre,
-        email: user.email,
-        rol: user.rol
-      };
 
       let redirectUrl = '/socio-dashboard';
       if (user.rol === 'admin') {
@@ -57,15 +78,33 @@ const authController = {
         redirectUrl = '/entrenador-dashboard';
       }
 
-      if (req.xhr || req.headers.accept?.includes('application/json')) {
-        return res.status(200).json({
-          success: true,
-          redirectUrl: redirectUrl,
-          user: req.session.user
-        });
-      }
+      // Proteccion contra Session Fixation: regenerar sesion al autenticarse
+      req.session.regenerate((err) => {
+        if (err) {
+          console.error('Error al regenerar la sesión:', err.message);
+          if (req.xhr || req.headers.accept?.includes('application/json')) {
+            return res.status(500).json({ success: false, message: 'Error de sesión.' });
+          }
+          return res.redirect('/login?error=error_servidor');
+        }
 
-      return res.redirect(redirectUrl);
+        req.session.user = {
+          id: user.id,
+          nombre: user.nombre,
+          email: user.email,
+          rol: user.rol
+        };
+
+        if (req.xhr || req.headers.accept?.includes('application/json')) {
+          return res.status(200).json({
+            success: true,
+            redirectUrl: redirectUrl,
+            user: req.session.user
+          });
+        }
+
+        return res.redirect(redirectUrl);
+      });
     } catch (error) {
       console.error('Error al procesar la autenticacion en MySQL:', error.message);
       if (req.xhr || req.headers.accept?.includes('application/json')) {

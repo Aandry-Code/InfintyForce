@@ -4,7 +4,8 @@
   "description": "Plataforma de gestion y control de acceso para Infinite Force Gym",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "reset:db": "node scripts/resetData.js"
   },
   "keywords": [
     "gym",
@@ -22,6 +23,7 @@
     "dotenv": "^18.0.9",
     "express": "^5.3.0",
     "express-session": "^1.19.0",
+    "multer": "^2.5.0",
     "mysql2": "^3.24.6"
   }
 }

@@ -5,42 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Panel de Entrenadores - Infinite Force Gym</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              yellow: '#d4ff00',
-              gold: '#ffd700',
-              border: '#27272a',
-              card: '#18181b',
-              surface: '#27272a'
-            }
-          }
-        }
-      }
-    }
-  </script>
 </head>
 <body class="min-h-full bg-zinc-900 text-zinc-100 flex flex-col font-sans antialiased">
 
-  <!-- Header Superior -->
+  <!-- Header Superior Unificado -->
   <header class="bg-zinc-950/90 backdrop-blur border-b border-zinc-800 sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-16 sm:h-20 py-2 sm:py-0 flex items-center justify-between flex-wrap gap-2">
       
       <!-- Identidad Corporativa y Titulo de Header -->
-      <div class="flex items-center space-x-4">
-        <div class="w-12 h-12 rounded-full bg-black border-2 border-brand-yellow p-0.5 flex items-center justify-center shadow-lg">
+      <div class="flex items-center space-x-3 group">
+        <div class="w-11 h-11 rounded-full bg-black border-2 border-yellow-400 p-0.5 flex items-center justify-center shadow-md">
           <img src="/img/logo.png" alt="Infinite Force Gym" class="w-full h-full object-contain rounded-full">
         </div>
         <div>
-          <h1 class="text-xl font-extrabold tracking-wider uppercase text-white">
+          <h1 class="text-base sm:text-lg font-extrabold tracking-wider uppercase text-white block leading-none">
             PANEL DE ENTRENADORES Y PREPARACIÓN FÍSICA
           </h1>
-          <span class="block text-[11px] font-semibold uppercase tracking-widest text-brand-yellow">
-            Infinite Force Gym &bull; Prescripción y Control Deportivo
+          <span class="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
+            Infinite Force Gym &bull; <span class="text-yellow-400">Prescripción y Control Deportivo</span>
           </span>
         </div>
       </div>
@@ -53,13 +35,13 @@
         </div>
         <a
           href="/socio-dashboard"
-          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md flex items-center"
+          class="bg-yellow-400 text-zinc-950 font-bold px-4 py-2 rounded-lg hover:bg-yellow-300 transition-all text-xs uppercase tracking-wider shadow-md inline-flex items-center"
         >
           Ir a mi perfil personal
         </a>
         <a
           href="/logout"
-          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-red-950/50 hover:bg-red-900/60 text-red-300 border border-red-800 rounded-xl transition duration-150 active:scale-95"
+          class="px-4 py-2 text-xs font-bold uppercase tracking-wider bg-zinc-800/80 hover:bg-red-950 text-zinc-300 hover:text-red-300 border border-zinc-700 hover:border-red-800 rounded-xl transition duration-150 active:scale-95"
         >
           Cerrar Sesion
         </a>
@@ -75,37 +57,37 @@
 
     <!-- Metricas de Supervisión del Entrenador -->
     <section>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         
         <!-- Solicitudes Pendientes -->
-        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+        <div class="bg-zinc-800/50 border border-zinc-800 hover:border-zinc-700 rounded-xl p-6 shadow-md transition-all">
           <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Peticiones por Asignar</p>
           <div class="flex items-baseline justify-between mt-3">
-            <span class="text-4xl font-extrabold text-brand-yellow font-mono">{{TOTAL_PENDIENTES}}</span>
+            <span class="text-4xl font-extrabold text-yellow-400 font-mono">{{TOTAL_PENDIENTES}}</span>
             <span class="text-xs text-amber-400 uppercase font-semibold">Pendientes</span>
           </div>
         </div>
 
-        <!-- Criterio Biometrico -->
-        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
-          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Análisis Biométrico</p>
+        <!-- Solicitudes Aprobadas este Mes -->
+        <div class="bg-zinc-800/50 border border-zinc-800 hover:border-zinc-700 rounded-xl p-6 shadow-md transition-all">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Aprobadas este Mes</p>
           <div class="flex items-baseline justify-between mt-3">
-            <span class="text-2xl font-extrabold text-white">Activo</span>
-            <span class="text-xs text-emerald-400 font-semibold uppercase">Peso &bull; Edad &bull; Lesión</span>
+            <span class="text-4xl font-extrabold text-emerald-400 font-mono">{{TOTAL_APROBADAS_MES}}</span>
+            <span class="text-xs text-emerald-400/80 uppercase font-semibold">Planes</span>
           </div>
         </div>
 
-        <!-- Protocolo Metodologico -->
-        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
-          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Metodología Aplicada</p>
+        <!-- Socios con Membresia Activa -->
+        <div class="bg-zinc-800/50 border border-zinc-800 hover:border-zinc-700 rounded-xl p-6 shadow-md transition-all">
+          <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Socios con Membresía Activa</p>
           <div class="flex items-baseline justify-between mt-3">
-            <span class="text-2xl font-bold text-white">Hipertrofia / Fuerza</span>
-            <span class="text-xs text-zinc-400 uppercase font-semibold">Adaptado</span>
+            <span class="text-4xl font-extrabold text-white font-mono">{{TOTAL_SOCIOS_ACTIVOS}}</span>
+            <span class="text-xs text-zinc-400 uppercase font-semibold">Vigentes</span>
           </div>
         </div>
 
         <!-- Motor MySQL -->
-        <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 shadow-md hover:border-zinc-700 transition">
+        <div class="bg-zinc-800/50 border border-zinc-800 hover:border-zinc-700 rounded-xl p-6 shadow-md transition-all">
           <p class="text-xs font-bold uppercase tracking-wider text-zinc-400">Sincronización</p>
           <div class="flex items-baseline justify-between mt-3">
             <span class="text-2xl font-bold text-white">MySQL</span>
@@ -123,7 +105,7 @@
     <section class="space-y-6">
       
       <!-- Cabecera de Seccion -->
-      <div class="bg-zinc-950/60 border border-zinc-800 rounded-2xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-xl">
+      <div class="bg-zinc-800/50 border border-zinc-800 rounded-xl p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 shadow-xl">
         <div>
           <h2 class="text-xl font-bold uppercase tracking-wider text-white">Solicitudes de Rutina Pendientes de Evaluación</h2>
           <p class="text-xs text-zinc-400 mt-1">
@@ -131,7 +113,7 @@
           </p>
         </div>
         <div>
-          <span class="px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider bg-amber-950 text-amber-300 border border-amber-800 rounded-lg font-mono">
+          <span class="px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider bg-amber-950 text-amber-300 border border-amber-800 rounded-xl font-mono">
             {{TOTAL_PENDIENTES}} Solicitudes Pendientes
           </span>
         </div>
@@ -144,11 +126,42 @@
 
     </section>
 
+    <!-- SECCION: Historial de Solicitudes Aprobadas / Rechazadas -->
+    <section class="space-y-4">
+      <div class="bg-zinc-800/50 border border-zinc-800 rounded-xl p-5 flex items-center justify-between">
+        <div>
+          <h2 class="text-base font-bold uppercase tracking-wider text-white">Historial de Solicitudes Procesadas</h2>
+          <p class="text-xs text-zinc-400 mt-0.5">Registro de planes prescritos y solicitudes evaluadas.</p>
+        </div>
+      </div>
+      <div class="w-full overflow-x-auto">
+        <table class="w-full text-left border-collapse min-w-[700px]">
+          <thead>
+            <tr class="bg-zinc-900/90 text-zinc-400 uppercase text-[11px] font-bold tracking-wider border-b border-zinc-800">
+              <th class="px-5 py-3.5">Socio</th>
+              <th class="px-5 py-3.5">Objetivo</th>
+              <th class="px-5 py-3.5">Rutina Asignada</th>
+              <th class="px-5 py-3.5">Mis Observaciones</th>
+              <th class="px-5 py-3.5 text-center">Estado</th>
+              <th class="px-5 py-3.5">Fecha</th>
+            </tr>
+          </thead>
+          <tbody id="tablaHistorialEntrenador" class="divide-y divide-zinc-800">
+            <tr>
+              <td colspan="6" class="px-5 py-6 text-center text-zinc-500 text-xs">
+                Cargando historial...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
   </main>
 
   <!-- MODAL: Armar Plan de Entrenamiento -->
   <div id="modal-armar-plan" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
-    <div class="bg-zinc-900 border border-zinc-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-6">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-lg mx-4 max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-2xl space-y-6">
       
       <div class="border-b border-zinc-800 pb-4 flex items-center justify-between">
         <div>
@@ -172,28 +185,28 @@
         </div>
 
         <div class="grid grid-cols-3 gap-2 py-1 text-center font-mono">
-          <div class="bg-zinc-900 p-2 rounded-lg border border-zinc-800">
+          <div class="bg-zinc-900 p-2 rounded-xl border border-zinc-800">
             <span class="text-[10px] text-zinc-400 uppercase block">Peso</span>
             <span id="modal-plan-peso" class="text-white font-bold"></span>
           </div>
-          <div class="bg-zinc-900 p-2 rounded-lg border border-zinc-800">
+          <div class="bg-zinc-900 p-2 rounded-xl border border-zinc-800">
             <span class="text-[10px] text-zinc-400 uppercase block">Edad</span>
             <span id="modal-plan-edad" class="text-white font-bold"></span>
           </div>
-          <div class="bg-zinc-900 p-2 rounded-lg border border-zinc-800">
+          <div class="bg-zinc-900 p-2 rounded-xl border border-zinc-800">
             <span class="text-[10px] text-zinc-400 uppercase block">Frecuencia</span>
-            <span id="modal-plan-dias" class="text-brand-yellow font-bold"></span>
+            <span id="modal-plan-dias" class="text-yellow-400 font-bold"></span>
           </div>
         </div>
 
         <div class="flex justify-between items-center pt-1">
           <span class="text-zinc-400 font-semibold uppercase">Objetivo Deportivo:</span>
-          <span id="modal-plan-objetivo" class="text-brand-yellow font-bold uppercase"></span>
+          <span id="modal-plan-objetivo" class="text-yellow-400 font-bold uppercase"></span>
         </div>
 
         <div class="pt-2 border-t border-zinc-800/80">
           <span class="text-red-400 font-semibold uppercase text-[10px] block mb-1">Restricciones / Lesiones Registradas:</span>
-          <p id="modal-plan-lesiones" class="text-zinc-300 italic bg-zinc-900/60 p-2.5 rounded-lg border border-zinc-800/80"></p>
+          <p id="modal-plan-lesiones" class="text-zinc-300 italic bg-zinc-900/60 p-2.5 rounded-xl border border-zinc-800/80"></p>
         </div>
       </div>
 
@@ -208,7 +221,7 @@
           <select
             id="select-rutina-plan"
             name="rutinaId"
-            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-brand-yellow transition"
+            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition"
           >
             {{RUTINAS_OPTIONS_HTML}}
           </select>
@@ -223,7 +236,7 @@
             name="observacionesEntrenador"
             rows="3"
             placeholder="Ejemplo: Priorizar calentamiento articular en rodilla, carga progresiva en ejercicios compuestos..."
-            class="w-full bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-brand-yellow transition resize-none"
+            class="w-full bg-zinc-800 border border-zinc-700 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:border-yellow-400 focus:ring-1 focus:ring-yellow-400 transition resize-none"
           ></textarea>
         </div>
 
@@ -239,9 +252,78 @@
           <button
             type="submit"
             id="btn-guardar-plan"
-            class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-brand-yellow hover:bg-[#c2ea00] text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
+            class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-yellow-400 hover:bg-yellow-300 text-zinc-950 rounded-xl transition duration-150 active:scale-95 shadow-md"
           >
             Confirmar y Prescribir Plan
+          </button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <!-- MODAL: Rechazar Solicitud -->
+  <div id="modal-rechazar-solicitud" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden items-center justify-center p-4">
+    <div class="bg-zinc-900 border border-zinc-800 rounded-xl w-full max-w-md mx-4 max-h-[90vh] overflow-y-auto p-4 sm:p-6 shadow-2xl space-y-5">
+      
+      <!-- Encabezado Modal -->
+      <div class="flex items-center justify-between pb-3 border-b border-zinc-800">
+        <div>
+          <h3 class="text-base font-extrabold uppercase tracking-wider text-red-400">
+            Rechazar Solicitud
+          </h3>
+          <p class="text-xs text-zinc-400 mt-0.5">
+            Registro de observaciones médicas o técnicas para el socio
+          </p>
+        </div>
+        <button
+          type="button"
+          onclick="cerrarModalRechazar()"
+          class="text-zinc-400 hover:text-white text-xl font-bold px-2 py-1 leading-none"
+          aria-label="Cerrar modal"
+        >
+          &times;
+        </button>
+      </div>
+
+      <!-- Indicador del Socio -->
+      <div class="bg-zinc-950 p-3.5 rounded-xl border border-zinc-800 text-xs">
+        <span class="text-zinc-400 font-semibold uppercase block text-[10px]">Socio evaluado:</span>
+        <span id="modal-rechazar-socio-nombre" class="text-white font-extrabold uppercase text-sm mt-0.5 block"></span>
+      </div>
+
+      <!-- Formulario de Rechazo -->
+      <form id="form-rechazar-solicitud" onsubmit="enviarRechazoSolicitud(event)" class="space-y-4">
+        <input type="hidden" id="modal-rechazar-solicitud-id" name="solicitudId" value="">
+
+        <div>
+          <label for="textarea-motivo-rechazo" class="block text-xs font-bold uppercase tracking-wider text-zinc-300 mb-2">
+            Motivo u Observación Técnica <span class="text-red-400">*</span>
+          </label>
+          <textarea
+            id="textarea-motivo-rechazo"
+            name="motivo"
+            required
+            rows="4"
+            placeholder="Ejemplo: No es recomendable por tu lesión discal lumbar; agenda evaluación presencial con el preparador físico."
+            class="w-full px-4 py-3 bg-zinc-800 border border-zinc-700 rounded-xl text-white placeholder-zinc-500 text-xs focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-400 transition resize-none"
+          ></textarea>
+        </div>
+
+        <div class="flex items-center justify-end space-x-3 pt-2 border-t border-zinc-800">
+          <button
+            type="button"
+            onclick="cerrarModalRechazar()"
+            class="px-4 py-2.5 text-xs font-bold uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl transition"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            id="btn-confirmar-rechazo"
+            class="px-5 py-2.5 text-xs font-bold uppercase tracking-wider bg-red-700 hover:bg-red-600 text-white rounded-xl shadow-md transition duration-150 active:scale-95"
+          >
+            Confirmar Rechazo
           </button>
         </div>
       </form>
@@ -270,20 +352,21 @@
         banner.classList.add('bg-red-950', 'text-red-300', 'border-red-800');
       }
 
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      banner.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
       setTimeout(() => {
         banner.classList.add('hidden');
       }, 5000);
     }
 
-    function abrirModalArmarPlan(id, nombre, objetivo, dias, peso, edad, lesiones) {
-      document.getElementById('modal-plan-solicitud-id').value = id;
-      document.getElementById('modal-plan-socio-nombre').textContent = nombre;
+    function abrirModalArmarPlan(solicitudId, socioNombre, objetivo, diasSemana, peso, edad, lesiones) {
+      document.getElementById('modal-plan-solicitud-id').value = solicitudId;
+      document.getElementById('modal-plan-socio-nombre').textContent = socioNombre;
       document.getElementById('modal-plan-objetivo').textContent = objetivo;
-      document.getElementById('modal-plan-dias').textContent = dias + ' dias / semana';
+      document.getElementById('modal-plan-dias').textContent = diasSemana + ' días / sem';
       document.getElementById('modal-plan-peso').textContent = peso + ' kg';
       document.getElementById('modal-plan-edad').textContent = edad + ' años';
-      document.getElementById('modal-plan-lesiones').textContent = lesiones || 'Sin restricciones o lesiones registradas.';
+      document.getElementById('modal-plan-lesiones').textContent = lesiones || 'Sin restricciones médicas registradas';
 
       const modal = document.getElementById('modal-armar-plan');
       modal.classList.remove('hidden');
@@ -292,16 +375,17 @@
 
     function cerrarModalArmarPlan() {
       const modal = document.getElementById('modal-armar-plan');
-      modal.classList.add('hidden');
       modal.classList.remove('flex');
+      modal.classList.add('hidden');
+      document.getElementById('form-armar-plan').reset();
     }
 
-    async function enviarAsignacionPlan(event) {
-      event.preventDefault();
+    async function enviarAsignacionPlan(e) {
+      e.preventDefault();
 
       const solicitudId = document.getElementById('modal-plan-solicitud-id').value;
       const rutinaId = document.getElementById('select-rutina-plan').value;
-      const observacionesEntrenador = document.getElementById('textarea-obs-entrenador').value;
+      const observaciones = document.getElementById('textarea-obs-entrenador').value;
       const btn = document.getElementById('btn-guardar-plan');
 
       btn.disabled = true;
@@ -313,7 +397,11 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ solicitudId, rutinaId, observacionesEntrenador })
+          body: JSON.stringify({
+            solicitudId,
+            rutinaId,
+            observacionesEntrenador: observaciones
+          })
         });
 
         const data = await response.json();
@@ -322,25 +410,135 @@
           cerrarModalArmarPlan();
           mostrarNotificacion(data.message, 'exito');
 
-          const card = document.getElementById('solicitud-card-' + solicitudId);
-          if (card) {
-            card.remove();
+          // Ocultar tarjeta asignada de la vista
+          const tarjeta = document.getElementById('solicitud-card-' + solicitudId);
+          if (tarjeta) {
+            tarjeta.classList.add('opacity-30', 'pointer-events-none');
+            setTimeout(() => tarjeta.remove(), 1000);
           }
-
-          setTimeout(() => {
-            window.location.reload();
-          }, 1500);
+          cargarHistorialEntrenador();
         } else {
-          mostrarNotificacion(data.message || 'Error al asignar el plan.', 'error');
+          mostrarNotificacion(data.message || 'Error al procesar la prescripción del plan.', 'error');
         }
-      } catch (error) {
-        console.error('Error de red al asignar plan:', error);
-        mostrarNotificacion('Error de conexion al procesar la asignacion.', 'error');
+      } catch (err) {
+        console.error('Error al enviar asignacion de plan:', err);
+        mostrarNotificacion('Fallo de conexión al enviar el plan.', 'error');
       } finally {
         btn.disabled = false;
         btn.textContent = 'Confirmar y Prescribir Plan';
       }
     }
+
+    async function cargarHistorialEntrenador() {
+      const tbody = document.getElementById('tablaHistorialEntrenador');
+      if (!tbody) return;
+      try {
+        const res = await fetch('/api/entrenador/solicitudes/historial');
+        const data = await res.json();
+        if (!data.success || !data.solicitudes || data.solicitudes.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" class="px-5 py-6 text-center text-zinc-500 text-xs">Sin solicitudes procesadas aún.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.solicitudes.map(s => {
+          const estadoClass = s.estado === 'Aprobada'
+            ? 'bg-emerald-950 text-emerald-300 border-emerald-800'
+            : 'bg-red-950 text-red-300 border-red-800';
+          return `
+            <tr class="hover:bg-zinc-800/40 transition border-b border-zinc-800">
+              <td class="px-5 py-4 font-bold text-white text-sm">${s.socio_nombre}</td>
+              <td class="px-5 py-4 text-xs text-zinc-300 uppercase">${s.objetivo}</td>
+              <td class="px-5 py-4 text-xs text-yellow-400 font-mono font-bold">${s.rutina_nombre || 'No especificada'}</td>
+              <td class="px-5 py-4 text-xs text-zinc-400 max-w-xs truncate" title="${s.observaciones_entrenador || ''}">${s.observaciones_entrenador || '—'}</td>
+              <td class="px-5 py-4 text-center">
+                <span class="px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider border rounded-xl ${estadoClass}">${s.estado}</span>
+              </td>
+              <td class="px-5 py-4 text-xs text-zinc-400 font-mono">${s.fecha}</td>
+            </tr>`;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="6" class="px-5 py-6 text-center text-red-400 text-xs">Error al cargar historial.</td></tr>';
+      }
+    }
+
+    function abrirModalRechazar(solicitudId, socioNombre) {
+      document.getElementById('modal-rechazar-solicitud-id').value = solicitudId;
+      document.getElementById('modal-rechazar-socio-nombre').textContent = socioNombre;
+      document.getElementById('textarea-motivo-rechazo').value = '';
+      const modal = document.getElementById('modal-rechazar-solicitud');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.getElementById('textarea-motivo-rechazo').focus();
+    }
+
+    function cerrarModalRechazar() {
+      const modal = document.getElementById('modal-rechazar-solicitud');
+      modal.classList.remove('flex');
+      modal.classList.add('hidden');
+      document.getElementById('form-rechazar-solicitud').reset();
+    }
+
+    async function enviarRechazoSolicitud(e) {
+      e.preventDefault();
+
+      const solicitudId = document.getElementById('modal-rechazar-solicitud-id').value;
+      const motivo = document.getElementById('textarea-motivo-rechazo').value.trim();
+      const btn = document.getElementById('btn-confirmar-rechazo');
+
+      if (!motivo) {
+        mostrarNotificacion('Debe especificar el motivo u observación del rechazo.', 'error');
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = 'Procesando rechazo...';
+
+      try {
+        const response = await fetch('/api/entrenador/solicitudes/rechazar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            solicitudId,
+            motivo
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          cerrarModalRechazar();
+          mostrarNotificacion(data.message, 'exito');
+
+          // Ocultar tarjeta rechazada de la vista
+          const tarjeta = document.getElementById('solicitud-card-' + solicitudId);
+          if (tarjeta) {
+            tarjeta.classList.add('opacity-30', 'pointer-events-none');
+            setTimeout(() => tarjeta.remove(), 1000);
+          }
+          cargarHistorialEntrenador();
+        } else {
+          mostrarNotificacion(data.message || 'Error al procesar el rechazo de la solicitud.', 'error');
+        }
+      } catch (err) {
+        console.error('Error al enviar rechazo de solicitud:', err);
+        mostrarNotificacion('Fallo de conexión al enviar el rechazo.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Confirmar Rechazo';
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        cerrarModalArmarPlan();
+        cerrarModalRechazar();
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      cargarHistorialEntrenador();
+    });
   </script>
 </body>
 </html>
